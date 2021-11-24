@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/layout/activity_categories.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/activity_item_listing.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1157548125633232" />
+        <entry key="app/src/main/res/layout/activity_wishlist.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/home.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/layout_bottom_bar.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_category_tile.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/layout_item_tile.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_item_tile_horizontal.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_item_tile_wishlist.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_new_listing.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_top_bar.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/login.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/navigation_bar_header.xml" value="0.1157548125633232" />
+        <entry key="app/src/main/res/layout/navigation_menu_header.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/registration.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/search_bar.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/test_item_tile.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
