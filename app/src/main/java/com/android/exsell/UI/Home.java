@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     // side navigation
     private String TAG = "Home";
     LinearLayout layoutTop, layoutBottom;
@@ -105,6 +105,9 @@ public class Home extends AppCompatActivity {
         // add category images to linear layout
         ll = (LinearLayout) findViewById(R.id.linear);
         loadCategoryImages();
+        if(navigationView != null){
+            navigationView.setNavigationItemSelectedListener(this);
+        }
     }
 
     // create fake products (could adapt to work with database)
@@ -186,5 +189,17 @@ public class Home extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ItemListing.class);
         // pass data about which product is clicked
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.edit) {
+            // DO your stuff
+            startActivity(new Intent(Home.this, MyListings.class));
+
+        }
+        return false;
     }
 }
