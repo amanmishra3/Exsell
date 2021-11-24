@@ -62,6 +62,7 @@ public class Categories extends AppCompatActivity {
             public void onClick(View v) {
                 drawer.openDrawer(GravityCompat.START);
             }
+            
         });
         loadProducts();
         categoryRecycler = findViewById(R.id.recyclerViewCategoryTiles);

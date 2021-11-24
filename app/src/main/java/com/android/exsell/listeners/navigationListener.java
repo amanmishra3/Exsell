@@ -13,6 +13,7 @@ import com.android.exsell.UI.Categories;
 import com.android.exsell.UI.Home;
 import com.android.exsell.UI.LoginActivity;
 import com.android.exsell.UI.MyListings;
+import com.android.exsell.UI.UserProfile;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -30,12 +31,22 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
         if (item.getItemId() == R.id.signOut) {
             onSignOut();
             return true;
+        } else if(item.getItemId() == R.id.profile) {
+            onClickProfile();
+            return true;
         }
         if (item.getItemId() == R.id.edit) {
             myList();
             return true;
         }
         return false;
+    }
+
+    private void onClickProfile() {
+        Log.i(TAG, "onProfile");
+        Intent intent = new Intent(context, UserProfile.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     public void onSignOut() {

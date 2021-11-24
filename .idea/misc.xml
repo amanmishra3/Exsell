@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_calendar.xml" value="0.13177083333333334" />
+        <entry key="app/src/main/res/drawable/ic_camera.xml" value="0.1359375" />
+        <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.13177083333333334" />
+        <entry key="app/src/main/res/drawable/ic_email.xml" value="0.13177083333333334" />
+        <entry key="app/src/main/res/drawable/ic_phone.xml" value="0.13177083333333334" />
+        <entry key="app/src/main/res/drawable/ic_star.xml" value="0.13177083333333334" />
         <entry key="app/src/main/res/layout/activity_categories.xml" value="0.11927083333333334" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.11927083333333334" />
         <entry key="app/src/main/res/layout/activity_item_listing.xml" value="0.11927083333333334" />
