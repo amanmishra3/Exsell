@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Exsell">
         <activity
+            android:name=".UI.NewListing"
+            android:exported="false" />
+        <activity
             android:name=".UI.UserProfile"
             android:exported="false" />
         <activity
@@ -32,6 +35,9 @@
             android:exported="true" />
         <activity
             android:name=".UI.RegistrationActivity"
+            android:exported="true" />
+        <activity
+            android:name=".UI.MyListings"
             android:exported="true" />
         <activity
             android:name=".UI.MainActivity"

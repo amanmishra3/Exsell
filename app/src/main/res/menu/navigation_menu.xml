@@ -8,8 +8,8 @@
         android:title="Profile"/>
 
     <item android:id="@+id/edit"
-        android:title="My Listings" />
-
+        android:title="My listings" />
+  
     <item android:id="@+id/signOut"
         android:title="Sign Out"/>
 

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.CategoryAdapter;
+import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Category;
 import com.google.android.material.navigation.NavigationView;
 
@@ -37,7 +38,7 @@ public class Categories extends AppCompatActivity {
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
-
+        navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
         layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +49,12 @@ public class Categories extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Categories.this, WishlistActivity.class));
+            }
+        });
+        layoutBottom.findViewById(R.id.addItemButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Categories.this, NewListing.class));
             }
         });
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
