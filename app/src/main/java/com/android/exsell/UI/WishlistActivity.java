@@ -13,13 +13,14 @@ import android.widget.LinearLayout;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.WishlistAdapter;
+import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Wishlist;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
 public class WishlistActivity extends AppCompatActivity {
-    LinearLayout layoutTop;
+    LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
     public static RecyclerView.Adapter adapter;
@@ -31,9 +32,10 @@ public class WishlistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wishlist);
         layoutTop = findViewById(R.id.layoutTopBar);
+        layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
-
+        navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
         layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,6 +47,12 @@ public class WishlistActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawer.openDrawer(GravityCompat.START);
+            }
+        });
+        layoutBottom.findViewById(R.id.addItemButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(WishlistActivity.this, NewListing.class));
             }
         });
         loadProducts();

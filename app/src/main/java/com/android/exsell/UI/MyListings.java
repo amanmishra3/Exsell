@@ -2,10 +2,12 @@ package com.android.exsell.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -23,7 +25,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyListings extends AppCompatActivity {
+public class MyListings extends AppCompatActivity{
     private String TAG = "Home";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
@@ -47,16 +49,25 @@ public class MyListings extends AppCompatActivity {
         layoutTop = findViewById(R.id.layoutTopBar);
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayoutListing);
-
         navigationView = findViewById(R.id.navigationMenuHome);
-
         layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MyListings.this, SearchBar.class));
             }
         });
-
+        layoutBottom.findViewById(R.id.wishlistButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MyListings.this, WishlistActivity.class));
+            }
+        });
+        layoutBottom.findViewById(R.id.addItemButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MyListings.this, NewListing.class));
+            }
+        });
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,8 +88,10 @@ public class MyListings extends AppCompatActivity {
                 }
             }
         });
+        if(navigationView != null){
+            navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
+        }
 
-        // add category images to linear layout
 
     }
 

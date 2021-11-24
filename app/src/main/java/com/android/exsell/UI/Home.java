@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Home extends AppCompatActivity {
     // side navigation
     private String TAG = "Home";
     LinearLayout layoutTop, layoutBottom;
@@ -77,6 +77,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 startActivity(new Intent(Home.this, WishlistActivity.class));
             }
         });
+        layoutBottom.findViewById(R.id.addItemButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this, NewListing.class));
+            }
+        });
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,9 +111,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         // add category images to linear layout
         ll = (LinearLayout) findViewById(R.id.linear);
         loadCategoryImages();
-        if(navigationView != null){
-            navigationView.setNavigationItemSelectedListener(this);
-        }
+
     }
 
     // create fake products (could adapt to work with database)
@@ -191,15 +195,5 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         startActivity(intent);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == R.id.edit) {
-            // DO your stuff
-            startActivity(new Intent(Home.this, MyListings.class));
-
-        }
-        return false;
-    }
 }
