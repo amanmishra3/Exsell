@@ -46,7 +46,7 @@ public class MyListings extends AppCompatActivity {
         // side navigation
         layoutTop = findViewById(R.id.layoutTopBar);
         layoutBottom = findViewById(R.id.layoutBottomBar);
-        drawer = (DrawerLayout) findViewById(R.id.drawerLayoutHome);
+        drawer = (DrawerLayout) findViewById(R.id.drawerLayoutListing);
 
         navigationView = findViewById(R.id.navigationMenuHome);
 
