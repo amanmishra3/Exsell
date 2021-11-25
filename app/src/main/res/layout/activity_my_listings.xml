@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayoutListing"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.MainActivity">
+    tools:context=".UI.MyListings">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -40,6 +40,7 @@
         android:id="@+id/navigationMenu"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        app:headerLayout="@layout/navigation_bar_header"
         android:layout_gravity="start"
         app:menu="@menu/navigation_menu" />
 

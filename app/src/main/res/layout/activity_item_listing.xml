@@ -103,6 +103,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/colorThemeYellow"
+                        android:textColor="@color/black"
                         android:text="Contact Seller"
                         android:onClick="contactSeller" />
                     <Button
@@ -110,6 +112,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/colorThemeYellow"
+                        android:textColor="@color/black"
                         android:text="Buy Now"
                         android:onClick="buyNow" />
                 </LinearLayout>
@@ -130,7 +134,6 @@
         android:layout_gravity="start"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
-
 
 
 

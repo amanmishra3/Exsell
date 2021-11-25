@@ -8,12 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.CategoryAdapter;
+import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Category;
 import com.google.android.material.navigation.NavigationView;
@@ -25,6 +28,7 @@ public class Categories extends AppCompatActivity {
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
+    private ImageView search, wishlist, addListing;
     public static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView categoryRecycler;
@@ -39,24 +43,12 @@ public class Categories extends AppCompatActivity {
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
-        layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Categories.this, SearchBar.class));
-            }
-        });
-        layoutBottom.findViewById(R.id.wishlistButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Categories.this, WishlistActivity.class));
-            }
-        });
-        layoutBottom.findViewById(R.id.addItemButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Categories.this, NewListing.class));
-            }
-        });
+        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
+        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+        wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
+        wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
+        addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
+        addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,10 +57,16 @@ public class Categories extends AppCompatActivity {
             
         });
         loadProducts();
-        categoryRecycler = findViewById(R.id.recyclerViewCategoryTiles);
+        categoryRecycler = (RecyclerView) findViewById(R.id.recyclerViewCategoryTiles);
+        categoryRecycler.setNestedScrollingEnabled(false);
         loadRecycler(categoryRecycler, categoryNames);
         adapter = new CategoryAdapter(categoryNames);
         categoryRecycler.setAdapter(adapter);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        drawer.closeDrawer(Gravity.LEFT, false);
     }
     public void loadProducts() {
         String[] fakeTags = {"Textbooks", "COEN"};
@@ -88,10 +86,15 @@ public class Categories extends AppCompatActivity {
         layoutManager = new GridLayoutManager(this, 2);
         thisRecycler.setHasFixedSize(true); // set has fixed size
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
-
+        thisRecycler.setPadding(100,0,0,0);
         // create and set adapter
         adapter = new CategoryAdapter(cat);
         thisRecycler.setAdapter(adapter);
+    }
+    public void itemDetails(View v){
+        Intent intent = new Intent(getApplicationContext(), ItemListing.class);
+        // pass data about which product is clicked
+        startActivity(intent);
     }
 
 }
