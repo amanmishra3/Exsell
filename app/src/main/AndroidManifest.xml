@@ -11,7 +11,9 @@
         android:theme="@style/Theme.Exsell">
         <activity
             android:name=".UI.NewListing"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleInstance"
+            />
         <activity
             android:name=".UI.UserProfile"
             android:exported="false" />
@@ -20,16 +22,22 @@
             android:exported="false" />
         <activity
             android:name=".UI.WishlistActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleInstance"
+            />
         <activity
             android:name=".UI.Categories"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleInstance"
+            />
         <activity
             android:name=".UI.ItemListing"
             android:exported="true" />
         <activity
             android:name=".UI.Home"
-            android:exported="true" />
+            android:exported="true"
+            android:launchMode="singleInstance"
+            />
         <activity
             android:name=".UI.LoginActivity"
             android:exported="true" />
@@ -38,7 +46,9 @@
             android:exported="true" />
         <activity
             android:name=".UI.MyListings"
-            android:exported="true" />
+            android:exported="true"
+            android:launchMode="singleInstance"
+            />
         <activity android:name=".chat.MessagePreviews"></activity>
         <activity android:name=".chat.PrivateMessage"></activity>
         <activity

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -58,5 +59,10 @@ public class NewListing extends AppCompatActivity {
 
             }
         });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        drawerlist.closeDrawer(Gravity.LEFT, false);
     }
 }

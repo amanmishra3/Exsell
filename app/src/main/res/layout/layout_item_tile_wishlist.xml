@@ -6,8 +6,8 @@
     android:elevation="@dimen/_50sdp">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/_125sdp"
-        android:layout_height="@dimen/_165sdp"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/_10sdp"
         android:layout_margin="@dimen/_10sdp"
         android:layout_gravity="center"
@@ -22,7 +22,7 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_115sdp"
+                android:layout_height="@dimen/_95sdp"
                 android:id="@+id/itemImage"
                 android:src="@drawable/test_image"
                 android:scaleType="fitXY"
@@ -42,10 +42,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
+            android:layout_height="@dimen/_40sdp"
             android:orientation="vertical"
             android:weightSum="2"
-            android:layout_marginTop="@dimen/_115sdp">
+            android:layout_marginTop="@dimen/_95sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,12 +59,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
                     android:layout_weight="1"
                     android:includeFontPadding="false"
                     android:text="@string/title"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/_10sdp" />
 
 
                 <TextView
@@ -72,34 +72,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_30sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
                     android:layout_weight="1"
                     android:includeFontPadding="false"
                     android:text="@string/price"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/_10sdp" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_weight="1">-->
 
-                <TextView
-                    android:id="@+id/itemTags"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/_15sdp"
-                    android:layout_weight="1"
-                    android:includeFontPadding="false"
-                    android:text="@string/tags"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_11sdp" />
+<!--                <TextView-->
+<!--                    android:id="@+id/itemTags"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:layout_marginStart="@dimen/_15sdp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:includeFontPadding="false"-->
+<!--                    android:text="@string/tags"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="@dimen/_11sdp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
         </LinearLayout>
 
