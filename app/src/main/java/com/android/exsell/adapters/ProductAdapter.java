@@ -62,7 +62,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
         textViewTitle.setText(products.get(position).getTitle());
         textViewPrice.setText("$"+products.get(position).getPrice());
-        textViewTags.setText(products.get(position).getTags().toString());
         imageView.setImageResource(products.get(position).getImage() != -1 ? R.drawable.test_image : products.get(position).getImage());
     }
 
