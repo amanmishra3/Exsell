@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
+import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.adapters.MylistAdapter;
 import com.android.exsell.adapters.ProductAdapter;
 import com.android.exsell.db.ItemDb;
@@ -123,7 +124,7 @@ public class MyListings extends AppCompatActivity{
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
 
         // create and set adapter
-        adapter = new MylistAdapter(products);
+        adapter = new HorizontalProductAdapter(products);
         thisRecycler.setAdapter(adapter);
     }
 

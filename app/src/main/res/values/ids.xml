@@ -4,5 +4,7 @@
     <item name="category2" type="id"/>
     <item name="category3" type="id"/>
     <item name="category4" type="id"/>
+    <item name="category5" type="id"/>
+    <item name="category6" type="id"/>
     <item name="testID" type="id"/>
 </resources>
