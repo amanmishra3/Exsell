@@ -1,32 +1,34 @@
-package com.android.exsell.UI;
+package com.android.exsell.fragments;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.exsell.R;
+import com.android.exsell.UI.Home;
+import com.android.exsell.UI.RegistrationActivity;
 import com.android.exsell.db.UserDb;
 import com.android.exsell.models.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-public class RegistrationActivity extends AppCompatActivity {
+public class FragmentSignUp extends Fragment {
     private static final String TAG = "RegistrationActivity";
     private FirebaseAuth mAuth;
     private UserDb userDb;
@@ -35,22 +37,27 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText emailField = null;
     EditText passwordField = null;
     EditText password2Field = null;
+    Button signUpBtn;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "onCreate");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.registration);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
         userDb = UserDb.newInstance();
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-        nameField = findViewById(R.id.name);
-        schoolField = findViewById(R.id.school);
-        emailField = findViewById(R.id.email);
-        passwordField = findViewById(R.id.password);
-        password2Field = findViewById(R.id.password2);
+        nameField = view.findViewById(R.id.name);
+        schoolField = view.findViewById(R.id.school);
+        emailField = view.findViewById(R.id.email);
+        passwordField = view.findViewById(R.id.password);
+        password2Field = view.findViewById(R.id.password2);
+        signUpBtn = view.findViewById(R.id.createAccountBtn);
+        signUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createClick(v);
+            }
+        });
+        return view;
     }
 
     public void createClick(View view) {
@@ -121,13 +128,13 @@ public class RegistrationActivity extends AppCompatActivity {
     private void createAccount(Users user, String password) {
         Log.i(TAG, "createAccount");
         mAuth.createUserWithEmailAndPassword(user.getEmail(), password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            makeText(RegistrationActivity.this, "Account Created",
+                            Toast.makeText(getActivity(), "Account Created",
                                     LENGTH_SHORT).show();
                             sendEmailVerification();
                             FirebaseUser myUser = mAuth.getCurrentUser();
@@ -138,7 +145,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            makeText(RegistrationActivity.this, task.getException().getMessage(),
+                            Toast.makeText(getActivity(), task.getException().getMessage(),
                                     LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -151,11 +158,11 @@ public class RegistrationActivity extends AppCompatActivity {
         // Send verification email
         final FirebaseUser user = mAuth.getCurrentUser();
         user.sendEmailVerification()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                .addOnCompleteListener(requireActivity(), new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         // Email sent
-                        makeText(RegistrationActivity.this, "Verification email sent",
+                        Toast.makeText(getActivity(), "Verification email sent",
                                 LENGTH_SHORT).show();
                     }
                 });
@@ -169,7 +176,7 @@ public class RegistrationActivity extends AppCompatActivity {
             emailField.setText(null);
             passwordField.setText(null);
             password2Field.setText(null);
-            Intent intent = new Intent(this, Home.class);
+            Intent intent = new Intent(getActivity(), Home.class);
             startActivity(intent);
         }
     }

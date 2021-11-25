@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_margin="20dp"
-            android:src="@drawable/logo" />
+            android:src="@drawable/exselllogo" />
 
         <GridLayout
             android:layout_width="match_parent"
@@ -25,12 +25,14 @@
             android:foregroundTint="@color/white">
 
             <Button
+                android:id="@+id/loginSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/light_gray"
                 android:text="Sign in"
                 android:layout_column="0"
-                android:layout_columnWeight="1" />
+                android:layout_columnWeight="1"
+                />
 
             <Button
                 android:layout_width="wrap_content"
@@ -41,52 +43,13 @@
                 android:layout_columnWeight="1"
                 android:onClick="goToSignUp" />
 
-            <View
-                android:layout_width="20dp"
-                android:layout_height="5dp"
-                android:background="@color/bumble"
-                android:layout_column="0"
-                android:layout_row="1"
-                android:layout_columnWeight="1" />
         </GridLayout>
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/frameLogin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="40dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent"/>
 
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email" />
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Password" />
-        </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="70dp"
-            android:layout_gravity="center_horizontal"
-            android:textStyle="bold"
-            android:text="LOGIN"
-            android:onClick="loginClick" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="30dp"
-            android:text="Don't have an account?"
-            android:onClick="goToSignUp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
