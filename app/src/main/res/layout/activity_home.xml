@@ -49,8 +49,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@+id/category_header"
                     android:layout_marginTop="@dimen/_8sdp"
-                    android:layout_marginStart="@dimen/_7sdp"
-                    >
+                    android:layout_marginStart="@dimen/_7sdp">
                     <LinearLayout
                         android:id="@+id/linear"
                         android:layout_width="match_parent"
