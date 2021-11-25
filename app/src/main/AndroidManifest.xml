@@ -61,6 +61,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".UI.SearchBar" />
+        <activity
+            android:name=".UI.MessagePreviews"
+            android:exported="false" />
+        <activity
+            android:name=".UI.PrivateMessage"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="20dp"
-    android:onClick="moveToMessage">
+    android:layout_margin="20dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/profile_pic_card"
@@ -25,10 +24,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:layout_toRightOf="@id/profile_pic_card"
+        android:layout_toEndOf="@id/profile_pic_card"
         android:maxLines="1"
-        android:text="FirstName LastName"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <TextView
@@ -37,15 +35,13 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/contact_name"
         android:layout_alignBottom="@+id/profile_pic_card"
-        android:text="This is a preview..."
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/time_stamp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/contact_name"
-        android:gravity="right"
-        android:text="time"
-        android:textSize="20dp" />
+        android:layout_toEndOf="@+id/contact_name"
+        android:gravity="end"
+        android:textSize="20sp" />
 </RelativeLayout>
