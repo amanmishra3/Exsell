@@ -27,7 +27,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
-                android:hint="Title" />
+                android:hint="Title"
+                android:fontFamily="@font/montserrat"
+                />
 
             <EditText
                 android:id="@+id/description"
@@ -35,7 +37,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:hint="Description" />
+                android:hint="Description"
+                android:fontFamily="@font/montserrat"
+                />
 
             <Spinner
                 android:id="@+id/category"
@@ -50,7 +54,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:hint="Tags (Comma Separated)" />
+                android:hint="Tags (Comma Separated)"
+                android:fontFamily="@font/montserrat"
+                />
 
             <!-- Buttons -->
             <EditText
@@ -59,7 +65,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:hint="Price" />
+                android:hint="Price"
+                android:fontFamily="@font/montserrat"
+                />
 
 
             <Button
@@ -69,7 +77,9 @@
                 android:layout_gravity="center"
                 android:backgroundTint="@color/colorThemeYellow"
                 android:text="UPLOAD IMAGE"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:fontFamily="@font/montserrat"
+                />
 
             <TextView
                 android:layout_marginTop="@dimen/_5sdp"
@@ -77,7 +87,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text=""
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:fontFamily="@font/montserrat"
+                />
 
 
             <Button
@@ -87,7 +99,9 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:backgroundTint="@color/colorThemeYellow"
                 android:text="POST LISTING"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:fontFamily="@font/montserrat"
+                />
 
         </LinearLayout>
 
