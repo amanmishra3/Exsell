@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_margin="20dp"
-            android:src="@drawable/logo" />
+            android:src="@drawable/exselllogo" />
 
         <GridLayout
             android:layout_width="match_parent"
@@ -30,7 +30,8 @@
                 android:backgroundTint="@color/lgray"
                 android:text="Sign in"
                 android:layout_column="0"
-                android:layout_columnWeight="1" />
+                android:layout_columnWeight="1"
+                />
 
             <Button
                 android:layout_width="wrap_content"
@@ -78,7 +79,9 @@
             android:layout_gravity="center_horizontal"
             android:textStyle="bold"
             android:text="LOGIN"
-            android:onClick="loginClick" />
+            android:onClick="loginClick"
+            android:backgroundTint="@color/colorThemeYellow"
+            android:textColor="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"

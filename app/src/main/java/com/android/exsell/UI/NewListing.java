@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class NewListing extends AppCompatActivity {
     LinearLayout layoutTop, layoutBottom;
-    DrawerLayout drawer;
+    DrawerLayout drawerlist;
     NavigationView navigationView;
 
     @Override
@@ -30,7 +30,7 @@ public class NewListing extends AppCompatActivity {
         setContentView(R.layout.layout_new_listing);
         layoutTop = findViewById(R.id.layoutTopBar);
         layoutBottom = findViewById(R.id.layoutBottomBar);
-        drawer = (DrawerLayout) findViewById(R.id.drawerLayoutItem);
+        drawerlist = (DrawerLayout) findViewById(R.id.drawerLayoutItem);
         navigationView = findViewById(R.id.navigationMenuItem);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
         layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
@@ -54,7 +54,7 @@ public class NewListing extends AppCompatActivity {
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
+                drawerlist.openDrawer(GravityCompat.START);
 
             }
         });

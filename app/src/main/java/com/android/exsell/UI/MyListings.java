@@ -91,13 +91,14 @@ public class MyListings extends AppCompatActivity{
         });
 
 
+
     }
 
     // create fake products (could adapt to work with database)
     public void loadProducts(){
         List<String> fakeTags = new ArrayList<>();
         fakeTags.add("CEO");
-        fakeTags.add("Gaand");
+        fakeTags.add("Data");
         Product product1 = new Product("1","Product 1", 8, R.drawable.test_image, fakeTags);
         Product product2 = new Product("2","Product 2", 2, R.drawable.test_image, fakeTags);
         Product product3 = new Product("3","Product 3", 10, R.drawable.test_image, fakeTags);
@@ -125,4 +126,5 @@ public class MyListings extends AppCompatActivity{
         adapter = new MylistAdapter(products);
         thisRecycler.setAdapter(adapter);
     }
+
 }

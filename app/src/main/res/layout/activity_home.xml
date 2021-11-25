@@ -89,18 +89,6 @@
                     app:layout_constraintTop_toBottomOf="@id/recommended_header"
                     app:layout_constraintStart_toStartOf="parent" />
 
-<!--                <include layout="@layout/test_item_tile"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:id="@+id/test_item_tiles2"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/recommended_header"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"/>-->
-<!--                <include layout="@layout/test_item_tile"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:id="@+id/test_item_tiles3"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/test_item_tiles2"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"/>-->
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

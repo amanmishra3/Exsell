@@ -104,14 +104,20 @@
                         android:layout_weight="1"
                         android:layout_marginHorizontal="5dp"
                         android:text="Contact Seller"
-                        android:onClick="contactSeller" />
+                        android:onClick="contactSeller"
+                        android:backgroundTint="@color/colorThemeYellow"
+                        android:textColor="@color/black"
+                        />
                     <Button
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginHorizontal="5dp"
                         android:text="Buy Now"
-                        android:onClick="buyNow" />
+                        android:onClick="buyNow"
+                        android:backgroundTint="@color/colorThemeYellow"
+                        android:textColor="@color/black"
+                        />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
