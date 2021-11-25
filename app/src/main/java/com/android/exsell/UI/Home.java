@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.exsell.R;
+import com.android.exsell.chat.MessagePreviews;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Product;
@@ -90,6 +91,12 @@ public class Home extends AppCompatActivity {
 
             }
         });
+        layoutBottom.findViewById(R.id.chatButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this, MessagePreviews.class));
+            }
+        });
         loadProducts();
         itemDb.getAllItems(new ItemDb.getItemsCallback() {
             @Override
@@ -118,7 +125,7 @@ public class Home extends AppCompatActivity {
     public void loadProducts(){
         List<String> fakeTags = new ArrayList<>();
         fakeTags.add("CEO");
-        fakeTags.add("Gaand");
+        fakeTags.add("Data");
         Product product1 = new Product("1","Product 1", 8, R.drawable.test_image, fakeTags);
         Product product2 = new Product("2","Product 2", 2, R.drawable.test_image, fakeTags);
         Product product3 = new Product("3","Product 3", 10, R.drawable.test_image, fakeTags);

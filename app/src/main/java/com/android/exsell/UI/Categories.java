@@ -93,5 +93,10 @@ public class Categories extends AppCompatActivity {
         adapter = new CategoryAdapter(cat);
         thisRecycler.setAdapter(adapter);
     }
+    public void itemDetails(View v){
+        Intent intent = new Intent(getApplicationContext(), ItemListing.class);
+        // pass data about which product is clicked
+        startActivity(intent);
+    }
 
 }

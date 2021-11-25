@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.android.exsell.R;
@@ -30,6 +31,7 @@ public class WishlistActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_wishlist);
         layoutTop = findViewById(R.id.layoutTopBar);
         layoutBottom = findViewById(R.id.layoutBottomBar);
@@ -82,5 +84,10 @@ public class WishlistActivity extends AppCompatActivity {
         // create and set adapter
         adapter = new WishlistAdapter(cat);
         thisRecycler.setAdapter(adapter);
+    }
+    public void itemDetails(View v){
+        Intent intent = new Intent(getApplicationContext(), ItemListing.class);
+        // pass data about which product is clicked
+        startActivity(intent);
     }
 }

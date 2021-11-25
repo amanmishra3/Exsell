@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,7 @@ public class RegistrationActivity extends AppCompatActivity {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         userDb = UserDb.newInstance();
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:onClick="moveToMessage">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profile_pic_card"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="30dp">
+
+        <ImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_toRightOf="@id/profile_pic_card"
+        android:maxLines="1"
+        android:text="FirstName LastName"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/message_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/contact_name"
+        android:layout_alignBottom="@+id/profile_pic_card"
+        android:text="This is a preview..."
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/time_stamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/contact_name"
+        android:gravity="right"
+        android:text="time"
+        android:textSize="20dp" />
+</RelativeLayout>
