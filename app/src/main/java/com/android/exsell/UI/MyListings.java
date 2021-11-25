@@ -49,7 +49,8 @@ public class MyListings extends AppCompatActivity{
         layoutTop = findViewById(R.id.layoutTopBar);
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayoutListing);
-        navigationView = findViewById(R.id.navigationMenuHome);
+        navigationView = findViewById(R.id.navigationMenu);
+        navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
         layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,9 +89,6 @@ public class MyListings extends AppCompatActivity{
                 }
             }
         });
-        if(navigationView != null){
-            navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
-        }
 
 
     }
