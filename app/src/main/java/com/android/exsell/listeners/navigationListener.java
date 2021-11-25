@@ -39,7 +39,18 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
             myList();
             return true;
         }
+        if (item.getItemId() == R.id.home) {
+            home();
+            return true;
+        }
         return false;
+    }
+
+    private void home() {
+        Log.i(TAG, "Home Button");
+        Intent intent = new Intent(context, Home.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void onClickProfile() {
