@@ -2,6 +2,7 @@ package com.android.exsell.UI;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -10,9 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ import com.android.exsell.R;
 import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.chat.MessagePreviews;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Product;
 import com.android.exsell.adapters.ProductAdapter;
@@ -49,6 +53,9 @@ public class Home extends AppCompatActivity {
     private static ArrayList<Product> newProducts, recommendedProducts;
     private Object List;
     private ItemDb itemDb;
+    private HorizontalScrollView view;
+    private ConstraintLayout constraintLayout;
+    private ImageView search, wishlist, addListing;
 
     private int noteClickedPosition = -1;
 
@@ -61,32 +68,23 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         // side navigation
-        layoutTop = findViewById(R.id.layoutTopBar);
-        layoutBottom = findViewById(R.id.layoutBottomBar);
+        layoutTop = (LinearLayout) findViewById(R.id.layoutTopBar);
+        layoutBottom = (LinearLayout) findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayoutHome);
-
+        constraintLayout = (ConstraintLayout) findViewById(R.id.constraint_home);
+        view = (HorizontalScrollView) constraintLayout.findViewById(R.id.horizontal_scroll_categories);
+        view.setHorizontalScrollBarEnabled(false);
+        view.setVerticalScrollBarEnabled(false);
         navigationView = findViewById(R.id.navigationMenuHome);
 
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
+        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
+        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+        wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
+        wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
+        addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
+        addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
 
-        layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Home.this, SearchBar.class));
-            }
-        });
-        layoutBottom.findViewById(R.id.wishlistButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Home.this, WishlistActivity.class));
-            }
-        });
-        layoutBottom.findViewById(R.id.addItemButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Home.this, NewListing.class));
-            }
-        });
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,19 +100,27 @@ public class Home extends AppCompatActivity {
 
                 } else {
                     // add cards to recyclers
-                    newlyListedRecycler = findViewById(R.id.new_recycler);
+                    newlyListedRecycler = (RecyclerView) findViewById(R.id.new_recycler);
+                    newlyListedRecycler.setNestedScrollingEnabled(false);
                     loadRecycler(newlyListedRecycler, itemsList, itemsList.size());
                 }
             }
         });
 
 
-        recommendedRecycler = findViewById(R.id.recommended_recycler);
+        recommendedRecycler = (RecyclerView) findViewById(R.id.recommended_recycler);
+        recommendedRecycler.setNestedScrollingEnabled(false);
         loadRecyclerHorizontal(recommendedRecycler, recommendedProducts, 1);
 
         // add category images to linear layout
         ll = (LinearLayout) findViewById(R.id.linear);
         loadCategoryImages();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        drawer.closeDrawer(Gravity.LEFT, false);
     }
 
     public void onCardClicked(Product product, int position) {
@@ -130,7 +136,7 @@ public class Home extends AppCompatActivity {
     public void loadProducts() {
         List<String> fakeTags = new ArrayList<>();
         fakeTags.add("CEO");
-        fakeTags.add("Gaand");
+        fakeTags.add("Data");
         Product product1 = new Product("1", "Product 1", 8, R.drawable.test_image, fakeTags);
         Product product2 = new Product("2", "Product 2", 2, R.drawable.test_image, fakeTags);
         Product product3 = new Product("3", "Product 3", 10, R.drawable.test_image, fakeTags);

@@ -62,7 +62,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
 
         textViewTitle.setText(wishlist.get(position).getTitle());
         textViewPrice.setText("$"+wishlist.get(position).getPrice());
-        textViewTags.setText(wishlist.get(position).getTagString());
+//        textViewTags.setText(wishlist.get(position).getTagString());
         imageView.setImageResource(wishlist.get(position).getImage());
     }
 

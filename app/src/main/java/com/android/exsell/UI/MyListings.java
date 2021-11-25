@@ -2,9 +2,11 @@ package com.android.exsell.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.adapters.MylistAdapter;
 import com.android.exsell.adapters.ProductAdapter;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
@@ -37,7 +40,7 @@ public class MyListings extends AppCompatActivity{
     private static ArrayList<Product> newProducts, recommendedProducts;
     private Object List;
     private ItemDb itemDb;
-
+    private ImageView search, wishlist, addListing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,24 +55,12 @@ public class MyListings extends AppCompatActivity{
         drawer = (DrawerLayout) findViewById(R.id.drawerLayoutListing);
         navigationView = findViewById(R.id.navigationMenu);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
-        layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MyListings.this, SearchBar.class));
-            }
-        });
-        layoutBottom.findViewById(R.id.wishlistButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MyListings.this, WishlistActivity.class));
-            }
-        });
-        layoutBottom.findViewById(R.id.addItemButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MyListings.this, NewListing.class));
-            }
-        });
+        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
+        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+        wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
+        wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
+        addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
+        addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +76,8 @@ public class MyListings extends AppCompatActivity{
 
                 } else  {
                     // add cards to recyclers
-                    newlyListedRecycler = findViewById(R.id.recyclerViewMyTiles);
+                    newlyListedRecycler = (RecyclerView) findViewById(R.id.recyclerViewMyTiles);
+                    newlyListedRecycler.setNestedScrollingEnabled(false);
                     loadRecycler(newlyListedRecycler, itemsList); // loads fake products into arraylists for recyclers
                 }
             }
@@ -94,7 +86,11 @@ public class MyListings extends AppCompatActivity{
 
 
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        drawer.closeDrawer(Gravity.LEFT, false);
+    }
     // create fake products (could adapt to work with database)
     public void loadProducts(){
         List<String> fakeTags = new ArrayList<>();

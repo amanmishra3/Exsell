@@ -8,12 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.WishlistAdapter;
+import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Wishlist;
 import com.google.android.material.navigation.NavigationView;
@@ -28,6 +31,7 @@ public class WishlistActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView wishlistRecycler;
     private static ArrayList<Wishlist> wishlistItems;
+    private ImageView search, wishlist, addListing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,30 +42,30 @@ public class WishlistActivity extends AppCompatActivity {
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
-        layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(WishlistActivity.this, SearchBar.class));
-            }
-        });
-
+        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
+        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+        wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
+        wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
+        addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
+        addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawer.openDrawer(GravityCompat.START);
             }
         });
-        layoutBottom.findViewById(R.id.addItemButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(WishlistActivity.this, NewListing.class));
-            }
-        });
+
         loadProducts();
-        wishlistRecycler = findViewById(R.id.recyclerViewWishlistTiles);
+        wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+        wishlistRecycler.setNestedScrollingEnabled(false);
         loadRecycler(wishlistRecycler, wishlistItems);
         adapter = new WishlistAdapter(wishlistItems);
         wishlistRecycler.setAdapter(adapter);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        drawer.closeDrawer(Gravity.LEFT, false);
     }
     public void loadProducts() {
         String[] fakeTags = {"Textbooks", "COEN"};
@@ -81,6 +85,7 @@ public class WishlistActivity extends AppCompatActivity {
         layoutManager = new GridLayoutManager(this, 2);
         thisRecycler.setHasFixedSize(true); // set has fixed size
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
+        thisRecycler.setPadding(100,0,0,0);
         // create and set adapter
         adapter = new WishlistAdapter(cat);
         thisRecycler.setAdapter(adapter);
