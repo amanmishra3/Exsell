@@ -100,13 +100,12 @@ public class NewListing extends AppCompatActivity {
     }
 
     private void addNewItem() {
-        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         String itemTitle = title.getText().toString();
         String itemDescription = description.getText().toString();
         String sTags = tags.getText().toString();
         List<String> itemTags= Arrays.asList(sTags.split(","));
         int itemPrice = Integer.parseInt(price.getText().toString());
-        String itemSeller = currentFirebaseUser.getUid();
+        String itemSeller = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     @Override

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/selector.xml" value="0.2916666666666667" />
         <entry key="app/src/main/res/drawable/ic_calendar.xml" value="0.13177083333333334" />
         <entry key="app/src/main/res/drawable/ic_camera.xml" value="0.1359375" />
         <entry key="app/src/main/res/drawable/ic_category_electronics.xml" value="0.16927083333333334" />
@@ -29,7 +30,7 @@
         <entry key="app/src/main/res/layout/layout_item_tile_horizontal.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_item_tile_horizontal1.xml" value="0.16621376811594202" />
         <entry key="app/src/main/res/layout/layout_item_tile_wishlist.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/layout_new_listing.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/layout_new_listing.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_top_bar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_view_listing.xml" value="0.1515625" />
         <entry key="app/src/main/res/layout/login.xml" value="0.11927083333333334" />

@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class navigationListener implements NavigationView.OnNavigationItemSelectedListener {
     private String TAG = "navigationListener";
     Context context;
-
+    static MenuItem previousMenuItem = null;
     public navigationListener(Context context) {
         Log.i(TAG, "const");
         this.context = context;
@@ -28,6 +28,12 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        item.setCheckable(true);
+        item.setChecked(true);
+        if (previousMenuItem != null) {
+            previousMenuItem.setChecked(false);
+        }
+        previousMenuItem = item;
         if (item.getItemId() == R.id.signOut) {
             onSignOut();
             return true;
@@ -48,6 +54,7 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
 
     private void home() {
         Log.i(TAG, "Home");
+
         Intent intent = new Intent(context, Home.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);

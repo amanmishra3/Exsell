@@ -125,5 +125,9 @@ public class MyListings extends AppCompatActivity{
         adapter = new HorizontalProductAdapter(products);
         thisRecycler.setAdapter(adapter);
     }
-
+    public void itemDetails(View v) {
+        Intent intent = new Intent(getApplicationContext(), ItemListing.class);
+        // pass data about which product is clicked
+        startActivity(intent);
+    }
 }

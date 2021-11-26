@@ -79,6 +79,7 @@ public class Home extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationMenuHome);
 
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
+
         search = (ImageView) layoutTop.findViewById(R.id.searchButton);
         search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
@@ -91,6 +92,7 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawer.openDrawer(GravityCompat.START);
+                navigationView.bringToFront();
 
             }
         });
