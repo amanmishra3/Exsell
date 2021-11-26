@@ -31,7 +31,7 @@ public class WishlistActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView wishlistRecycler;
     private static ArrayList<Wishlist> wishlistItems;
-    private ImageView search, wishlist, addListing;
+    private ImageView search, wishlist, addListing, message;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +48,8 @@ public class WishlistActivity extends AppCompatActivity {
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
+        message = (ImageView) findViewById(R.id.chatButton);
+        message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +87,6 @@ public class WishlistActivity extends AppCompatActivity {
         layoutManager = new GridLayoutManager(this, 2);
         thisRecycler.setHasFixedSize(true); // set has fixed size
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
-        thisRecycler.setPadding(100,0,0,0);
         // create and set adapter
         adapter = new WishlistAdapter(cat);
         thisRecycler.setAdapter(adapter);

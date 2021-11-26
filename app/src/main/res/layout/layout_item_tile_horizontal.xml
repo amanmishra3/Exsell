@@ -40,7 +40,9 @@
                     android:layout_marginStart="@dimen/_5sdp"
                     android:text="Title"
                     android:textColor="@color/black"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:fontFamily="@font/montserrat"
+                    />
 
                 <TextView
                     android:id="@+id/itemPrice"
@@ -49,7 +51,9 @@
                     android:layout_marginStart="@dimen/_100sdp"
                     android:text="Price"
                     android:textColor="@color/black"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:fontFamily="@font/montserrat"
+                    />
 
             </LinearLayout>
 
@@ -64,7 +68,9 @@
                 android:includeFontPadding="false"
                 android:text="@string/description"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_11sdp" />
+                android:textSize="@dimen/_11sdp"
+                android:fontFamily="@font/montserrat"
+                />
 
         </LinearLayout>
     </LinearLayout>

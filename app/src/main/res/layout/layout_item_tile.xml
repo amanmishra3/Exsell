@@ -55,7 +55,9 @@
                     android:includeFontPadding="false"
                     android:text="@string/title"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_10sdp" />
+                    android:textSize="@dimen/_10sdp"
+                    android:fontFamily="@font/montserrat"
+                    />
 
 
                 <TextView
@@ -68,7 +70,9 @@
                     android:includeFontPadding="false"
                     android:text="@string/price"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_10sdp" />
+                    android:textSize="@dimen/_10sdp"
+                    android:fontFamily="@font/montserrat"
+                    />
 
             </LinearLayout>
 

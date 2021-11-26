@@ -7,6 +7,7 @@ import android.view.ContentInfo;
 import android.view.View;
 
 import com.android.exsell.R;
+import com.android.exsell.UI.MessagePreviews;
 import com.android.exsell.UI.MyListings;
 import com.android.exsell.UI.NewListing;
 import com.android.exsell.UI.SearchBar;
@@ -32,7 +33,17 @@ public class TopBottomNavigationListener implements View.OnClickListener{
         else if(id == R.id.addItemButton){
             addItemButton();
         }
+        else if(id == R.id.chatButton){
+            startChat();
+        }
 
+    }
+
+    private void startChat() {
+        Log.i(TAG, "Chat Function");
+        Intent intent = new Intent(context, MessagePreviews.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void addItemButton() {
