@@ -92,6 +92,12 @@ public class Home extends AppCompatActivity {
 
             }
         });
+        layoutBottom.findViewById(R.id.chatButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this, MessagePreviews.class));
+            }
+        });
         loadProducts();
         itemDb.getAllItems(new ItemDb.getItemsCallback() {
             @Override

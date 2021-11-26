@@ -24,7 +24,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/lgray"
+                android:backgroundTint="@color/light_gray"
                 android:text="Sign in"
                 android:layout_column="0"
                 android:layout_columnWeight="1"
@@ -33,7 +33,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/lgray"
+                android:backgroundTint="@color/light_gray"
                 android:text="Sign Up"
                 android:layout_column="1"
                 android:layout_columnWeight="1" />
