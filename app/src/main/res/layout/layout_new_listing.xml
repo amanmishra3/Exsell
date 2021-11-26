@@ -13,87 +13,86 @@
         <include layout="@layout/layout_top_bar" />
 
         <!-- Scrollview can only have one child -->
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/inner_constraint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_40sdp"
-            android:orientation="vertical"
-            android:padding="5dp">
-            <ImageView
-                android:id="@+id/imageAdd"
+
+            <LinearLayout
+                android:id="@+id/inner_constraint"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:scaleType="fitCenter"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="-5dp"
-                android:src="@drawable/blank"/>
-            <EditText
-                android:id="@+id/title"
-                android:layout_width="@dimen/_250sdp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="15dp"
-                android:hint="Title"
-                android:fontFamily="@font/montserrat"
-                />
+                android:layout_marginTop="@dimen/_40sdp"
+                android:orientation="vertical"
+                android:padding="5dp">
 
-            <EditText
-                android:id="@+id/description"
-                android:layout_width="@dimen/_250sdp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:hint="Description"
-                android:fontFamily="@font/montserrat"
-                />
+                <ImageView
+                    android:id="@+id/imageAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="-5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/blank"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <Spinner
-                android:id="@+id/category"
-                android:layout_width="@dimen/_250sdp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_15sdp" />
+                <EditText
+                    android:id="@+id/title"
+                    android:layout_width="@dimen/_250sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Title" />
 
-            <EditText
-                android:id="@+id/tags"
-                android:layout_width="@dimen/_250sdp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:hint="Tags (Comma Separated)"
-                android:fontFamily="@font/montserrat"
-                />
+                <EditText
+                    android:id="@+id/description"
+                    android:layout_width="@dimen/_250sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Description" />
 
-            <!-- Buttons -->
-            <EditText
-                android:id="@+id/price"
-                android:layout_width="@dimen/_250sdp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:hint="Price"
-                android:fontFamily="@font/montserrat"
-                />
+                <Spinner
+                    android:id="@+id/category"
+                    android:layout_width="@dimen/_250sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_15sdp" />
+
+                <EditText
+                    android:id="@+id/tags"
+                    android:layout_width="@dimen/_250sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Tags (Comma Separated)" />
+
+                <!-- Buttons -->
+                <EditText
+                    android:id="@+id/price"
+                    android:layout_width="@dimen/_250sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Price" />
 
 
-            <Button
-                android:id="@+id/addListing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:backgroundTint="@color/colorThemeYellow"
-                android:text="POST LISTING"
-                android:textColor="@color/black"
-                android:fontFamily="@font/montserrat"
-                />
+                <Button
+                    android:id="@+id/addListing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:backgroundTint="@color/colorThemeYellow"
+                    android:fontFamily="@font/montserrat"
+                    android:text="POST LISTING"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="50dp"/>
 
-        </LinearLayout>
-        </ScrollView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <include layout="@layout/layout_bottom_bar" />
 

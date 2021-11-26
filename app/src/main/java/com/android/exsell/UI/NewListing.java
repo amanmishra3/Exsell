@@ -113,6 +113,7 @@ public class NewListing extends AppCompatActivity {
                     @Override
                     public void onCallback(boolean uploaded) {
                         startActivity(new Intent(getApplicationContext(), MyListings.class));
+                        finish();
                     }
                 });
             }
