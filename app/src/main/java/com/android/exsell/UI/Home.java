@@ -32,6 +32,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Home extends AppCompatActivity {
@@ -204,6 +205,9 @@ public class Home extends AppCompatActivity {
         int id = view.getId();
         String category = "";
         switch (id) {
+            case R.id.category0:
+                category = "All";
+                break;
             case R.id.category1:
                 category = "Textbooks";
                 break;
@@ -224,7 +228,7 @@ public class Home extends AppCompatActivity {
                 startActivity(new Intent(Home.this, Categories.class));
                 break;
         }
-        Toast.makeText(this, "Category " + category, Toast.LENGTH_SHORT).show();
+        categorySelected(category);
         // instead of toast, go to correct category activity
     }
 
@@ -234,5 +238,25 @@ public class Home extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ItemListing.class);
         // pass data about which product is clicked
         startActivity(intent);
+    }
+    public void categorySelected(String category) {
+        Toast.makeText(this, "Category " + category, Toast.LENGTH_SHORT).show();
+        Product searchParam = new Product();
+        if(category != "All")
+            searchParam.setCategories(Arrays.asList(category.toLowerCase()));
+        itemDb.searchItems(searchParam, new ItemDb.getItemsCallback() {
+            @Override
+            public void onCallback(java.util.List<Product> itemsList) {
+                if (itemsList == null || itemsList.size() == 0) {
+                    Toast.makeText(getApplicationContext(), "No item Found " + category, Toast.LENGTH_SHORT).show();
+                    loadRecyclerHorizontal(recommendedRecycler, itemsList, 1);
+
+                } else {
+                    // add cards to recyclers
+                    Toast.makeText(getApplicationContext(), "Loading..  " + category, Toast.LENGTH_SHORT).show();
+                    loadRecyclerHorizontal(recommendedRecycler, itemsList, 1);
+                }
+            }
+        });
     }
 }
