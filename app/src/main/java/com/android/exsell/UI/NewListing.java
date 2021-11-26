@@ -1,11 +1,13 @@
 package com.android.exsell.UI;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,7 +57,9 @@ public class NewListing extends AppCompatActivity {
     private ImageView search, wishlist, addListing, message, addImage;
     private Button addItem;
     private TextView title, description, tags, price;
+    private LinearLayout progressLayout;
     private Spinner s;
+    private AlertDialog.Builder builder;
     private static final int galleryPick = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,9 @@ public class NewListing extends AppCompatActivity {
         message = (ImageView) findViewById(R.id.chatButton);
         s = (Spinner) findViewById(R.id.category);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+
+        builder = new AlertDialog.Builder(this);
+
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,6 +158,7 @@ public class NewListing extends AppCompatActivity {
     }
 
     private void addNewItem(uploadCompleteCallback callback) {
+        setDialog(true);
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         String itemTitle = title.getText().toString();
         String itemDescription = description.getText().toString();
@@ -171,12 +179,17 @@ public class NewListing extends AppCompatActivity {
         itemDb.createItem(addProduct, new ItemDb.createItemsCallback() {
             @Override
             public void onCallback(boolean ok, String id) {
+                if(!ok) {
+                    setDialog(false);
+                    return;
+                }
                 Log.i(TAG,ok + " : id : "+id);
                 myStorage.uploadImage(uri, id, new MyFirebaseStorage.downloadUrlCallback() {
                     @Override
                     public void onCallback(String url) {
                         Log.i(TAG," My URI "+url);
                         itemDb.getItemCollectionReference().document(id).update("imageUri", url);
+                        setDialog(false);
                         callback.onCallback(true);
                     }
                 });
@@ -203,4 +216,20 @@ public class NewListing extends AppCompatActivity {
     public interface uploadCompleteCallback {
         void onCallback(boolean uploaded);
     }
+    private void setDialog(boolean show) {
+        Log.i(TAG, "Progress bar is up");
+        builder.setView(R.layout.progressalert);
+        builder.setCancelable(false);
+        Dialog dialog = builder.create();
+        if (show) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            dialog.show();
+        }
+        else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            dialog.dismiss();
+        }
+    }
+
 }

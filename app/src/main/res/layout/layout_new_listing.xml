@@ -13,6 +13,9 @@
         <include layout="@layout/layout_top_bar" />
 
         <!-- Scrollview can only have one child -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <LinearLayout
             android:id="@+id/inner_constraint"
             android:layout_width="match_parent"
@@ -23,7 +26,7 @@
             <ImageView
                 android:id="@+id/imageAdd"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="-5dp"
@@ -90,6 +93,7 @@
                 />
 
         </LinearLayout>
+        </ScrollView>
 
         <include layout="@layout/layout_bottom_bar" />
 
