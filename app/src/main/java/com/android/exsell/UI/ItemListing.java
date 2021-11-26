@@ -23,7 +23,7 @@ public class ItemListing extends AppCompatActivity {
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
-    private ImageView search, wishlist, addListing;
+    private ImageView search, wishlist, addListing, message;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +41,8 @@ public class ItemListing extends AppCompatActivity {
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
+        message = (ImageView) findViewById(R.id.chatButton);
+        message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

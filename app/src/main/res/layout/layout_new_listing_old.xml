@@ -17,17 +17,10 @@
             android:id="@+id/inner_constraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_80sdp"
             android:orientation="vertical"
             android:padding="5dp">
-            <ImageView
-                android:id="@+id/imageAdd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="fitCenter"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="-5dp"
-                android:src="@drawable/blank"/>
+
             <EditText
                 android:id="@+id/title"
                 android:layout_width="@dimen/_250sdp"
@@ -73,6 +66,28 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:hint="Price"
+                android:fontFamily="@font/montserrat"
+                />
+
+
+            <Button
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/colorThemeYellow"
+                android:text="UPLOAD IMAGE"
+                android:textColor="@color/black"
+                android:fontFamily="@font/montserrat"
+                />
+
+            <TextView
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=""
+                android:textColor="@color/black"
                 android:fontFamily="@font/montserrat"
                 />
 

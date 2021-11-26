@@ -55,7 +55,7 @@ public class Home extends AppCompatActivity {
     private ItemDb itemDb;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
-    private ImageView search, wishlist, addListing;
+    private ImageView search, wishlist, addListing, message;
 
     private int noteClickedPosition = -1;
 
@@ -84,18 +84,13 @@ public class Home extends AppCompatActivity {
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
-
+        message = (ImageView) findViewById(R.id.chatButton);
+        message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawer.openDrawer(GravityCompat.START);
 
-            }
-        });
-        layoutBottom.findViewById(R.id.chatButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Home.this, MessagePreviews.class));
             }
         });
         loadProducts();
