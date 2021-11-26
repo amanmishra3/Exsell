@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ public class MyListings extends AppCompatActivity{
     DrawerLayout drawer;
     NavigationView navigationView;
     public static RecyclerView.Adapter adapter;
+    private FirebaseAuth mAuth;
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView newlyListedRecycler, recommendedRecycler;
     private static ArrayList<Product> newProducts, recommendedProducts;
@@ -45,6 +48,7 @@ public class MyListings extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         itemDb = ItemDb.newInstance();
+        mAuth = FirebaseAuth.getInstance();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_my_listings);
@@ -71,11 +75,14 @@ public class MyListings extends AppCompatActivity{
             }
         });
         loadProducts();
-        itemDb.getAllItems(new ItemDb.getItemsCallback() {
+        Product searchParam = new Product();
+        if(mAuth.getCurrentUser() != null)
+            searchParam.setSeller(mAuth.getCurrentUser().getUid());
+        itemDb.searchItems(searchParam, new ItemDb.getItemsCallback() {
             @Override
             public void onCallback(java.util.List<Product> itemsList) {
                 if(itemsList == null || itemsList.size() == 0) {
-
+                    Toast.makeText(getApplicationContext(), "You Have 0 items Listed for Sale please add some", Toast.LENGTH_LONG).show();
                 } else  {
                     // add cards to recyclers
                     newlyListedRecycler = (RecyclerView) findViewById(R.id.recyclerViewMyTiles);

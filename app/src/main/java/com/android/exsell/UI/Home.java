@@ -44,8 +44,8 @@ public class Home extends AppCompatActivity {
 
     // categories
     LinearLayout ll;
-    int[] categoryImages = {R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_more};
-    int[] categoryIDs = {R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6};
+    int[] categoryImages = {R.drawable.ic_category_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_more};
+    int[] categoryIDs = {R.id.category0,R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6};
 
     // card recyclers
     public static RecyclerView.Adapter adapter;
@@ -243,7 +243,7 @@ public class Home extends AppCompatActivity {
         Toast.makeText(this, "Category " + category, Toast.LENGTH_SHORT).show();
         Product searchParam = new Product();
         if(category != "All")
-            searchParam.setCategories(Arrays.asList(category.toLowerCase()));
+            searchParam.setCategories(Arrays.asList(category.toLowerCase(),category));
         itemDb.searchItems(searchParam, new ItemDb.getItemsCallback() {
             @Override
             public void onCallback(java.util.List<Product> itemsList) {

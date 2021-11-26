@@ -19,6 +19,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +47,7 @@ public class ItemDb {
     public void createItem(Product item, createItemsCallback callback) {
         List<String> searchKeywords = searchKeywords(item);
         item.setSearch(searchKeywords);
+        item.setCreatedOn(new Date());
         Log.i(TAG, " my iamge "+ item.getImageUri());
         itemCollectionReference.add(item)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
