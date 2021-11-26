@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.exsell.R;
 import com.android.exsell.models.Product;
 import com.android.exsell.listeners.productListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -69,7 +70,11 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
         textViewTitle.setText(products.get(position).getTitle());
         textViewPrice.setText("$"+products.get(position).getPrice());
 //        textViewTags.setText(products.get(position).getTags().toString());
-        imageView.setImageResource(products.get(position).getImage() != -1 ? R.drawable.test_image : products.get(position).getImage());
+        if(products.get(position).getImageUri() != null) {
+            Picasso.get().load(products.get(position).getImageUri()).into(imageView);
+        } else {
+            imageView.setImageResource(products.get(position).getImage() != -1 ? R.drawable.test_image : products.get(position).getImage());
+        }
     }
 
     @Override

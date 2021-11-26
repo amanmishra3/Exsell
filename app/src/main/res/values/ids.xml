@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="category0" type="id"/>
     <item name="category1" type="id"/>
     <item name="category2" type="id"/>
     <item name="category3" type="id"/>

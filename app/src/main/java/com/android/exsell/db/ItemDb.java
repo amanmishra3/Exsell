@@ -38,9 +38,15 @@ public class ItemDb {
         db = FirebaseFirestore.getInstance();
         itemCollectionReference = db.collection("Items");
     }
+
+    public CollectionReference getItemCollectionReference() {
+        return itemCollectionReference;
+    }
+
     public void createItem(Product item, createItemsCallback callback) {
         List<String> searchKeywords = searchKeywords(item);
         item.setSearch(searchKeywords);
+        Log.i(TAG, " my iamge "+ item.getImageUri());
         itemCollectionReference.add(item)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -113,7 +119,7 @@ public class ItemDb {
         if(params.getSeller() != null)
             query = itemCollectionReference.whereEqualTo("seller", params.getSeller());
         if(params.getCategories() != null)
-            query = itemCollectionReference.whereIn("categories", params.getCategories());
+            query = itemCollectionReference.whereArrayContainsAny("categories", params.getCategories());
         if(params.getProductId() != null)
             query = itemCollectionReference.whereEqualTo("itemId", params.getProductId());
         if(params.getTags() != null)

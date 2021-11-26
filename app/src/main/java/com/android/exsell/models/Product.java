@@ -8,12 +8,22 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public class Product {
+    static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     String title;
+    int condition;
     int price;
     String productId;
     int image;
@@ -23,12 +33,12 @@ public class Product {
     String seller;
     String status;
     String imageUri;
-    String smallImage;
     List<String> tags;
     List<String> categories;
     List<String> search;
+    Date createdOn;
 
-    public Product() {};
+    public Product() { };
     public Product(String id, String title, int price, int image, List<String> tags){
         this.productId = id;
         this.title = title;
@@ -131,24 +141,45 @@ public class Product {
     public String getImageUri() {
         return imageUri;
     }
-    public Bitmap decodeImage(String imgString) {
-        byte[] bytes= Base64.decode(imgString,Base64.DEFAULT);
-        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-        return bitmap;
+    public void setCondition(int condition) {
+        this.condition = condition;
     }
-    public String encodeImage(Bitmap bitmap, ContentResolver context) {
-        String imgString = new String();
-//        Uri uri = imgData.getData();
+
+    public int getCondition() {
+        return condition;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+    //
+//    public Bitmap decodeImage(String imgString) {
+//        byte[] bytes= Base64.decode(imgString,Base64.DEFAULT);
+//        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+//        return bitmap;
+//    }
+//    public String encodeImage(Bitmap bitmap) {
+//        String imgString = new String();
+////        Uri uri = imgData.getData();
+////            Bitmap bitmap= MediaStore.Images.Media.getBitmap(context,uri);
+//            // initialize byte stream
+//        ByteArrayOutputStream stream=new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG,30,stream);
+//        byte[] bytes=stream.toByteArray();
+//        imgString = Base64.encodeToString(bytes,Base64.DEFAULT);
+//        return imgString;
+//    }
+    public Date getDateFromString(String datetoSaved){
+
         try {
-//            Bitmap bitmap= MediaStore.Images.Media.getBitmap(context,uri);
-            // initialize byte stream
-            ByteArrayOutputStream stream=new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
-            byte[] bytes=stream.toByteArray();
-            imgString = Base64.encodeToString(bytes,Base64.DEFAULT);
-        } catch (Exception e) {
-            e.printStackTrace();
+            Date date = format.parse(datetoSaved);
+            return date ;
+        } catch (Exception e){
+            return null ;
         }
-        return imgString;
+
     }
 }
