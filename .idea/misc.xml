@@ -29,8 +29,7 @@
         <entry key="app/src/main/res/layout/layout_item_tile_horizontal.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_item_tile_horizontal1.xml" value="0.16621376811594202" />
         <entry key="app/src/main/res/layout/layout_item_tile_wishlist.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/layout_new_listing.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/layout_new_listing_old.xml" value="0.13994565217391305" />
+        <entry key="app/src/main/res/layout/layout_new_listing.xml" value="0.45" />
         <entry key="app/src/main/res/layout/layout_top_bar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_view_listing.xml" value="0.1515625" />
         <entry key="app/src/main/res/layout/login.xml" value="0.11927083333333334" />
