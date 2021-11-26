@@ -155,7 +155,7 @@ public class Product {
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
-    //
+
 //    public Bitmap decodeImage(String imgString) {
 //        byte[] bytes= Base64.decode(imgString,Base64.DEFAULT);
 //        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
