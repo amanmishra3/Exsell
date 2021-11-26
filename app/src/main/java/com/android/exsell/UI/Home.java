@@ -8,7 +8,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,6 +28,7 @@ import android.widget.Toast;
 import com.android.exsell.R;
 import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.chat.MessagePreviews;
+import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
@@ -31,9 +37,11 @@ import com.android.exsell.adapters.ProductAdapter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class Home extends AppCompatActivity {
     // side navigation
@@ -44,8 +52,8 @@ public class Home extends AppCompatActivity {
 
     // categories
     LinearLayout ll;
-    int[] categoryImages = {R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_more};
-    int[] categoryIDs = {R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6};
+    int[] categoryImages = {R.drawable.ic_category_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_more};
+    int[] categoryIDs = {R.id.category0,R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6};
 
     // card recyclers
     public static RecyclerView.Adapter adapter;
@@ -54,9 +62,11 @@ public class Home extends AppCompatActivity {
     private static ArrayList<Product> newProducts, recommendedProducts;
     private Object List;
     private ItemDb itemDb;
+    private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
     private ImageView search, wishlist, addListing, message;
+    private FirebaseAuth mAuth;
 
     private int noteClickedPosition = -1;
 
@@ -64,6 +74,45 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         itemDb = ItemDb.newInstance();
+        mAuth = FirebaseAuth.getInstance();
+        myStorage = new MyFirebaseStorage();
+        Product p = new Product();
+//        Resources resources = this.getResources();
+//        Uri uri = new Uri.Builder()
+//                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+//                .authority(resources.getResourcePackageName(R.drawable.beats))
+//                .appendPath(resources.getResourceTypeName(R.drawable.beats))
+//                .appendPath(resources.getResourceEntryName(R.drawable.beats))
+//                .build();
+////        if(myStorage != null)
+////            myStorage.uploadImage(uri, "xyz", new MyFirebaseStorage.downloadUrlCallback() {
+////                @Override
+////                public void onCallback(String url) {
+////                    Log.i(TAG," My URI "+url);
+////                }
+////            });
+//        p.setTitle("Beats Wireless Headphones");
+//        p.setDescription("Wireless headphones with mic and ANC");
+//        p.setPrice(200);
+//        p.setSeller(mAuth.getCurrentUser().getUid());
+//        p.setBargain(true);
+//        p.setStatus("avaialable");
+//        p.setCategories(Arrays.asList("electronics", "music"));
+//        p.setTags(Arrays.asList("headphone","earphones","music","songs","wireless","ANC"));
+//        p.setCreatedOn(new Date());
+//        itemDb.createItem(p, new ItemDb.createItemsCallback() {
+//            @Override
+//            public void onCallback(boolean ok, String id) {
+//                Log.i(TAG,ok + " : id : "+id);
+//                myStorage.uploadImage(uri, id, new MyFirebaseStorage.downloadUrlCallback() {
+//                    @Override
+//                    public void onCallback(String url) {
+//                        Log.i(TAG," My URI "+url);
+//                        itemDb.getItemCollectionReference().document(id).update("imageUri", url);
+//                    }
+//                });
+//            }
+//        });
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_home);
@@ -241,11 +290,12 @@ public class Home extends AppCompatActivity {
         // pass data about which product is clicked
         startActivity(intent);
     }
+
     public void categorySelected(String category) {
         Toast.makeText(this, "Category " + category, Toast.LENGTH_SHORT).show();
         Product searchParam = new Product();
         if(category != "All")
-            searchParam.setCategories(Arrays.asList(category.toLowerCase()));
+            searchParam.setCategories(Arrays.asList(category.toLowerCase(),category));
         itemDb.searchItems(searchParam, new ItemDb.getItemsCallback() {
             @Override
             public void onCallback(java.util.List<Product> itemsList) {
