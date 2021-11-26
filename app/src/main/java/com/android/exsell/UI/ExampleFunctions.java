@@ -40,7 +40,7 @@ public class ExampleFunctions {
 //        search.setBargain(true);
 
         // create an item
-        itemDb.createItem(search, new ItemDb.createItemsCallback() {
+        itemDb.createItem(search , new ItemDb.createItemsCallback() {
             @Override
             public void onCallback(boolean ok, String id) {
                 if(ok) // on create callback insert views or star intents over here

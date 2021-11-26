@@ -1,6 +1,7 @@
 package com.android.exsell.adapters;
 import com.android.exsell.R;
 import com.android.exsell.models.Product;
+import com.squareup.picasso.Picasso;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +63,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
         textViewTitle.setText(products.get(position).getTitle());
         textViewPrice.setText("$"+products.get(position).getPrice());
-        imageView.setImageResource(products.get(position).getImage() != -1 ? R.drawable.test_image : products.get(position).getImage());
+        if(products.get(position).getImageUri() != null) {
+            Picasso.get().load(products.get(position).getImageUri()).into(imageView);
+        } else {
+            imageView.setImageResource(products.get(position).getImage() != -1 ? R.drawable.test_image : products.get(position).getImage());
+        }
     }
 
     @Override
