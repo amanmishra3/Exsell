@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.android.exsell.R;
 import com.android.exsell.UI.Home;
 import com.android.exsell.UI.LoginActivity;
+import com.android.exsell.UI.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -108,7 +109,7 @@ public class FragmentLogin extends Fragment {
         if (user != null) {
             emailField.setText(null);
             if(user.isEmailVerified()) {
-                Intent intent = new Intent(getActivity(), Home.class);
+                Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(getActivity(), "Please verify Email",

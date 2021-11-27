@@ -185,7 +185,7 @@ public class NewListing extends AppCompatActivity {
                     return;
                 }
                 Log.i(TAG,ok + " : id : "+id);
-                myStorage.uploadImage(uri, id, new MyFirebaseStorage.downloadUrlCallback() {
+                myStorage.uploadImage(uri, id, 0, new MyFirebaseStorage.downloadUrlCallback() {
                     @Override
                     public void onCallback(String url) {
                         Log.i(TAG," My URI "+url);

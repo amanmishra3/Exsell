@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import com.android.exsell.R;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawer;
     NavigationView navigationView;
     private ItemDb itemDb;
+    private UserDb userDb;
 //    private MyFirebaseStorage storage;
 
     @Override
@@ -78,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent;
         if (currentUser != null) {
+            userDb = UserDb.newInstance();
+            userDb.setMyUser();
+
             intent = new Intent(this, Home.class);
         } else {
             intent = new Intent(this, LoginActivity.class);

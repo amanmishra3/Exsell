@@ -309,4 +309,8 @@ public class Home extends AppCompatActivity {
             }
         });
     }
+
+    public void setNavigationHeader() {
+
+    }
 }

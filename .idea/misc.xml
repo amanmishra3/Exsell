@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/activity_item_listing.xml" value="0.11927083333333334" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1157548125633232" />
         <entry key="app/src/main/res/layout/activity_my_listings.xml" value="0.1046875" />
+        <entry key="app/src/main/res/layout/activity_user_profile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_wishlist.xml" value="0.11927083333333334" />
         <entry key="app/src/main/res/layout/home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_bottom_bar.xml" value="0.1" />
@@ -31,6 +32,8 @@
         <entry key="app/src/main/res/layout/layout_top_bar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_view_listing.xml" value="0.10885416666666667" />
         <entry key="app/src/main/res/layout/login.xml" value="0.11927083333333334" />
+        <entry key="app/src/main/res/layout/message_preview.xml" value="0.1203125" />
+        <entry key="app/src/main/res/layout/message_preview_list.xml" value="0.1203125" />
         <entry key="app/src/main/res/layout/navigation_bar_header.xml" value="0.1157548125633232" />
         <entry key="app/src/main/res/layout/navigation_menu_header.xml" value="0.1" />
         <entry key="app/src/main/res/layout/progressalert.xml" value="0.165" />
