@@ -1,5 +1,7 @@
 package com.android.exsell.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
+import com.android.exsell.UI.ItemListing;
+import com.android.exsell.db.ItemDb;
 import com.android.exsell.models.Product;
 import com.android.exsell.listeners.productListener;
 import com.squareup.picasso.Picasso;
@@ -21,13 +25,15 @@ import java.util.List;
 
 public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalProductAdapter.MyViewHolder> {
     private List<Product> products;
-    public String TAG = "HorizontalProductAdapter";
+    private String TAG = "HorizontalProductAdapter";
+    private Context context;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 //        View currentItem;
         CardView card;
         TextView textViewTitle, textViewPrice, textViewTags;
         ImageView imageViewIcon;
+        private Product selectedProduct;
 
         public MyViewHolder(View itemView){
             super(itemView);
@@ -39,8 +45,9 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
         }
     }
 
-    public HorizontalProductAdapter(List<Product> data){
+    public HorizontalProductAdapter(List<Product> data, Context context){
         this.products = data;
+        this.context = context;
     }
 
 
@@ -59,11 +66,14 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
         TextView textViewPrice = holder.textViewPrice;
 //        TextView textViewTags = holder.textViewTags;
         ImageView imageView = holder.imageViewIcon;
+        holder.selectedProduct = products.get(position);
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "On click");
+                Log.i(TAG, "On Click"+holder.selectedProduct.getTitle());
 //                productListener.onProductClicked(products.get(position), position);
+                ItemDb.setCurrentProduct(holder.selectedProduct);
+                context.startActivity(new Intent(context, ItemListing.class));
             }
         });
 

@@ -12,24 +12,41 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.exsell.R;
+import com.android.exsell.db.ItemDb;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
+
+import java.util.Map;
 
 public class ItemListing extends AppCompatActivity {
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
-    private ImageView search, wishlist, addListing, message;
+    private View parent;
+    private Map<String, Object> product;
+    private ImageView search, wishlist, addListing, message, productImage;
+    private TextView title, description, price, tags;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_item_listing);
+        product = ItemDb.selectedProduct;
         // side navigation
+        //-->
+        parent  = (View) findViewById(R.id.activity_item_listing_inner_constraint);
+        productImage = (ImageView) parent.findViewById(R.id.image);
+        title = (TextView) parent.findViewById(R.id.title);
+        price = (TextView) parent.findViewById(R.id.price);
+        description = (TextView) parent.findViewById(R.id.description);
+        tags = (TextView) parent.findViewById(R.id.tags);
+        // <--
         layoutTop = findViewById(R.id.layoutTopBar);
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayoutItem);
@@ -49,6 +66,19 @@ public class ItemListing extends AppCompatActivity {
                 drawer.openDrawer(GravityCompat.START);
             }
         });
+
+        //-->getting from static stuff for now
+        if(product.containsKey("imageUri") && product.get("imageUri") != null) {
+            Picasso.get().load((String)product.get("imageUri")).into(productImage);
+        } else {
+            productImage.setImageResource(R.drawable.tanmay);
+        }
+        title.setText((String)product.get("title"));
+        price.setText(product.get("price").toString());
+        description.setText((String)product.get("description"));
+        tags.setText((product.get("title")).toString());
+
+
     }
     @Override
     protected void onResume() {

@@ -23,7 +23,7 @@
 
             <!-- Scrollview can only have one child -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/inner_constraint"
+                android:id="@+id/activity_item_listing_inner_constraint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/image"
@@ -33,7 +33,7 @@
                 <ImageView
                     android:id="@+id/image"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="300dp"
                     android:scaleType="fitCenter"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="-5dp"

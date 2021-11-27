@@ -20,8 +20,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ItemDb {
@@ -29,6 +31,7 @@ public class ItemDb {
     private static ItemDb itemDb;
     private FirebaseFirestore db;
     private CollectionReference itemCollectionReference;
+    public static Map<String, Object> selectedProduct;
 
     public static ItemDb newInstance() {
         if(itemDb == null)
@@ -38,6 +41,17 @@ public class ItemDb {
     private ItemDb() {
         db = FirebaseFirestore.getInstance();
         itemCollectionReference = db.collection("Items");
+    }
+    public static void setCurrentProduct(Product item) {
+        selectedProduct = new HashMap<>();
+        selectedProduct.put("title",item.getTitle());
+        selectedProduct.put("description", item.getDescription());
+        selectedProduct.put("price", item.getPrice());
+        selectedProduct.put("productId", item.getProductId());
+        selectedProduct.put("tags", item.getTags());
+        selectedProduct.put("imageUri", item.getImageUri());
+        selectedProduct.put("categories", item.getCategories());
+        selectedProduct.put("createdOn", item.getCreatedOn());
     }
 
     public CollectionReference getItemCollectionReference() {
