@@ -147,15 +147,6 @@ public class Home extends AppCompatActivity {
         drawer.closeDrawer(Gravity.LEFT, false);
     }
 
-    public void onCardClicked(Product product, int position) {
-        noteClickedPosition = position;
-        Intent intent = new Intent(getApplicationContext(), ItemListing.class);
-        intent.putExtra("isBuyer", true);
-        intent.putExtra("productId", product.getProductId());
-        startActivity(intent);
-//        startActivityForResult(intent, REQUEST_CODE_UPDATE_NOTE);
-    }
-
     // create fake products (could adapt to work with database)
     public void loadProducts() {
         List<String> fakeTags = new ArrayList<>();
@@ -256,11 +247,6 @@ public class Home extends AppCompatActivity {
 
     // onclick handler for cards
     // as of now, just goes to item-listing activity
-    public void itemDetails(View v) {
-        Intent intent = new Intent(getApplicationContext(), ItemListing.class);
-        // pass data about which product is clicked
-        startActivity(intent);
-    }
 
     public void categorySelected(String category) {
         Toast.makeText(this, "Category " + category, Toast.LENGTH_SHORT).show();

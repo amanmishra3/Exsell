@@ -20,8 +20,7 @@
         android:layout_margin="@dimen/_10sdp"
         android:layout_gravity="center"
         app:cardElevation="@dimen/_5sdp"
-        android:id="@+id/verticalCards"
-        android:onClick="itemDetails">
+        android:id="@+id/verticalCards">
 
         <ImageView
             android:layout_width="match_parent"

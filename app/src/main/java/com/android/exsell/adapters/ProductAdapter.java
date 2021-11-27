@@ -70,6 +70,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             @Override
             public void onClick(View v) {
 //                Home.itemDetails(products.get(position), position);
+                Log.i(TAG, "ProductAdapter "+holder.selectedProduct.getTitle());
                 ItemDb.setCurrentProduct(holder.selectedProduct);
                 Intent intent = new Intent(context, ItemListing.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
