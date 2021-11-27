@@ -92,6 +92,26 @@ public class WishlistActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         drawer.closeDrawer(Gravity.LEFT, false);
+        List<String> myWishList = (List<String>)UserDb.myUser.get("wishlist");
+        if(myWishList == null || myWishList.size() <= 0) {
+            noitem.setVisibility(View.VISIBLE);
+        } else {
+            itemDb.getItemsFromWishList(myWishList, new ItemDb.getItemsCallback() {
+                @Override
+                public void onCallback(List<Product> itemsList) {
+                    if(itemsList == null || itemsList.size() <= 0) {
+                        noitem.setVisibility(View.VISIBLE);
+                    } else {
+                        noitem.setVisibility(View.INVISIBLE);
+                        wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+                        wishlistRecycler.setNestedScrollingEnabled(false);
+                        loadRecycler(wishlistRecycler, itemsList);
+                        adapter = new WishlistAdapter(itemsList, getApplicationContext());
+                        wishlistRecycler.setAdapter(adapter);
+                    }
+                }
+            });
+        }
     }
     public void loadProducts() {
         String[] fakeTags = {"Textbooks", "COEN"};
