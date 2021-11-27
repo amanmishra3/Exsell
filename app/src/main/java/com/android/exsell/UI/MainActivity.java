@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (currentUser != null) {
             userDb = UserDb.newInstance();
             userDb.setMyUser();
-
             intent = new Intent(this, Home.class);
         } else {
             intent = new Intent(this, LoginActivity.class);

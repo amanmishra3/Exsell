@@ -41,14 +41,15 @@ public class UserDb {
     public static void setMyUser() {
         if(userDb == null || FirebaseAuth.getInstance().getCurrentUser() == null)
             return;
+        myUser = new HashMap<>();
         userDb.getUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), new getUserCallback() {
             @Override
             public void onCallback(Users user) {
+                Log.i("setMyUser"," Name: "+user.getFname());
                 if(user == null) {
                     Log.i("UserDb",userDb.mAuth.getCurrentUser().getUid());
                     return;
                 }
-                myUser = new HashMap<>();
                 myUser.put("name", user.getFname());
                 myUser.put("fname", user.getFname());
                 myUser.put("userId", user.getUserId());

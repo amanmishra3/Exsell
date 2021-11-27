@@ -30,12 +30,14 @@ import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.chat.MessagePreviews;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Product;
 import com.android.exsell.adapters.ProductAdapter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.auth.User;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,6 +64,7 @@ public class Home extends AppCompatActivity {
     private static ArrayList<Product> newProducts, recommendedProducts;
     private Object List;
     private ItemDb itemDb;
+    private UserDb userDb;
     private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
@@ -74,45 +77,13 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         itemDb = ItemDb.newInstance();
+        userDb = UserDb.newInstance();
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null) {
+            userDb.setMyUser();
+        }
         myStorage = new MyFirebaseStorage();
         Product p = new Product();
-//        Resources resources = this.getResources();
-//        Uri uri = new Uri.Builder()
-//                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-//                .authority(resources.getResourcePackageName(R.drawable.beats))
-//                .appendPath(resources.getResourceTypeName(R.drawable.beats))
-//                .appendPath(resources.getResourceEntryName(R.drawable.beats))
-//                .build();
-////        if(myStorage != null)
-////            myStorage.uploadImage(uri, "xyz", new MyFirebaseStorage.downloadUrlCallback() {
-////                @Override
-////                public void onCallback(String url) {
-////                    Log.i(TAG," My URI "+url);
-////                }
-////            });
-//        p.setTitle("Beats Wireless Headphones");
-//        p.setDescription("Wireless headphones with mic and ANC");
-//        p.setPrice(200);
-//        p.setSeller(mAuth.getCurrentUser().getUid());
-//        p.setBargain(true);
-//        p.setStatus("avaialable");
-//        p.setCategories(Arrays.asList("electronics", "music"));
-//        p.setTags(Arrays.asList("headphone","earphones","music","songs","wireless","ANC"));
-//        p.setCreatedOn(new Date());
-//        itemDb.createItem(p, new ItemDb.createItemsCallback() {
-//            @Override
-//            public void onCallback(boolean ok, String id) {
-//                Log.i(TAG,ok + " : id : "+id);
-//                myStorage.uploadImage(uri, id, new MyFirebaseStorage.downloadUrlCallback() {
-//                    @Override
-//                    public void onCallback(String url) {
-//                        Log.i(TAG," My URI "+url);
-//                        itemDb.getItemCollectionReference().document(id).update("imageUri", url);
-//                    }
-//                });
-//            }
-//        });
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_home);

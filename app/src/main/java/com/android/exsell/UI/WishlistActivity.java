@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -70,22 +71,9 @@ public class WishlistActivity extends AppCompatActivity {
         List<String> myWishList = (List<String>)UserDb.myUser.get("wishlist");
         if(myWishList == null || myWishList.size() <= 0) {
             noitem.setVisibility(View.VISIBLE);
-        } else {
-            itemDb.getItemsFromWishList(myWishList, new ItemDb.getItemsCallback() {
-                @Override
-                public void onCallback(List<Product> itemsList) {
-                    if(itemsList == null || itemsList.size() <= 0) {
-                        noitem.setVisibility(View.VISIBLE);
-                    } else {
-                        noitem.setVisibility(View.INVISIBLE);
-                        wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
-                        wishlistRecycler.setNestedScrollingEnabled(false);
-                        loadRecycler(wishlistRecycler, itemsList);
-                        adapter = new WishlistAdapter(itemsList, getApplicationContext());
-                        wishlistRecycler.setAdapter(adapter);
-                    }
-                }
-            });
+            wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+            loadRecycler(wishlistRecycler, null);
+            wishlistRecycler.setAdapter(null);
         }
     }
     @Override
@@ -95,12 +83,17 @@ public class WishlistActivity extends AppCompatActivity {
         List<String> myWishList = (List<String>)UserDb.myUser.get("wishlist");
         if(myWishList == null || myWishList.size() <= 0) {
             noitem.setVisibility(View.VISIBLE);
+            wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+            loadRecycler(wishlistRecycler, null);
+            wishlistRecycler.setAdapter(null);
         } else {
             itemDb.getItemsFromWishList(myWishList, new ItemDb.getItemsCallback() {
                 @Override
                 public void onCallback(List<Product> itemsList) {
+                    Log.i("wishlist2"," name "+UserDb.myUser.get("name"));
                     if(itemsList == null || itemsList.size() <= 0) {
                         noitem.setVisibility(View.VISIBLE);
+
                     } else {
                         noitem.setVisibility(View.INVISIBLE);
                         wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);

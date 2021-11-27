@@ -87,7 +87,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
             imageView.setImageResource(wishlist.get(position).getImage());
         }
     }
-
+    public void clear() {
+        wishlist.clear();
+    }
     @Override
     public int getItemCount() {
         return wishlist.size();
