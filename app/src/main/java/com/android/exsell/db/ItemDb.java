@@ -52,6 +52,7 @@ public class ItemDb {
         selectedProduct.put("imageUri", item.getImageUri());
         selectedProduct.put("categories", item.getCategories());
         selectedProduct.put("createdOn", item.getCreatedOn());
+
     }
 
     public CollectionReference getItemCollectionReference() {
@@ -174,6 +175,26 @@ public class ItemDb {
                 });
     }
 
+    public void getItemsFromWishList(List<String> wishList, getItemsCallback callback) {
+        Query query = itemCollectionReference;
+        if(wishList == null) {
+            callback.onCallback(null);
+        }
+        query = itemCollectionReference.whereIn("productId", wishList);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    QuerySnapshot querySnapshot = task.getResult();
+                    List<Product> itemsList = querySnapshot.toObjects(Product.class);
+                    callback.onCallback(itemsList);
+                } else {
+                    Log.i(TAG, "no documents ", task.getException());
+                    callback.onCallback(null);
+                }
+            }
+        });
+    }
     public void updateItem(Product item) {
         String itemId = item.getProductId();
         Log.i(TAG, "Item Id "+itemId);

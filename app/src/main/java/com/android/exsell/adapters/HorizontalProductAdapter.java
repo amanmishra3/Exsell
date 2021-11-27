@@ -73,7 +73,9 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
                 Log.i(TAG, "On Click"+holder.selectedProduct.getTitle());
 //                productListener.onProductClicked(products.get(position), position);
                 ItemDb.setCurrentProduct(holder.selectedProduct);
-                context.startActivity(new Intent(context, ItemListing.class));
+                Intent intent = new Intent(context, ItemListing.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         });
 
