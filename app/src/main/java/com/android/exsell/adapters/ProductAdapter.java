@@ -77,7 +77,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             }
         });
         holder.selectedProduct = products.get(position);
-        textViewTitle.setText(products.get(position).getTitle());
+        String fullTitle = products.get(position).getTitle();
+        if (fullTitle.length() >= 12) {
+            String title = fullTitle.substring(0, 12) + "...";
+            textViewTitle.setText(title);
+        }
+        else{
+            textViewTitle.setText(fullTitle);
+        }
         textViewPrice.setText("$"+products.get(position).getPrice());
         if(products.get(position).getImageUri() != null) {
             Picasso.get().load(products.get(position).getImageUri()).into(imageView);

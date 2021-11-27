@@ -10,6 +10,7 @@ import com.android.exsell.R;
 import com.android.exsell.UI.MessagePreviews;
 import com.android.exsell.UI.MyListings;
 import com.android.exsell.UI.NewListing;
+import com.android.exsell.UI.NotificationActivity;
 import com.android.exsell.UI.SearchBar;
 import com.android.exsell.UI.WishlistActivity;
 
@@ -36,7 +37,17 @@ public class TopBottomNavigationListener implements View.OnClickListener{
         else if(id == R.id.chatButton){
             startChat();
         }
+        else if(id == R.id.notificationButton){
+            openNotification();
+        }
 
+    }
+
+    private void openNotification() {
+        Log.i(TAG, "Notification Function");
+        Intent intent = new Intent(context, NotificationActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void startChat() {

@@ -37,7 +37,7 @@ public class WishlistActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView wishlistRecycler;
     private static ArrayList<Wishlist> wishlistItems;
-    private ImageView search, wishlist, addListing, message;
+    private ImageView search, wishlist, addListing, message, notification;
     private TextView noitem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +59,8 @@ public class WishlistActivity extends AppCompatActivity {
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+        notification = (ImageView) findViewById(R.id.notificationButton);
+        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -54,7 +54,7 @@ public class NewListing extends AppCompatActivity {
     private String TAG = "NewListing ";
     private ItemDb itemDb;
     private MyFirebaseStorage myStorage;
-    private ImageView search, wishlist, addListing, message, addImage;
+    private ImageView search, wishlist, addListing, message, addImage, notification;
     private Button addItem;
     private TextView title, description, tags, price;
     private LinearLayout progressLayout;
@@ -81,10 +81,11 @@ public class NewListing extends AppCompatActivity {
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
-        message = (ImageView) findViewById(R.id.chatButton);
-        s = (Spinner) findViewById(R.id.category);
+        message = (ImageView) layoutBottom.findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
-
+        notification = (ImageView) layoutTop.findViewById(R.id.notificationButton);
+        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
+        s = (Spinner) findViewById(R.id.category);
         builder = new AlertDialog.Builder(this);
 
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {

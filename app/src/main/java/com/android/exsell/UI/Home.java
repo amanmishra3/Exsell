@@ -65,7 +65,7 @@ public class Home extends AppCompatActivity {
     private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
-    private ImageView search, wishlist, addListing, message;
+    private ImageView search, wishlist, addListing, message, notification;
     private FirebaseAuth mAuth;
 
     private int noteClickedPosition = -1;
@@ -137,6 +137,8 @@ public class Home extends AppCompatActivity {
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+        notification = (ImageView) findViewById(R.id.notificationButton);
+        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,7 +307,7 @@ public class Home extends AppCompatActivity {
 
                 } else {
                     // add cards to recyclers
-                    Toast.makeText(getApplicationContext(), "Loading..  " + category, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Loading..  " + category +" " + itemsList.size(), Toast.LENGTH_LONG).show();
                     loadRecyclerHorizontal(recommendedRecycler, itemsList, 1);
                 }
             }

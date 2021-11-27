@@ -78,7 +78,14 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
             }
         });
         holder.selectedProduct = wishlist.get(position);
-        textViewTitle.setText(wishlist.get(position).getTitle());
+        String fullTitle = wishlist.get(position).getTitle();
+        if (fullTitle.length() >= 12) {
+            String title = fullTitle.substring(0, 12) + "...";
+            textViewTitle.setText(title);
+        }
+        else{
+            textViewTitle.setText(fullTitle);
+        }
         textViewPrice.setText("$"+wishlist.get(position).getPrice());
 //        textViewTags.setText(wishlist.get(position).getTagString());
         if(wishlist.get(position).getImageUri() != null) {

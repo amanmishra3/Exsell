@@ -34,7 +34,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     private ArrayList<Preview> previewArrayList;
     private RecyclerView recyclerView;
-    private ImageView search, wishlist, addListing, message;
+    private ImageView search, wishlist, addListing, message, notification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,8 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+        notification = (ImageView) findViewById(R.id.notificationButton);
+        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +70,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         recyclerView = findViewById(R.id.message_preview_list);
         previewArrayList = new ArrayList<>();
 
-        setPreviewInfo(); // TODO replace with getMessagePreviews() when implemented
+        setPreviewInfo(); // TODO replace with getMessagePreviews() when implementedgit
 
         setAdapter();
     }

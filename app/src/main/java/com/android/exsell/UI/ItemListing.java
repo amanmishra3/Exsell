@@ -37,7 +37,7 @@ public class ItemListing extends AppCompatActivity {
     private View parent;
     private UserDb userDb;
     private Map<String, Object> product;
-    private ImageView search, wishlist, addListing, message, productImage, addToWishlist;
+    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification;
     private TextView title, description, price, tags;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +69,8 @@ public class ItemListing extends AppCompatActivity {
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+        notification = (ImageView) findViewById(R.id.notificationButton);
+        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
