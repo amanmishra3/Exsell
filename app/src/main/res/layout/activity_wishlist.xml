@@ -29,10 +29,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layoutTopBar"
                 android:layout_gravity="center_horizontal"
+
                 />
 
 
         </ScrollView>
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="No items in Your List"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/noitem_text"
+            android:textColor="@color/bumble"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
 
         <include layout="@layout/layout_bottom_bar_wishlist" />
 

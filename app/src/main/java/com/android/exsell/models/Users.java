@@ -1,6 +1,7 @@
 package com.android.exsell.models;
 
 import java.sql.Time;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,13 +10,15 @@ public class Users {
     String userId;
     String fname;
     String lname;
-    Number contact;
+    String contact;
     String email;
-    Time dob;
+    Date dob;
     List<String> orders;
     List<String> wishlist;
     String rating;
     String school;
+    Date createdOn;
+    String imageUri;
     public Users() {
 
     }
@@ -31,7 +34,7 @@ public class Users {
         this.userId = uid;
     }
 
-    public void setContact(Number contact) {
+    public void setContact(String contact) {
         this.contact = contact;
     }
 
@@ -39,7 +42,7 @@ public class Users {
         return wishlist;
     }
 
-    public Number getContact() {
+    public String getContact() {
         return contact;
     }
 
@@ -59,11 +62,11 @@ public class Users {
         return rating;
     }
 
-    public Time getDob() {
+    public Date getDob() {
         return dob;
     }
 
-    public void setDob(Time dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 
@@ -105,6 +108,21 @@ public class Users {
 
     public String getSchool() {
         return school;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
+    public String getImageUri() {
+        return imageUri;
     }
 
     public String getUserId() {

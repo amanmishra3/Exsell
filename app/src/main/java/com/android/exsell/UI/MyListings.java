@@ -129,7 +129,7 @@ public class MyListings extends AppCompatActivity{
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
 
         // create and set adapter
-        adapter = new HorizontalProductAdapter(products);
+        adapter = new HorizontalProductAdapter(products, this);
         thisRecycler.setAdapter(adapter);
     }
     public void itemDetails(View v) {

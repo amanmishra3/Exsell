@@ -35,8 +35,16 @@ public class MyFirebaseStorage {
         this.storageRef = FirebaseStorage.getInstance().getReference();
     }
 
-    public void uploadImage(Uri filepath, String itemId, downloadUrlCallback callback) {
-        StorageReference upload = this.storageRef.child("products/"+itemId);
+    public void uploadImage(Uri filepath, String itemId, int type, downloadUrlCallback callback) {
+        String path = new String();
+        if(filepath == null || itemId == null || itemId.length() <= 0 || type > 2)
+            callback.onCallback(null);
+        if(type == 0) {
+            path = "products/"+itemId;
+        } else if(type == 1) {
+            path = "users/"+itemId;
+        }
+        StorageReference upload = this.storageRef.child(path);
         upload.putFile(filepath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override

@@ -218,7 +218,7 @@ public class Home extends AppCompatActivity {
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
 
         // create and set adapter
-        adapter = new ProductAdapter(products);
+        adapter = new ProductAdapter(products, this);
         thisRecycler.setAdapter(adapter);
     }
 
@@ -229,7 +229,7 @@ public class Home extends AppCompatActivity {
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
 
         // create and set adapter
-        adapter = new HorizontalProductAdapter(products);
+        adapter = new HorizontalProductAdapter(products, this);
         thisRecycler.setAdapter(adapter);
     }
 
@@ -310,5 +310,9 @@ public class Home extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void setNavigationHeader() {
+
     }
 }
