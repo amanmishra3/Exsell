@@ -22,7 +22,7 @@
             android:layout_marginBottom="@dimen/_39sdp"
             tools:context=".UI.MessagePreviews" />
 
-        <include layout="@layout/layout_bottom_bar" />
+        <include layout="@layout/layout_bottom_bar_messaging" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
