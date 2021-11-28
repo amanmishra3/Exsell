@@ -25,6 +25,7 @@ import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Product;
 import com.android.exsell.models.Wishlist;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,9 @@ public class WishlistActivity extends AppCompatActivity {
         });
 
         loadProducts();
-        List<String> myWishList = (List<String>)UserDb.myUser.get("wishlist");
+        List<String> myWishList = new ArrayList<>();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null && UserDb.myUser != null)
+            myWishList = (List<String>)UserDb.myUser.get("wishlist");
         if(myWishList == null || myWishList.size() <= 0) {
             noitem.setVisibility(View.VISIBLE);
             wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);

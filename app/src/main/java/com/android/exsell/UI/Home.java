@@ -122,7 +122,9 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
-        loadProducts();
+//        loadProducts();
+
+        categorySelected("All");
         itemDb.getAllItems(new ItemDb.getItemsCallback() {
             @Override
             public void onCallback(java.util.List<Product> itemsList) {
@@ -147,7 +149,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
 
         // add category images to linear layout
         ll = (LinearLayout) findViewById(R.id.linear);
-        loadCategoryImages();
+//        loadCategoryImages();
     }
 
     @Override

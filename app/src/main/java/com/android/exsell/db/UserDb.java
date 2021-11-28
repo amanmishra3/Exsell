@@ -207,7 +207,7 @@ public class UserDb {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists()) {
+                        if(documentSnapshot.exists() && documentSnapshot.get("notification") != null) {
                             Log.i("Notifications ", documentSnapshot.get("notification").toString());
                             callback.onCallback((List<String>)documentSnapshot.get("notification"));
                         }else {
