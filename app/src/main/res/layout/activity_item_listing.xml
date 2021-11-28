@@ -36,15 +36,16 @@
                     android:layout_height="300dp"
                     android:scaleType="fitCenter"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="-5dp"
-                    android:src="@drawable/blank"/>
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/blank"
+                    />
 
                 <!-- Title & Price -->
 
                 <ImageView
                     android:id="@+id/add_to_wishlist"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginTop="16dp"
                     android:src="@drawable/ic_heart"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +61,8 @@
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="@dimen/_5sdp"
                     app:layout_constraintTop_toBottomOf="@+id/image"
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/title"/>
@@ -74,6 +76,7 @@
                     android:layout_marginVertical="5dp"
                     app:layout_constraintTop_toBottomOf="@+id/image"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="@dimen/_5sdp"
                     android:text="@string/price"/>
 
                 <!-- Description -->
@@ -83,6 +86,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="5dp"
                     app:layout_constraintTop_toBottomOf="@+id/title"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
                     android:text="Description here. Very long to prove a point. Keeps going and should wrap"/>
 
                 <!-- Tags -->
@@ -93,16 +98,18 @@
                     android:layout_marginVertical="5dp"
                     app:layout_constraintTop_toBottomOf="@+id/description"
                     app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
                     android:text="Tags: "/>
-                <TextView
-                    android:id="@+id/item_tags"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    app:layout_constraintTop_toBottomOf="@+id/description"
-                    app:layout_constraintStart_toEndOf="@id/tags"
-                    android:textStyle="italic"
-                    android:text="Textbooks, COEN"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/item_tags"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginVertical="5dp"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/description"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/tags"-->
+<!--                    android:textStyle="italic"-->
+<!--                    android:text="Textbooks, COEN"/>-->
 
                 <!-- Buttons -->
                 <LinearLayout

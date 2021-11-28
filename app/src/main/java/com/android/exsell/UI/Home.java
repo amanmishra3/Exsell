@@ -2,6 +2,7 @@ package com.android.exsell.UI;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -52,7 +53,7 @@ public class Home extends AppCompatActivity {
 
     // categories
     LinearLayout ll;
-    int[] categoryImages = {R.drawable.ic_category_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_more};
+    int[] categoryImages = {R.drawable.ic_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_more};
     int[] categoryIDs = {R.id.category0,R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6};
 
     // card recyclers
@@ -67,7 +68,7 @@ public class Home extends AppCompatActivity {
     private ConstraintLayout constraintLayout;
     private ImageView search, wishlist, addListing, message, notification;
     private FirebaseAuth mAuth;
-
+    private Toolbar toolbar;
     private int noteClickedPosition = -1;
 
     @Override
@@ -77,6 +78,9 @@ public class Home extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         myStorage = new MyFirebaseStorage();
         Product p = new Product();
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 //        Resources resources = this.getResources();
 //        Uri uri = new Uri.Builder()
 //                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
@@ -170,12 +174,24 @@ public class Home extends AppCompatActivity {
         // add category images to linear layout
         ll = (LinearLayout) findViewById(R.id.linear);
         loadCategoryImages();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        navigationView.setCheckedItem(R.id.home);
+
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         drawer.closeDrawer(Gravity.LEFT, false);
+        navigationView.setCheckedItem(R.id.home);
+
     }
 
     public void onCardClicked(Product product, int position) {

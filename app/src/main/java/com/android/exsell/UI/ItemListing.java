@@ -82,13 +82,16 @@ public class ItemListing extends AppCompatActivity {
         if(product.containsKey("imageUri") && product.get("imageUri") != null) {
             Picasso.get().load((String)product.get("imageUri")).into(productImage);
         } else {
-            productImage.setImageResource(R.drawable.tanmay);
+            productImage.setImageResource(R.drawable.test_image);
         }
         title.setText((String)product.get("title"));
-        price.setText(product.get("price").toString());
+        price.setText("$"+product.get("price").toString());
         description.setText((String)product.get("description"));
         tags.setText("");
-        tags.setText(((List<String>)(product.get("tags"))).toString());
+        List<String> listTags;
+        listTags = (List<String>) product.get("tags");
+        String stringTags = String.join(", ", listTags);
+        tags.setText("Tags: "+stringTags);
 
         checkWishList();
 

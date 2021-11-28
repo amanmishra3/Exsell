@@ -98,9 +98,20 @@ public class MyListings extends AppCompatActivity{
 
     }
     @Override
+    protected void onStart() {
+        super.onStart();
+        MenuItem item = navigationView.getCheckedItem();
+        navigationView.setCheckedItem(R.id.edit);
+
+
+
+    }
+    @Override
     protected void onResume() {
         super.onResume();
         drawer.closeDrawer(Gravity.LEFT, false);
+        navigationView.setCheckedItem(R.id.edit);
+
     }
     // create fake products (could adapt to work with database)
     public void loadProducts(){

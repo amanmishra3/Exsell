@@ -38,7 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfile extends AppCompatActivity implements DatePickerFragment.OnDateSetListener{
 
-    ImageView editProfile, addImage;
+    ImageView editProfile, addImage, close;
     Button updateProfile;
     TextView userName, userEmail, userPhone, userDob, userRating;
     LinearLayout linearEmail;
@@ -65,6 +65,7 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
         userPhone = findViewById(R.id.userPhone);
         userDob = findViewById(R.id.userDOB);
         userRating = findViewById(R.id.userRating);
+        close = findViewById(R.id.close);
         if(userDb.myUser != null) {
             userName.setText((String) userDb.myUser.getOrDefault("fname", "My Name"));
             userEmail.setText((String) userDb.myUser.get("email"));
@@ -80,7 +81,12 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
             Log.i("Profile","myUser is null");
         }
 
-
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -28,12 +28,12 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        item.setCheckable(true);
-        item.setChecked(true);
-        if (previousMenuItem != null) {
-            previousMenuItem.setChecked(false);
-        }
-        previousMenuItem = item;
+//        item.setCheckable(true);
+//        item.setChecked(true);
+//        if (previousMenuItem != null) {
+//            previousMenuItem.setChecked(false);
+//        }
+//        previousMenuItem = item;
         if (item.getItemId() == R.id.signOut) {
             onSignOut();
             return true;
