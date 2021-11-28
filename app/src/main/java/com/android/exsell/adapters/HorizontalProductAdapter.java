@@ -91,6 +91,8 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
 
     @Override
     public int getItemCount() {
-        return products.size();
+        if(products != null)
+            return products.size();
+        return 0;
     }
 }

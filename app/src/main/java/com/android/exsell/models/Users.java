@@ -19,6 +19,7 @@ public class Users {
     String school;
     Date createdOn;
     String imageUri;
+    String registerationToken;
     public Users() {
 
     }
@@ -128,6 +129,15 @@ public class Users {
     public String getUserId() {
         return userId;
     }
+
+    public void setRegisterationToken(String registerationToken) {
+        this.registerationToken = registerationToken;
+    }
+
+    public String getRegisterationToken() {
+        return registerationToken;
+    }
+
     public Map<String, Object> userAttributes() {
         Map<String, Object> user = new HashMap<>();
         user.put("fname", fname);

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,17 +29,23 @@ import android.widget.Toast;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.HorizontalProductAdapter;
+import com.android.exsell.adapters.NotificationAdapter;
 import com.android.exsell.chat.MessagePreviews;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
+import com.android.exsell.fragments.FragmentSearchBar;
+import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
+import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.android.exsell.adapters.ProductAdapter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.auth.User;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,7 +53,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback {
     // side navigation
     private String TAG = "Home";
     LinearLayout layoutTop, layoutBottom;
@@ -60,7 +68,7 @@ public class Home extends AppCompatActivity {
     // card recyclers
     public static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private static RecyclerView newlyListedRecycler, recommendedRecycler;
+    private static RecyclerView newlyListedRecycler, recommendedRecycler, notificationRecycler;
     private static ArrayList<Product> newProducts, recommendedProducts;
     private Object List;
     private ItemDb itemDb;
@@ -81,12 +89,18 @@ public class Home extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() != null) {
             userDb.setMyUser();
+            Notifications.updateNotifications();
         }
         myStorage = new MyFirebaseStorage();
         Product p = new Product();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_home);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameTopBar, new FragmentTopBar());
+        fragmentTransaction.commit();
 
         // side navigation
         layoutTop = (LinearLayout) findViewById(R.id.layoutTopBar);
@@ -100,22 +114,14 @@ public class Home extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
 
-        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
-        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+//        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
+//        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
-        layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
-                navigationView.bringToFront();
-
-            }
-        });
         loadProducts();
         itemDb.getAllItems(new ItemDb.getItemsCallback() {
             @Override
@@ -125,15 +131,18 @@ public class Home extends AppCompatActivity {
                 } else {
                     // add cards to recyclers
                     newlyListedRecycler = (RecyclerView) findViewById(R.id.new_recycler);
-                    newlyListedRecycler.setNestedScrollingEnabled(false);
+                    newlyListedRecycler.setNestedScrollingEnabled(true);
                     loadRecycler(newlyListedRecycler, itemsList, itemsList.size());
                 }
             }
         });
-
+//        List<String> notify = Arrays.asList("This is a notification 1","This is a notification 2","This is a notification 3","This is a notification 4","This is a notification 5");
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         recommendedRecycler = (RecyclerView) findViewById(R.id.recommended_recycler);
-        recommendedRecycler.setNestedScrollingEnabled(false);
+        recommendedRecycler.setNestedScrollingEnabled(true);
         loadRecyclerHorizontal(recommendedRecycler, recommendedProducts, 1);
 
         // add category images to linear layout
@@ -172,6 +181,17 @@ public class Home extends AppCompatActivity {
         recommendedProducts.add(product3);
         recommendedProducts.add(product4);
     }
+
+    public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
+        layoutManager = new GridLayoutManager(this, columns);
+        thisRecycler.setHasFixedSize(true); // set has fixed size
+        thisRecycler.setLayoutManager(layoutManager); // set layout manager
+
+        // create and set adapter
+        adapter = new NotificationAdapter(products, this);
+        thisRecycler.setAdapter(adapter);
+    }
+
 
     // recycler setup
     public void loadRecycler(RecyclerView thisRecycler, List<Product> products, int columns) {
@@ -267,6 +287,23 @@ public class Home extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onHamburgerClickCallback() {
+        Log.i(TAG,"onHamburgerClickCallback");
+        drawer.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onNotificationBellClick() {
+        Log.i(TAG,"onNotificationBellClick");
+        drawer.openDrawer(GravityCompat.END);
+    }
+
+    @Override
+    public void onSearch(String search) {
+        Log.i(TAG,"onSearch received "+search);
     }
 
     public void setNavigationHeader() {

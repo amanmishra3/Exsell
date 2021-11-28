@@ -92,6 +92,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
     }
     @Override
     public int getItemCount() {
-        return wishlist.size();
+        if(wishlist != null)
+            return wishlist.size();
+        return 0;
     }
 }

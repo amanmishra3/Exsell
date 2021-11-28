@@ -11,7 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/layout_top_bar"/>
+<!--        <include layout="@layout/layout_top_bar"/>-->
+        <FrameLayout
+            android:id="@+id/frameTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -125,6 +129,11 @@
         app:headerLayout="@layout/navigation_bar_header"
         app:menu="@menu/navigation_menu"
         android:layout_gravity="start"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:id="@+id/right_drawer"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
