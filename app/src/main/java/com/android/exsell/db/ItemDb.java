@@ -42,6 +42,11 @@ public class ItemDb {
         db = FirebaseFirestore.getInstance();
         itemCollectionReference = db.collection("Items");
     }
+
+    public static void clearData() {
+        itemDb = null;
+        selectedProduct = null;
+    }
     public static void setCurrentProduct(Product item) {
         selectedProduct = new HashMap<>();
         selectedProduct.put("title",item.getTitle());

@@ -33,6 +33,10 @@ public class Notifications {
         this.intent = intent;
     }
 
+    public static void clearData() {
+        myNotifications = null;
+    }
+
     public static void addNotification(JSONObject notify) {
         if(myNotifications == null)
             myNotifications = new ArrayList<>();

@@ -48,6 +48,11 @@ public class UserDb {
         }
     }
 
+    public static void clearData() {
+        myUser = null;
+        userDb = null;
+    }
+
     public static void setMyUser() {
         if(userDb == null || FirebaseAuth.getInstance().getCurrentUser() == null)
             return;

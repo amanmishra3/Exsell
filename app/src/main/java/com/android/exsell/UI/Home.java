@@ -149,7 +149,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
 
         // add category images to linear layout
         ll = (LinearLayout) findViewById(R.id.linear);
-//        loadCategoryImages();
+        loadCategoryImages();
     }
 
     @Override

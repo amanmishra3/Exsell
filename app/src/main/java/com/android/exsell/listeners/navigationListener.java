@@ -14,6 +14,9 @@ import com.android.exsell.UI.Home;
 import com.android.exsell.UI.LoginActivity;
 import com.android.exsell.UI.MyListings;
 import com.android.exsell.UI.UserProfile;
+import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
+import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -73,6 +76,10 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
         if (mAuth.getCurrentUser() != null) {
             mAuth.signOut();
         }
+        UserDb.clearData();
+        Notifications.clearData();
+        ItemDb.clearData();
+
         Intent intent = new Intent(context, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
