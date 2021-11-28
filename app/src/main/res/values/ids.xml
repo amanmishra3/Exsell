@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="category0" type="id"/>
+    <item name="category1" type="id"/>
+    <item name="category2" type="id"/>
+    <item name="category3" type="id"/>
+    <item name="category4" type="id"/>
+    <item name="category5" type="id"/>
+    <item name="category6" type="id"/>
+    <item name="testID" type="id"/>
+</resources>
