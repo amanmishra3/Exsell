@@ -36,8 +36,13 @@
         <activity
             android:name=".UI.Home"
             android:exported="true"
-            android:launchMode="singleInstance"
-            />
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+        </activity>
         <activity
             android:name=".UI.LoginActivity"
             android:exported="true" />
@@ -67,6 +72,13 @@
         <activity
             android:name=".UI.PrivateMessage"
             android:exported="false" />
+        <service
+            android:name=".services.FirebaseNotificationService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
