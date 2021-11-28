@@ -73,9 +73,14 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
             if(userDb.myUser.containsKey("imageUri")) {
                 Picasso.get().load((String)userDb.myUser.get("imageUri")).into(myImage);
             }
-            if(userDb.myUser.containsKey("dob")) {
-                Date d = (Date)(userDb.myUser.get("dob"));
-                userDob.setText((d.getYear()+1900)+"/"+d.getMonth()+"/"+d.getDay());
+            Date d = new Date();
+            if(UserDb.myUser.containsKey("dob")) {
+                d = (Date)UserDb.myUser.get("dob");
+                int year = d.getYear()+1900;
+                int month = d.getMonth() + 1;
+                int day = d.getDate();
+                Log.i("calendar","DOB: year "+(year)+"/"+(month)+"/"+(day)+d);
+                userDob.setText((year)+"/"+(month)+"/"+(day));
             }
         } else {
             Log.i("Profile","myUser is null");
@@ -127,8 +132,8 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
                 updateProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        userDb.myUser.put("contact",userPhone.getText().toString());
-                        userDb.myUser.put("fname",userName.getText().toString());
+                        UserDb.myUser.put("contact",userPhone.getText().toString());
+                        UserDb.myUser.put("fname",userName.getText().toString());
 
                         userDb.updateUserDetails(userDb.myUser, uri, new UserDb.updateUserCallback() {
                             @Override
@@ -185,8 +190,10 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
 
     @Override
     public void onDate(Date date, int year, int month, int day) {
-        Log.i("calendar","DOB: year "+year+"/"+month+"/"+day +date);
-        userDob.setText(new String(year+"/"+month+"/"+day));
-        userDb.myUser.put("dob", date);
+        date.setMonth(month);
+        Log.i("calendar2","DOB: year "+year+"/"+(month+1)+"/"+day +date);
+        userDob.setText(new String(year+"/"+(month+1)+"/"+day));
+        UserDb.myUser.put("dob", null);
+        UserDb.myUser.put("dob", date);
     }
 }
