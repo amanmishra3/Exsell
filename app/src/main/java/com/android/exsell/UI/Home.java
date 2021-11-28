@@ -153,7 +153,8 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     @Override
     protected void onResume() {
         super.onResume();
-        drawer.closeDrawer(Gravity.LEFT, false);
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.closeDrawer(GravityCompat.START, false);
     }
 
     // create fake products (could adapt to work with database)
@@ -292,12 +293,14 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
+        drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
     }
 
     @Override
     public void onNotificationBellClick() {
         Log.i(TAG,"onNotificationBellClick");
+        drawer.closeDrawer(GravityCompat.START, false);
         drawer.openDrawer(GravityCompat.END);
     }
 

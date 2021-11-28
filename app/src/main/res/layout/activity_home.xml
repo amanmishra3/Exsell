@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout
+        android:id="@+id/frameTopBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,15 +21,10 @@
         android:layout_height="match_parent">
 
 <!--        <include layout="@layout/layout_top_bar"/>-->
-        <FrameLayout
-            android:id="@+id/frameTopBar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"/>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_39sdp"
             android:layout_marginBottom="@dimen/_39sdp"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/_10sdp"
@@ -137,7 +141,7 @@
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
-
+</LinearLayout>
 
 
 
