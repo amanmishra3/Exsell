@@ -157,7 +157,7 @@ public class UserDb {
         Log.i(TAG, "Item Id "+user.get("userId"));
         DocumentReference documentReference = userCollectionReference.document(id);
         documentReference.update(user);
-        userDb.setMyUser();
+        //userDb.setMyUser();
         if(uri != null) {
             myStorage.uploadImage(uri, id, 1, new MyFirebaseStorage.downloadUrlCallback() {
                 @Override
