@@ -40,7 +40,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             this.card = (CardView) itemView.findViewById(R.id.verticalCards);
             this.textViewTitle = (TextView) itemView.findViewById(R.id.itemTitle);
             this.textViewPrice = (TextView) itemView.findViewById(R.id.itemPrice);
-            this.textViewTags = (TextView) itemView.findViewById(R.id.itemTags);
+            this.textViewTags = (TextView) itemView.findViewById(R.id.itemDescription);
             this.imageViewIcon = (ImageView) itemView.findViewById(R.id.itemImage);
         }
     }
@@ -70,6 +70,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             @Override
             public void onClick(View v) {
 //                Home.itemDetails(products.get(position), position);
+                Log.i(TAG, "ProductAdapter "+holder.selectedProduct.getTitle());
                 ItemDb.setCurrentProduct(holder.selectedProduct);
                 Intent intent = new Intent(context, ItemListing.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -95,6 +96,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return products.size();
+        if(products != null)
+            return products.size();
+        return 0;
     }
 }

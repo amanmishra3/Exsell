@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,6 +25,7 @@ import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Product;
 import com.android.exsell.models.Wishlist;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,25 +71,14 @@ public class WishlistActivity extends AppCompatActivity {
         });
 
         loadProducts();
-        List<String> myWishList = (List<String>)UserDb.myUser.get("wishlist");
+        List<String> myWishList = new ArrayList<>();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null && UserDb.myUser != null)
+            myWishList = (List<String>)UserDb.myUser.get("wishlist");
         if(myWishList == null || myWishList.size() <= 0) {
             noitem.setVisibility(View.VISIBLE);
-        } else {
-            itemDb.getItemsFromWishList(myWishList, new ItemDb.getItemsCallback() {
-                @Override
-                public void onCallback(List<Product> itemsList) {
-                    if(itemsList == null || itemsList.size() <= 0) {
-                        noitem.setVisibility(View.VISIBLE);
-                    } else {
-                        noitem.setVisibility(View.INVISIBLE);
-                        wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
-                        wishlistRecycler.setNestedScrollingEnabled(false);
-                        loadRecycler(wishlistRecycler, itemsList);
-                        adapter = new WishlistAdapter(itemsList, getApplicationContext());
-                        wishlistRecycler.setAdapter(adapter);
-                    }
-                }
-            });
+            wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+            loadRecycler(wishlistRecycler, null);
+            wishlistRecycler.setAdapter(null);
         }
     }
     @Override
@@ -97,12 +88,17 @@ public class WishlistActivity extends AppCompatActivity {
         List<String> myWishList = (List<String>)UserDb.myUser.get("wishlist");
         if(myWishList == null || myWishList.size() <= 0) {
             noitem.setVisibility(View.VISIBLE);
+            wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+            loadRecycler(wishlistRecycler, null);
+            wishlistRecycler.setAdapter(null);
         } else {
             itemDb.getItemsFromWishList(myWishList, new ItemDb.getItemsCallback() {
                 @Override
                 public void onCallback(List<Product> itemsList) {
+                    Log.i("wishlist2"," name "+UserDb.myUser.get("name"));
                     if(itemsList == null || itemsList.size() <= 0) {
                         noitem.setVisibility(View.VISIBLE);
+
                     } else {
                         noitem.setVisibility(View.INVISIBLE);
                         wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);

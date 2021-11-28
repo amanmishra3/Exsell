@@ -31,7 +31,7 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 //        View currentItem;
         CardView card;
-        TextView textViewTitle, textViewPrice, textViewTags;
+        TextView textViewTitle, textViewPrice, textViewDescription;
         ImageView imageViewIcon;
         private Product selectedProduct;
 
@@ -40,7 +40,7 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
             this.card = (CardView) itemView.findViewById(R.id.layout_horizontal_card);
             this.textViewTitle = (TextView) itemView.findViewById(R.id.itemTitle);
             this.textViewPrice = (TextView) itemView.findViewById(R.id.itemPrice);
-//            this.textViewTags = (TextView) itemView.findViewById(R.id.itemTags);
+            this.textViewDescription = (TextView) itemView.findViewById(R.id.itemDescription);
             this.imageViewIcon = (ImageView) itemView.findViewById(R.id.itemImage);
         }
     }
@@ -64,7 +64,7 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         TextView textViewTitle = holder.textViewTitle;
         TextView textViewPrice = holder.textViewPrice;
-//        TextView textViewTags = holder.textViewTags;
+        TextView textViewDescription = holder.textViewDescription;
         ImageView imageView = holder.imageViewIcon;
         holder.selectedProduct = products.get(position);
         holder.card.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +81,7 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
 
         textViewTitle.setText(products.get(position).getTitle());
         textViewPrice.setText("$"+products.get(position).getPrice());
-//        textViewTags.setText(products.get(position).getTags().toString());
+        textViewDescription.setText(products.get(position).getDescription());
         if(products.get(position).getImageUri() != null) {
             Picasso.get().load(products.get(position).getImageUri()).into(imageView);
         } else {
@@ -91,6 +91,8 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
 
     @Override
     public int getItemCount() {
-        return products.size();
+        if(products != null)
+            return products.size();
+        return 0;
     }
 }

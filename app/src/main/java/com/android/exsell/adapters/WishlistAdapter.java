@@ -41,7 +41,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
             this.card = (CardView) itemView.findViewById(R.id.wishlistCards);
             this.textViewTitle = (TextView) itemView.findViewById(R.id.itemTitle);
             this.textViewPrice = (TextView) itemView.findViewById(R.id.itemPrice);
-            this.textViewTags = (TextView) itemView.findViewById(R.id.itemTags);
+            this.textViewTags = (TextView) itemView.findViewById(R.id.itemDescription);
             this.imageViewIcon = (ImageView) itemView.findViewById(R.id.itemImage);
         }
     }
@@ -94,9 +94,13 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
             imageView.setImageResource(wishlist.get(position).getImage());
         }
     }
-
+    public void clear() {
+        wishlist.clear();
+    }
     @Override
     public int getItemCount() {
-        return wishlist.size();
+        if(wishlist != null)
+            return wishlist.size();
+        return 0;
     }
 }

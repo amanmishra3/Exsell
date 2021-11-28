@@ -6,6 +6,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,15 +30,23 @@ import android.widget.Toast;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.HorizontalProductAdapter;
+import com.android.exsell.adapters.NotificationAdapter;
 import com.android.exsell.chat.MessagePreviews;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
+import com.android.exsell.fragments.FragmentSearchBar;
+import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
+import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.android.exsell.adapters.ProductAdapter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.auth.User;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,7 +54,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback {
     // side navigation
     private String TAG = "Home";
     LinearLayout layoutTop, layoutBottom;
@@ -53,16 +63,17 @@ public class Home extends AppCompatActivity {
 
     // categories
     LinearLayout ll;
-    int[] categoryImages = {R.drawable.ic_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_more};
+    int[] categoryImages = {R.drawable.ic_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports};
     int[] categoryIDs = {R.id.category0,R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6};
 
     // card recyclers
     public static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private static RecyclerView newlyListedRecycler, recommendedRecycler;
+    private static RecyclerView newlyListedRecycler, recommendedRecycler, notificationRecycler;
     private static ArrayList<Product> newProducts, recommendedProducts;
     private Object List;
     private ItemDb itemDb;
+    private UserDb userDb;
     private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
@@ -75,51 +86,23 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         itemDb = ItemDb.newInstance();
+        userDb = UserDb.newInstance();
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null) {
+            userDb.setMyUser();
+            Notifications.updateNotifications();
+        }
         myStorage = new MyFirebaseStorage();
         Product p = new Product();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-//        Resources resources = this.getResources();
-//        Uri uri = new Uri.Builder()
-//                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-//                .authority(resources.getResourcePackageName(R.drawable.beats))
-//                .appendPath(resources.getResourceTypeName(R.drawable.beats))
-//                .appendPath(resources.getResourceEntryName(R.drawable.beats))
-//                .build();
-////        if(myStorage != null)
-////            myStorage.uploadImage(uri, "xyz", new MyFirebaseStorage.downloadUrlCallback() {
-////                @Override
-////                public void onCallback(String url) {
-////                    Log.i(TAG," My URI "+url);
-////                }
-////            });
-//        p.setTitle("Beats Wireless Headphones");
-//        p.setDescription("Wireless headphones with mic and ANC");
-//        p.setPrice(200);
-//        p.setSeller(mAuth.getCurrentUser().getUid());
-//        p.setBargain(true);
-//        p.setStatus("avaialable");
-//        p.setCategories(Arrays.asList("electronics", "music"));
-//        p.setTags(Arrays.asList("headphone","earphones","music","songs","wireless","ANC"));
-//        p.setCreatedOn(new Date());
-//        itemDb.createItem(p, new ItemDb.createItemsCallback() {
-//            @Override
-//            public void onCallback(boolean ok, String id) {
-//                Log.i(TAG,ok + " : id : "+id);
-//                myStorage.uploadImage(uri, id, new MyFirebaseStorage.downloadUrlCallback() {
-//                    @Override
-//                    public void onCallback(String url) {
-//                        Log.i(TAG," My URI "+url);
-//                        itemDb.getItemCollectionReference().document(id).update("imageUri", url);
-//                    }
-//                });
-//            }
-//        });
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_home);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameTopBar, new FragmentTopBar());
+        fragmentTransaction.commit();
 
         // side navigation
         layoutTop = (LinearLayout) findViewById(R.id.layoutTopBar);
@@ -133,25 +116,15 @@ public class Home extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
 
-        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
-        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+//        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
+//        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
-        notification = (ImageView) findViewById(R.id.notificationButton);
-        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
-        layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
-                navigationView.bringToFront();
-
-            }
-        });
-        loadProducts();
+        categorySelected("All");
         itemDb.getAllItems(new ItemDb.getItemsCallback() {
             @Override
             public void onCallback(java.util.List<Product> itemsList) {
@@ -160,15 +133,18 @@ public class Home extends AppCompatActivity {
                 } else {
                     // add cards to recyclers
                     newlyListedRecycler = (RecyclerView) findViewById(R.id.new_recycler);
-                    newlyListedRecycler.setNestedScrollingEnabled(false);
+                    newlyListedRecycler.setNestedScrollingEnabled(true);
                     loadRecycler(newlyListedRecycler, itemsList, itemsList.size());
                 }
             }
         });
-
+//        List<String> notify = Arrays.asList("This is a notification 1","This is a notification 2","This is a notification 3","This is a notification 4","This is a notification 5");
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         recommendedRecycler = (RecyclerView) findViewById(R.id.recommended_recycler);
-        recommendedRecycler.setNestedScrollingEnabled(false);
+        recommendedRecycler.setNestedScrollingEnabled(true);
         loadRecyclerHorizontal(recommendedRecycler, recommendedProducts, 1);
 
         // add category images to linear layout
@@ -189,19 +165,12 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        drawer.closeDrawer(Gravity.LEFT, false);
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.closeDrawer(GravityCompat.START, false);
         navigationView.setCheckedItem(R.id.home);
 
     }
 
-    public void onCardClicked(Product product, int position) {
-        noteClickedPosition = position;
-        Intent intent = new Intent(getApplicationContext(), ItemListing.class);
-        intent.putExtra("isBuyer", true);
-        intent.putExtra("productId", product.getProductId());
-        startActivity(intent);
-//        startActivityForResult(intent, REQUEST_CODE_UPDATE_NOTE);
-    }
 
     // create fake products (could adapt to work with database)
     public void loadProducts() {
@@ -228,6 +197,17 @@ public class Home extends AppCompatActivity {
         recommendedProducts.add(product3);
         recommendedProducts.add(product4);
     }
+
+    public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
+        layoutManager = new GridLayoutManager(this, columns);
+        thisRecycler.setHasFixedSize(true); // set has fixed size
+        thisRecycler.setLayoutManager(layoutManager); // set layout manager
+
+        // create and set adapter
+        adapter = new NotificationAdapter(products, this);
+        thisRecycler.setAdapter(adapter);
+    }
+
 
     // recycler setup
     public void loadRecycler(RecyclerView thisRecycler, List<Product> products, int columns) {
@@ -292,10 +272,10 @@ public class Home extends AppCompatActivity {
             case R.id.category5:
                 category = "Sports";
                 break;
-            default:
-                category = "More";
-                startActivity(new Intent(Home.this, Categories.class));
-                break;
+//            default:
+//                category = "More";
+//                startActivity(new Intent(Home.this, Categories.class));
+//                break;
         }
         categorySelected(category);
         // instead of toast, go to correct category activity
@@ -303,11 +283,6 @@ public class Home extends AppCompatActivity {
 
     // onclick handler for cards
     // as of now, just goes to item-listing activity
-    public void itemDetails(View v) {
-        Intent intent = new Intent(getApplicationContext(), ItemListing.class);
-        // pass data about which product is clicked
-        startActivity(intent);
-    }
 
     public void categorySelected(String category) {
         Toast.makeText(this, "Category " + category, Toast.LENGTH_SHORT).show();
@@ -328,6 +303,25 @@ public class Home extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onHamburgerClickCallback() {
+        Log.i(TAG,"onHamburgerClickCallback");
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onNotificationBellClick() {
+        Log.i(TAG,"onNotificationBellClick");
+        drawer.closeDrawer(GravityCompat.START, false);
+        drawer.openDrawer(GravityCompat.END);
+    }
+
+    @Override
+    public void onSearch(String search) {
+        Log.i(TAG,"onSearch received "+search);
     }
 
     public void setNavigationHeader() {

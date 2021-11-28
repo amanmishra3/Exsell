@@ -74,7 +74,7 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
                 Picasso.get().load((String)userDb.myUser.get("imageUri")).into(myImage);
             }
             if(userDb.myUser.containsKey("dob")) {
-                Date d = (Date)userDb.myUser.get("dob");
+                Date d = (Date)(userDb.myUser.get("dob"));
                 userDob.setText((d.getYear()+1900)+"/"+d.getMonth()+"/"+d.getDay());
             }
         } else {
@@ -129,6 +129,7 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
                     public void onClick(View view) {
                         userDb.myUser.put("contact",userPhone.getText().toString());
                         userDb.myUser.put("fname",userName.getText().toString());
+
                         userDb.updateUserDetails(userDb.myUser, uri, new UserDb.updateUserCallback() {
                             @Override
                             public void onCallback(boolean updated) {
@@ -184,7 +185,7 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
 
     @Override
     public void onDate(Date date, int year, int month, int day) {
-        Log.i("calendar","DOB: year "+year+"/"+month+"/"+day);
+        Log.i("calendar","DOB: year "+year+"/"+month+"/"+day +date);
         userDob.setText(new String(year+"/"+month+"/"+day));
         userDb.myUser.put("dob", date);
     }

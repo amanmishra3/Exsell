@@ -131,10 +131,12 @@ public class ItemListing extends AppCompatActivity {
             myWishlist.remove((String)product.get("productId"));
             userDb.removeFromWishList((String)UserDb.myUser.get("userId"),(String)product.get("productId"));
             addToWishlist.setImageResource(R.drawable.ic_heart_white);
+            Toast.makeText(this, "Item Removed from Wishlist",Toast.LENGTH_LONG).show();
         } else {
             myWishlist.add((String)product.get("productId"));
             userDb.addToWishList((String)UserDb.myUser.get("userId"),(String)product.get("productId"));
             addToWishlist.setImageResource(R.drawable.ic_heart_yellow);
+            Toast.makeText(this, "Item added to Wishlist",Toast.LENGTH_LONG).show();
         }
     }
     public void checkWishList() {

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.FragmentTopBar">
+
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/layoutTopBar"
+        android:background="@drawable/background_top_action_bar">
+
+        <ImageView
+            android:id="@+id/leftNavigationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_left_navigation_menu_button"
+            android:layout_gravity="center_vertical"
+            app:tint="@color/black"
+            android:layout_marginStart="5dp"
+            android:padding="10dp"/>
+
+        <TextView
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:id="@+id/appName"
+            android:textSize="@dimen/_18sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:textColor="@color/black"
+            android:fontFamily="cursive"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/notificationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_notifications"
+            android:layout_gravity="center_vertical"
+            app:tint="@color/black"
+            android:padding="10dp"
+            android:layout_marginStart="180dp"/>
+
+        <ImageView
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_search"
+            android:layout_gravity="center_vertical"
+            app:tint="@color/black"
+            android:padding="5dp" />
+
+    </LinearLayout>
+
+</FrameLayout>

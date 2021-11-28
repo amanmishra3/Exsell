@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
+import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.android.exsell.models.Users;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class UserDb {
     private String TAG = "UserDb";
     private static UserDb userDb;
+    private static String myRegisterationToken;
     private MyFirebaseStorage myStorage;
     private FirebaseFirestore db;
     private CollectionReference userCollectionReference;
@@ -38,17 +40,34 @@ public class UserDb {
         }
         return userDb;
     }
+
+    public static void setMyRegisterationToken(String token) {
+        myRegisterationToken = token;
+        if(FirebaseAuth.getInstance().getCurrentUser() != null && token != null && token.length() > 0) {
+            userDb.updateRegisterationToken(FirebaseAuth.getInstance().getCurrentUser().getUid(), token);
+        }
+    }
+
+    public static void clearData() {
+        myUser = null;
+        userDb = null;
+    }
+
     public static void setMyUser() {
         if(userDb == null || FirebaseAuth.getInstance().getCurrentUser() == null)
             return;
-        userDb.getUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), new getUserCallback() {
+        myUser = new HashMap<>();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if(myRegisterationToken != null && myRegisterationToken.length() > 0)
+            userDb.updateRegisterationToken(userId, myRegisterationToken);
+        userDb.getUser(userId, new getUserCallback() {
             @Override
             public void onCallback(Users user) {
+                Log.i("setMyUser"," Name: "+user.getFname());
                 if(user == null) {
-                    Log.i("UserDb",userDb.mAuth.getCurrentUser().getUid());
+                    Log.i("UserDb",userId);
                     return;
                 }
-                myUser = new HashMap<>();
                 myUser.put("name", user.getFname());
                 myUser.put("fname", user.getFname());
                 myUser.put("userId", user.getUserId());
@@ -176,6 +195,38 @@ public class UserDb {
         DocumentReference documentReference = userCollectionReference.document(userId);
         documentReference.update("wishlist",FieldValue.arrayRemove(productId));
     }
+    public void updateRegisterationToken(String userId, String token) {
+        Log.i(TAG, "Item Id "+userId);
+        DocumentReference documentReference = userCollectionReference.document(userId);
+        documentReference.update("registerationToken",token);
+    }
+    public void addToNotifications(String userId, String notification) {
+        Log.i(TAG, "Item Id "+userId);
+        DocumentReference documentReference = userCollectionReference.document(userId);
+        documentReference.update("notification", FieldValue.arrayUnion(notification));
+//        Notifications.updateNotifications();
+    }
+
+    public void getNotifications(String userId, getNotificationsCallback callback) {
+        userCollectionReference.document(userId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(documentSnapshot.exists() && documentSnapshot.get("notification") != null) {
+                            Log.i("Notifications ", documentSnapshot.get("notification").toString());
+                            callback.onCallback((List<String>)documentSnapshot.get("notification"));
+                        }else {
+                            callback.onCallback(null);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
 
     public interface createUserCallback {
         void onCallback(boolean ok, String id);
@@ -185,5 +236,8 @@ public class UserDb {
     }
     public interface updateUserCallback {
         void onCallback(boolean updated);
+    }
+    public interface getNotificationsCallback {
+        void onCallback(List<String> notifications);
     }
 }

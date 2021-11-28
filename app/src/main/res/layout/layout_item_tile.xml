@@ -23,6 +23,7 @@
         app:cardCornerRadius="@dimen/_10sdp"
         app:cardElevation="@dimen/_5sdp">
 
+
         <ImageView
             android:id="@+id/itemImage"
             android:layout_width="match_parent"
