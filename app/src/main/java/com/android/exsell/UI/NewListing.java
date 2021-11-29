@@ -53,7 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NewListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback {
+public class NewListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawerlist;
     RecyclerView notificationRecycler;
@@ -278,6 +278,11 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     public void onSearch(String search) {
         Log.i(TAG,"onSearch received "+search);
         //startActivity(new Intent(getApplicationContext(), Home.class));
+    }
+
+    @Override
+    public void onSearchBack() {
+        Log.i("onSearchBack", "searchBack");
     }
 
 }

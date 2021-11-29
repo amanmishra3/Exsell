@@ -358,5 +358,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         newlyListedRecycler.setVisibility(View.VISIBLE);
         newHeader.setVisibility(View.VISIBLE);
         recommendedHeader.setText("Recommended For You");
+        loadRecyclerHorizontal(recommendedRecycler, recommendedProducts, 1);
     }
 }

@@ -41,7 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyListings extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback {
+public class MyListings extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     private String TAG = "My Listings";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
@@ -197,5 +197,10 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
     public void onSearch(String search) {
         Log.i(TAG,"onSearch received "+search);
         //startActivity(new Intent(getApplicationContext(), Home.class));
+    }
+
+    @Override
+    public void onSearchBack() {
+        Log.i("onSearchBack", "searchBack");
     }
 }

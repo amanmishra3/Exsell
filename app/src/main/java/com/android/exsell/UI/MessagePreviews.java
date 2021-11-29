@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MessagePreviews extends AppCompatActivity implements MessagePreviewAdapter.OnSelectListener, FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback {
+public class MessagePreviews extends AppCompatActivity implements MessagePreviewAdapter.OnSelectListener, FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     private static final String TAG = "MessagePreviews";
 
     LinearLayout layoutTop, layoutBottom;
@@ -162,5 +162,10 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     public void onSearch(String search) {
         Log.i(TAG,"onSearch received "+search);
         //startActivity(new Intent(getApplicationContext(), Home.class));
+    }
+
+    @Override
+    public void onSearchBack() {
+        Log.i("onSearchBack", "searchBack");
     }
 }
