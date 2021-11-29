@@ -3,6 +3,8 @@ package com.android.exsell.UI;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,24 +19,32 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.exsell.R;
+import com.android.exsell.adapters.NotificationAdapter;
 import com.android.exsell.adapters.WishlistAdapter;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
+import com.android.exsell.fragments.FragmentSearchBar;
+import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
+import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.android.exsell.models.Wishlist;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class WishlistActivity extends AppCompatActivity {
+public class WishlistActivity extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     LinearLayout layoutTop, layoutBottom;
+    private String TAG = "Wishlist";
     DrawerLayout drawer;
     NavigationView navigationView;
     public static RecyclerView.Adapter adapter;
+    RecyclerView notificationRecycler;
     private ItemDb itemDb;
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView wishlistRecycler;
@@ -48,27 +58,26 @@ public class WishlistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wishlist);
         itemDb = ItemDb.newInstance();
         noitem = (TextView) findViewById(R.id.noitem_text);
-        layoutTop = findViewById(R.id.layoutTopBar);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameTopBar, new FragmentTopBar());
+        fragmentTransaction.commit();
+
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
-        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
-        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
-        notification = (ImageView) findViewById(R.id.notificationButton);
-        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
-        layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
-            }
-        });
+
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         loadProducts();
         List<String> myWishList = new ArrayList<>();
@@ -81,6 +90,17 @@ public class WishlistActivity extends AppCompatActivity {
             wishlistRecycler.setAdapter(null);
         }
     }
+
+    public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
+        layoutManager = new GridLayoutManager(this, columns);
+        thisRecycler.setHasFixedSize(true); // set has fixed size
+        thisRecycler.setLayoutManager(layoutManager); // set layout manager
+
+        // create and set adapter
+        adapter = new NotificationAdapter(products, this);
+        thisRecycler.setAdapter(adapter);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -137,5 +157,34 @@ public class WishlistActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ItemListing.class);
         // pass data about which product is clicked
         startActivity(intent);
+    }
+
+    @Override
+    public void onHamburgerClickCallback() {
+        Log.i(TAG,"onHamburgerClickCallback");
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onNotificationBellClick() {
+        Log.i(TAG,"onNotificationBellClick");
+        drawer.closeDrawer(GravityCompat.START, false);
+        drawer.openDrawer(GravityCompat.END);
+    }
+
+    public void setNavigationHeader() {
+
+    }
+
+    @Override
+    public void onSearch(String search) {
+        Log.i(TAG,"onSearch received "+search);
+        //startActivity(new Intent(getApplicationContext(), Home.class));
+    }
+
+    @Override
+    public void onSearchBack() {
+        Log.i("onSearchBack", "searchBack");
     }
 }
