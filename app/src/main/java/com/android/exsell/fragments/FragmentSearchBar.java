@@ -1,6 +1,8 @@
 package com.android.exsell.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +17,14 @@ import com.android.exsell.R;
 
 public class FragmentSearchBar extends Fragment {
     private SearchBarOnSearch searchBarOnSearch;
+    private SearchBarBack searchBarBack;
     private EditText searchText;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_bar, container, false);
         this.searchBarOnSearch = (SearchBarOnSearch) getActivity();
+        this.searchBarBack = (SearchBarBack) getActivity();
         searchText = (EditText) view.findViewById(R.id.searchText);
         view.findViewById(R.id.searchBack).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,6 +34,7 @@ public class FragmentSearchBar extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.frameTopBar, new FragmentTopBar());
                 fragmentTransaction.commit();
+                searchBarBack.onSearchBack();
             }
         });
 
@@ -39,9 +44,28 @@ public class FragmentSearchBar extends Fragment {
                 Log.i("InsideFragmentSearchBar", "Clicked search button");
                 if(searchBarOnSearch != null) {
                     searchBarOnSearch.onSearch(searchText.getText().toString());
+                    searchText.setText("");
                 }
             }
         });
+
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchBarOnSearch.onSearch(searchText.getText().toString());
+            }
+        });
+
         return view;
     }
 
@@ -49,4 +73,7 @@ public class FragmentSearchBar extends Fragment {
         void onSearch(String search);
     }
 
+    public interface SearchBarBack {
+        void onSearchBack();
+    }
 }

@@ -5,6 +5,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
@@ -27,16 +30,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.exsell.R;
+import com.android.exsell.adapters.NotificationAdapter;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.AppSettingsDb;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.fragments.FragmentSearchBar;
+import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Category;
+import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -44,9 +53,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NewListing extends AppCompatActivity {
+public class NewListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawerlist;
+    RecyclerView notificationRecycler;
+    private RecyclerView.LayoutManager layoutManager;
+    public static RecyclerView.Adapter adapter;
     NavigationView navigationView;
     Product addProduct;
     private Uri uri;
@@ -66,35 +78,35 @@ public class NewListing extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.layout_new_listing);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameTopBar, new FragmentTopBar());
+        fragmentTransaction.commit();
+
         itemDb = ItemDb.newInstance();
         myStorage = new MyFirebaseStorage();
         addProduct = new Product();
         appSettingsDb = AppSettingsDb.newInstance();
-        layoutTop = findViewById(R.id.layoutTopBar);
+
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawerlist = (DrawerLayout) findViewById(R.id.drawerLayoutItem);
         navigationView = findViewById(R.id.navigationMenuItem);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
-        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
-        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) layoutBottom.findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
-        notification = (ImageView) layoutTop.findViewById(R.id.notificationButton);
-        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
+
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
+
         s = (Spinner) findViewById(R.id.category);
         builder = new AlertDialog.Builder(this);
 
-        layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerlist.openDrawer(GravityCompat.START);
-
-            }
-        });
         title = (TextView) findViewById(R.id.title);
         description = (TextView) findViewById(R.id.description);
         tags = (TextView) findViewById(R.id.tags);
@@ -131,6 +143,16 @@ public class NewListing extends AppCompatActivity {
                 s.setAdapter(adapter);
             }
         });
+    }
+
+    public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
+        layoutManager = new GridLayoutManager(this, columns);
+        thisRecycler.setHasFixedSize(true); // set has fixed size
+        thisRecycler.setLayoutManager(layoutManager); // set layout manager
+
+        // create and set adapter
+        adapter = new NotificationAdapter(products, this);
+        thisRecycler.setAdapter(adapter);
     }
 
     private void openGallery() {
@@ -232,6 +254,35 @@ public class NewListing extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             dialog.dismiss();
         }
+    }
+
+    @Override
+    public void onHamburgerClickCallback() {
+        Log.i(TAG,"onHamburgerClickCallback");
+        //drawer.closeDrawer(GravityCompat.END, false);
+        //drawer.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onNotificationBellClick() {
+        Log.i(TAG,"onNotificationBellClick");
+        //drawer.closeDrawer(GravityCompat.START, false);
+        //drawer.openDrawer(GravityCompat.END);
+    }
+
+    public void setNavigationHeader() {
+
+    }
+
+    @Override
+    public void onSearch(String search) {
+        Log.i(TAG,"onSearch received "+search);
+        //startActivity(new Intent(getApplicationContext(), Home.class));
+    }
+
+    @Override
+    public void onSearchBack() {
+        Log.i("onSearchBack", "searchBack");
     }
 
 }

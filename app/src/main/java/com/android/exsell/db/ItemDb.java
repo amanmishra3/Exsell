@@ -57,6 +57,7 @@ public class ItemDb {
         selectedProduct.put("imageUri", item.getImageUri());
         selectedProduct.put("categories", item.getCategories());
         selectedProduct.put("createdOn", item.getCreatedOn());
+        selectedProduct.put("seller", item.getSeller());
 
     }
 
