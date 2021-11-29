@@ -14,21 +14,31 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.android.exsell.R;
+import com.android.exsell.cloudStorage.MyFirebaseStorage;
+import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
+import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener{
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private FirebaseAuth mAuth;
     private String TAG = "Main";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
+    private ItemDb itemDb;
+    private UserDb userDb;
+//    private MyFirebaseStorage storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        storage = MyFirebaseStorage.newInstance();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
@@ -70,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements
 
         Intent intent;
         if (currentUser != null) {
+            userDb = UserDb.newInstance();
+            userDb.setMyUser();
             intent = new Intent(this, Home.class);
         } else {
             intent = new Intent(this, LoginActivity.class);

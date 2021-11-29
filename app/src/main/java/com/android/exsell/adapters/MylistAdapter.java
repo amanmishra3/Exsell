@@ -28,7 +28,7 @@ public class MylistAdapter extends RecyclerView.Adapter<MylistAdapter.MyViewHold
 //            this.currentItem = itemView;
             this.textViewTitle = (TextView) itemView.findViewById(R.id.itemTitle);
             this.textViewPrice = (TextView) itemView.findViewById(R.id.itemPrice);
-            this.textViewTags = (TextView) itemView.findViewById(R.id.itemTags);
+            this.textViewTags = (TextView) itemView.findViewById(R.id.itemDescription);
             this.imageViewIcon = (ImageView) itemView.findViewById(R.id.itemImage);
         }
     }

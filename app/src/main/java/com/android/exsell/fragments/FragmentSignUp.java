@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.android.exsell.R;
 import com.android.exsell.UI.Home;
+import com.android.exsell.UI.MainActivity;
 import com.android.exsell.UI.RegistrationActivity;
 import com.android.exsell.db.UserDb;
 import com.android.exsell.models.Users;
@@ -176,7 +177,7 @@ public class FragmentSignUp extends Fragment {
             emailField.setText(null);
             passwordField.setText(null);
             password2Field.setText(null);
-            Intent intent = new Intent(getActivity(), Home.class);
+            Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
         }
     }

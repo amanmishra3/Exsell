@@ -40,7 +40,7 @@ public class ExampleFunctions {
 //        search.setBargain(true);
 
         // create an item
-        itemDb.createItem(search, new ItemDb.createItemsCallback() {
+        itemDb.createItem(search , new ItemDb.createItemsCallback() {
             @Override
             public void onCallback(boolean ok, String id) {
                 if(ok) // on create callback insert views or star intents over here
@@ -75,3 +75,40 @@ public class ExampleFunctions {
     }
 
 }
+
+//        Resources resources = this.getResources();
+//        Uri uri = new Uri.Builder()
+//                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+//                .authority(resources.getResourcePackageName(R.drawable.beats))
+//                .appendPath(resources.getResourceTypeName(R.drawable.beats))
+//                .appendPath(resources.getResourceEntryName(R.drawable.beats))
+//                .build();
+////        if(myStorage != null)
+////            myStorage.uploadImage(uri, "xyz", new MyFirebaseStorage.downloadUrlCallback() {
+////                @Override
+////                public void onCallback(String url) {
+////                    Log.i(TAG," My URI "+url);
+////                }
+////            });
+//        p.setTitle("Beats Wireless Headphones");
+//        p.setDescription("Wireless headphones with mic and ANC");
+//        p.setPrice(200);
+//        p.setSeller(mAuth.getCurrentUser().getUid());
+//        p.setBargain(true);
+//        p.setStatus("avaialable");
+//        p.setCategories(Arrays.asList("electronics", "music"));
+//        p.setTags(Arrays.asList("headphone","earphones","music","songs","wireless","ANC"));
+//        p.setCreatedOn(new Date());
+//        itemDb.createItem(p, new ItemDb.createItemsCallback() {
+//            @Override
+//            public void onCallback(boolean ok, String id) {
+//                Log.i(TAG,ok + " : id : "+id);
+//                myStorage.uploadImage(uri, id, new MyFirebaseStorage.downloadUrlCallback() {
+//                    @Override
+//                    public void onCallback(String url) {
+//                        Log.i(TAG," My URI "+url);
+//                        itemDb.getItemCollectionReference().document(id).update("imageUri", url);
+//                    }
+//                });
+//            }
+//        });

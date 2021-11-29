@@ -8,35 +8,46 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.WishlistAdapter;
+import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
+import com.android.exsell.models.Product;
 import com.android.exsell.models.Wishlist;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WishlistActivity extends AppCompatActivity {
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
     public static RecyclerView.Adapter adapter;
+    private ItemDb itemDb;
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView wishlistRecycler;
     private static ArrayList<Wishlist> wishlistItems;
-    private ImageView search, wishlist, addListing;
+    private ImageView search, wishlist, addListing, message, notification;
+    private TextView noitem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_wishlist);
+        itemDb = ItemDb.newInstance();
+        noitem = (TextView) findViewById(R.id.noitem_text);
         layoutTop = findViewById(R.id.layoutTopBar);
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -48,6 +59,10 @@ public class WishlistActivity extends AppCompatActivity {
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
+        message = (ImageView) findViewById(R.id.chatButton);
+        message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+        notification = (ImageView) findViewById(R.id.notificationButton);
+        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,16 +71,45 @@ public class WishlistActivity extends AppCompatActivity {
         });
 
         loadProducts();
-        wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
-        wishlistRecycler.setNestedScrollingEnabled(false);
-        loadRecycler(wishlistRecycler, wishlistItems);
-        adapter = new WishlistAdapter(wishlistItems);
-        wishlistRecycler.setAdapter(adapter);
+        List<String> myWishList = new ArrayList<>();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null && UserDb.myUser != null)
+            myWishList = (List<String>)UserDb.myUser.get("wishlist");
+        if(myWishList == null || myWishList.size() <= 0) {
+            noitem.setVisibility(View.VISIBLE);
+            wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+            loadRecycler(wishlistRecycler, null);
+            wishlistRecycler.setAdapter(null);
+        }
     }
     @Override
     protected void onResume() {
         super.onResume();
         drawer.closeDrawer(Gravity.LEFT, false);
+        List<String> myWishList = (List<String>)UserDb.myUser.get("wishlist");
+        if(myWishList == null || myWishList.size() <= 0) {
+            noitem.setVisibility(View.VISIBLE);
+            wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+            loadRecycler(wishlistRecycler, null);
+            wishlistRecycler.setAdapter(null);
+        } else {
+            itemDb.getItemsFromWishList(myWishList, new ItemDb.getItemsCallback() {
+                @Override
+                public void onCallback(List<Product> itemsList) {
+                    Log.i("wishlist2"," name "+UserDb.myUser.get("name"));
+                    if(itemsList == null || itemsList.size() <= 0) {
+                        noitem.setVisibility(View.VISIBLE);
+
+                    } else {
+                        noitem.setVisibility(View.INVISIBLE);
+                        wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
+                        wishlistRecycler.setNestedScrollingEnabled(false);
+                        loadRecycler(wishlistRecycler, itemsList);
+                        adapter = new WishlistAdapter(itemsList, getApplicationContext());
+                        wishlistRecycler.setAdapter(adapter);
+                    }
+                }
+            });
+        }
     }
     public void loadProducts() {
         String[] fakeTags = {"Textbooks", "COEN"};
@@ -81,13 +125,12 @@ public class WishlistActivity extends AppCompatActivity {
         wishlistItems.add(product4);
 
     }
-    public void loadRecycler(RecyclerView thisRecycler, ArrayList<Wishlist> cat){
+    public void loadRecycler(RecyclerView thisRecycler, List<Product> items){
         layoutManager = new GridLayoutManager(this, 2);
         thisRecycler.setHasFixedSize(true); // set has fixed size
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
-        thisRecycler.setPadding(100,0,0,0);
         // create and set adapter
-        adapter = new WishlistAdapter(cat);
+        adapter = new WishlistAdapter(items,this);
         thisRecycler.setAdapter(adapter);
     }
     public void itemDetails(View v){

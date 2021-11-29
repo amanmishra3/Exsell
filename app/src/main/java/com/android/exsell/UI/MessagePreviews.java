@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.MessagePreviewAdapter;
+import com.android.exsell.listeners.TopBottomNavigationListener;
+import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Preview;
 import com.google.android.material.navigation.NavigationView;
 
@@ -31,6 +34,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     private ArrayList<Preview> previewArrayList;
     private RecyclerView recyclerView;
+    private ImageView search, wishlist, addListing, message, notification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,29 +48,29 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
 
+        navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
+
+        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
+        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
+        wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
+        wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
+        addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
+        addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
+        message = (ImageView) findViewById(R.id.chatButton);
+        message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+        notification = (ImageView) findViewById(R.id.notificationButton);
+        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
         layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawer.openDrawer(GravityCompat.START);
             }
         });
-        layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MessagePreviews.this, SearchBar.class));
-            }
-        });
-        layoutBottom.findViewById(R.id.wishlistButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MessagePreviews.this, WishlistActivity.class));
-            }
-        });
 
         recyclerView = findViewById(R.id.message_preview_list);
         previewArrayList = new ArrayList<>();
 
-        setPreviewInfo(); // TODO replace with getMessagePreviews() when implemented
+        setPreviewInfo(); // TODO replace with getMessagePreviews() when implementedgit
 
         setAdapter();
     }

@@ -19,8 +19,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ItemDb {
@@ -28,6 +31,7 @@ public class ItemDb {
     private static ItemDb itemDb;
     private FirebaseFirestore db;
     private CollectionReference itemCollectionReference;
+    public static Map<String, Object> selectedProduct;
 
     public static ItemDb newInstance() {
         if(itemDb == null)
@@ -38,9 +42,33 @@ public class ItemDb {
         db = FirebaseFirestore.getInstance();
         itemCollectionReference = db.collection("Items");
     }
+
+    public static void clearData() {
+        itemDb = null;
+        selectedProduct = null;
+    }
+    public static void setCurrentProduct(Product item) {
+        selectedProduct = new HashMap<>();
+        selectedProduct.put("title",item.getTitle());
+        selectedProduct.put("description", item.getDescription());
+        selectedProduct.put("price", item.getPrice());
+        selectedProduct.put("productId", item.getProductId());
+        selectedProduct.put("tags", item.getTags());
+        selectedProduct.put("imageUri", item.getImageUri());
+        selectedProduct.put("categories", item.getCategories());
+        selectedProduct.put("createdOn", item.getCreatedOn());
+
+    }
+
+    public CollectionReference getItemCollectionReference() {
+        return itemCollectionReference;
+    }
+
     public void createItem(Product item, createItemsCallback callback) {
         List<String> searchKeywords = searchKeywords(item);
         item.setSearch(searchKeywords);
+        item.setCreatedOn(new Date());
+        Log.i(TAG, " my iamge "+ item.getImageUri());
         itemCollectionReference.add(item)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -113,7 +141,7 @@ public class ItemDb {
         if(params.getSeller() != null)
             query = itemCollectionReference.whereEqualTo("seller", params.getSeller());
         if(params.getCategories() != null)
-            query = itemCollectionReference.whereIn("categories", params.getCategories());
+            query = itemCollectionReference.whereArrayContainsAny("categories", params.getCategories());
         if(params.getProductId() != null)
             query = itemCollectionReference.whereEqualTo("itemId", params.getProductId());
         if(params.getTags() != null)
@@ -152,6 +180,26 @@ public class ItemDb {
                 });
     }
 
+    public void getItemsFromWishList(List<String> wishList, getItemsCallback callback) {
+        Query query = itemCollectionReference;
+        if(wishList == null) {
+            callback.onCallback(null);
+        }
+        query = itemCollectionReference.whereIn("productId", wishList);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    QuerySnapshot querySnapshot = task.getResult();
+                    List<Product> itemsList = querySnapshot.toObjects(Product.class);
+                    callback.onCallback(itemsList);
+                } else {
+                    Log.i(TAG, "no documents ", task.getException());
+                    callback.onCallback(null);
+                }
+            }
+        });
+    }
     public void updateItem(Product item) {
         String itemId = item.getProductId();
         Log.i(TAG, "Item Id "+itemId);

@@ -1,5 +1,7 @@
 package com.android.exsell.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,34 +9,46 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
+import com.android.exsell.UI.ItemListing;
+import com.android.exsell.db.ItemDb;
+import com.android.exsell.models.Product;
 import com.android.exsell.models.Wishlist;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyViewHolder> {
-    private ArrayList<Wishlist> wishlist;
+    private List<Product> wishlist;
     public String TAG = "ProductAdapter";
+    private Context context;
+
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 //        View currentItem;
+        private CardView card;
         TextView textViewTitle, textViewPrice, textViewTags;
         ImageView imageViewIcon;
+        private Product selectedProduct;
 
         public MyViewHolder(View itemView){
             super(itemView);
 //            this.currentItem = itemView;
+            this.card = (CardView) itemView.findViewById(R.id.wishlistCards);
             this.textViewTitle = (TextView) itemView.findViewById(R.id.itemTitle);
             this.textViewPrice = (TextView) itemView.findViewById(R.id.itemPrice);
-            this.textViewTags = (TextView) itemView.findViewById(R.id.itemTags);
+            this.textViewTags = (TextView) itemView.findViewById(R.id.itemDescription);
             this.imageViewIcon = (ImageView) itemView.findViewById(R.id.itemImage);
         }
     }
 
-    public WishlistAdapter(ArrayList<Wishlist> data){
+    public WishlistAdapter(List<Product> data, Context context){
         this.wishlist = data;
+        this.context = context;
     }
 
 
@@ -53,21 +67,40 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
         TextView textViewPrice = holder.textViewPrice;
         TextView textViewTags = holder.textViewTags;
         ImageView imageView = holder.imageViewIcon;
-//        holder.layoutNote.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                Home.itemDetails(products.get(position), position);
-//            }
-//        });
-
-        textViewTitle.setText(wishlist.get(position).getTitle());
+                ItemDb.setCurrentProduct(holder.selectedProduct);
+                Intent intent = new Intent(context, ItemListing.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
+        holder.selectedProduct = wishlist.get(position);
+        String fullTitle = wishlist.get(position).getTitle();
+        if (fullTitle.length() >= 12) {
+            String title = fullTitle.substring(0, 12) + "...";
+            textViewTitle.setText(title);
+        }
+        else{
+            textViewTitle.setText(fullTitle);
+        }
         textViewPrice.setText("$"+wishlist.get(position).getPrice());
 //        textViewTags.setText(wishlist.get(position).getTagString());
-        imageView.setImageResource(wishlist.get(position).getImage());
+        if(wishlist.get(position).getImageUri() != null) {
+            Picasso.get().load(wishlist.get(position).getImageUri()).into(imageView);
+        } else {
+            imageView.setImageResource(wishlist.get(position).getImage());
+        }
     }
-
+    public void clear() {
+        wishlist.clear();
+    }
     @Override
     public int getItemCount() {
-        return wishlist.size();
+        if(wishlist != null)
+            return wishlist.size();
+        return 0;
     }
 }

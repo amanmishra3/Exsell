@@ -48,7 +48,9 @@
                 android:textStyle="bold"
                 android:text="@string/category"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/_10sdp"
+                android:fontFamily="@font/montserrat"
+                />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

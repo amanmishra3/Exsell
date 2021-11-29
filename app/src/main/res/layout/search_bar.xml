@@ -21,7 +21,9 @@
         android:layout_height="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_10sdp"
-        android:hint="@string/search_items" />
+        android:hint="@string/search_items"
+        android:fontFamily="@font/montserrat"
+        />
 
     <ImageView
         android:id="@+id/searchBarSearch"

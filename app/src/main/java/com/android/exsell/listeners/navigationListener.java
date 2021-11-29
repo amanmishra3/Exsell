@@ -14,13 +14,16 @@ import com.android.exsell.UI.Home;
 import com.android.exsell.UI.LoginActivity;
 import com.android.exsell.UI.MyListings;
 import com.android.exsell.UI.UserProfile;
+import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
+import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class navigationListener implements NavigationView.OnNavigationItemSelectedListener {
     private String TAG = "navigationListener";
     Context context;
-
+    static MenuItem previousMenuItem = null;
     public navigationListener(Context context) {
         Log.i(TAG, "const");
         this.context = context;
@@ -28,6 +31,12 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        item.setCheckable(true);
+//        item.setChecked(true);
+//        if (previousMenuItem != null) {
+//            previousMenuItem.setChecked(false);
+//        }
+//        previousMenuItem = item;
         if (item.getItemId() == R.id.signOut) {
             onSignOut();
             return true;
@@ -48,6 +57,7 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
 
     private void home() {
         Log.i(TAG, "Home");
+
         Intent intent = new Intent(context, Home.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -66,6 +76,10 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
         if (mAuth.getCurrentUser() != null) {
             mAuth.signOut();
         }
+        UserDb.clearData();
+        Notifications.clearData();
+        ItemDb.clearData();
+
         Intent intent = new Intent(context, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);

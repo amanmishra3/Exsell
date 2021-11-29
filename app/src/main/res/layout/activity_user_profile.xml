@@ -26,7 +26,8 @@
             android:id="@+id/profilePic"
             android:layout_width="@dimen/_120sdp"
             android:layout_height="@dimen/_120sdp"
-            android:src="@drawable/tanmay" />
+            android:backgroundTint="@color/bumble"
+            android:src="@drawable/addimage" />
 
         <ImageView
             android:id="@+id/addImage"
@@ -41,7 +42,7 @@
 
     <TextView
         android:id="@+id/userName"
-        android:layout_width="@dimen/_150sdp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tanmay Khandelwal"
         android:textStyle="bold"
@@ -49,6 +50,7 @@
         android:layout_below="@+id/frameProfilePic"
         android:textSize="@dimen/_16sdp"
         android:layout_centerHorizontal="true"
+        android:fontFamily="@font/montserrat"
         android:layout_marginTop="@dimen/_15sdp"/>
 
     <LinearLayout
@@ -74,6 +76,7 @@
             android:textColor="@color/black"
             android:text="tkhandelwal@scu.edu"
             android:layout_marginStart="@dimen/_10sdp"
+            android:fontFamily="@font/montserrat"
             android:layout_marginEnd="0dp"/>
 
     </LinearLayout>
@@ -92,14 +95,21 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_phone"/>
 
-        <TextView
+        <EditText
             android:id="@+id/userPhone"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:longClickable="false"
+            android:background="@null"
+            android:fontFamily="@font/montserrat"
+            android:hint="650-650-6005"
+            android:inputType="none"
             android:textColor="@color/black"
-            android:text="650-650-6005"
-            android:layout_marginStart="@dimen/_10sdp"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -107,24 +117,27 @@
         android:id="@+id/linearDOB"
         android:layout_width="@dimen/_150sdp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_below="@+id/linearPhone"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_10sdp">
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/open_calendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_calendar"/>
+            android:src="@drawable/ic_calendar" />
 
         <TextView
             android:id="@+id/userDOB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@color/black"
+            android:layout_marginStart="@dimen/_10sdp"
             android:text="01/01/1996"
-            android:layout_marginStart="@dimen/_10sdp"/>
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat"
+            />
 
     </LinearLayout>
 
@@ -132,24 +145,27 @@
         android:id="@+id/linearRating"
         android:layout_width="@dimen/_150sdp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_below="@+id/linearDOB"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_10sdp">
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_star"/>
+            android:src="@drawable/ic_star"
+            />
 
         <TextView
             android:id="@+id/userRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@color/black"
+            android:layout_marginStart="@dimen/_10sdp"
             android:text="3.5"
-            android:layout_marginStart="@dimen/_10sdp"/>
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat"
+            />
 
     </LinearLayout>
 
@@ -163,6 +179,30 @@
         android:text="UPDATE"
         android:textColor="@color/black"
         android:layout_centerHorizontal="true"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:fontFamily="@font/montserrat"
+        />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        app:srcCompat="@drawable/ic_close"
+        android:tint="@color/black"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/_15sdp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:fontFamily="@font/montserrat"
+        android:text="Edit Profile" />
 
 </RelativeLayout>
