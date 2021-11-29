@@ -151,6 +151,7 @@
                             app:layout_constraintTop_toBottomOf="@+id/tags">
 
                             <Button
+                                android:id="@+id/contact_seller"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="5dp"

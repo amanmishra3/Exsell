@@ -7,9 +7,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,12 +24,15 @@ import com.android.exsell.db.UserDb;
 import com.android.exsell.listeners.BasicOnClickListeners;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
+import com.android.exsell.models.Users;
+import com.android.exsell.services.SendMessage;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.auth.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +45,21 @@ public class ItemListing extends AppCompatActivity {
     private Map<String, Object> product;
     private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification;
     private TextView title, description, price, tags;
+    private Button contact_seller;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            //your codes here
+
+        }
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_item_listing);
         product = ItemDb.selectedProduct;
@@ -54,6 +72,7 @@ public class ItemListing extends AppCompatActivity {
         price = (TextView) parent.findViewById(R.id.price);
         description = (TextView) parent.findViewById(R.id.description);
         tags = (TextView) parent.findViewById(R.id.tags);
+        contact_seller =  (Button) parent.findViewById(R.id.contact_seller);
         addToWishlist = (ImageView) parent.findViewById(R.id.add_to_wishlist);
         // <--
         layoutTop = findViewById(R.id.layoutTopBar);
@@ -102,6 +121,21 @@ public class ItemListing extends AppCompatActivity {
             }
         });
 
+        contact_seller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userDb.getUser((String)product.get("seller"), new UserDb.getUserCallback() {
+                    @Override
+                    public void onCallback(Users user) {
+                        if(user != null) {
+                            SendMessage.sendMessage(user.getRegisterationToken(), " Seller Notification", UserDb.myUser.get("name") + "wants to buy" + product.get("title"), "intent", new Date());
+                        }
+                    }
+                });
+            }
+        });
+
+//        SendMessage.sendMessage(UserDb.getMyRegisterationToken(), "hello", "Check 123", "intent", new Date());
 
     }
     @Override

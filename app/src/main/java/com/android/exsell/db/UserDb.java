@@ -48,6 +48,10 @@ public class UserDb {
         }
     }
 
+    public static String getMyRegisterationToken() {
+        return myRegisterationToken;
+    }
+
     public static void clearData() {
         myUser = null;
         userDb = null;
@@ -73,6 +77,7 @@ public class UserDb {
                 myUser.put("userId", user.getUserId());
                 myUser.put("wishlist",user.getWishlist());
                 myUser.put("email", user.getEmail());
+                myRegisterationToken = user.getRegisterationToken();
                 if(user.getDob() != null)
                     myUser.put("dob", user.getDob());
                 if(user.getContact() != null)
@@ -157,7 +162,7 @@ public class UserDb {
         Log.i(TAG, "Item Id "+user.get("userId"));
         DocumentReference documentReference = userCollectionReference.document(id);
         documentReference.update(user);
-        userDb.setMyUser();
+//        userDb.setMyUser();
         if(uri != null) {
             myStorage.uploadImage(uri, id, 1, new MyFirebaseStorage.downloadUrlCallback() {
                 @Override
