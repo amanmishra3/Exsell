@@ -5,40 +5,70 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
-    android:background="#EAE1E1"
+    android:background="@color/white"
     android:paddingTop="8dp">
 
     <ImageView
         android:id="@+id/notificationImage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_bell"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
         android:id="@+id/tv_notification"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginTop="@dimen/_5sdp"
         android:text="This is the sample notification display. Just for testing purpose."
         android:textColor="@color/black"
-        android:textSize="@dimen/_10ssp"
-        android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/_11ssp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/notificationImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/notificationImage" />
+
+    <TextView
+        android:id="@+id/tv_notificationMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:text="Message"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_8ssp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toEndOf="@+id/notificationImage"
+        app:layout_constraintTop_toBottomOf="@id/tv_notification"/>
+
+    <TextView
+        android:id="@+id/tv_notificationDateTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:text="10/10/2021"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_6ssp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toEndOf="@+id/notificationImage"
+        app:layout_constraintTop_toBottomOf="@id/tv_notificationMessage"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:background="@color/colorThemeYellow"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tv_notificationDateTime"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
