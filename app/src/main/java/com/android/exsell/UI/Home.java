@@ -18,6 +18,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -26,6 +28,7 @@ import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.exsell.R;
@@ -53,13 +56,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback {
+public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     // side navigation
     private String TAG = "Home";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
+    HorizontalProductAdapter horizontalProductAdapterSearch;
 
     // categories
     LinearLayout ll;
@@ -81,6 +87,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
     private int noteClickedPosition = -1;
+    private TextView newHeader, recommendedHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +103,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         Product p = new Product();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_home);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -105,7 +111,8 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         fragmentTransaction.commit();
 
         // side navigation
-        layoutTop = (LinearLayout) findViewById(R.id.layoutTopBar);
+        newHeader = (TextView) findViewById(R.id.new_header);
+        recommendedHeader = (TextView) findViewById(R.id.recommended_header);
         layoutBottom = (LinearLayout) findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayoutHome);
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraint_home);
@@ -116,8 +123,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
 
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
 
-//        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
-//        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
@@ -125,6 +130,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
         categorySelected("All");
+
         itemDb.getAllItems(new ItemDb.getItemsCallback() {
             @Override
             public void onCallback(java.util.List<Product> itemsList) {
@@ -138,7 +144,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
                 }
             }
         });
-//        List<String> notify = Arrays.asList("This is a notification 1","This is a notification 2","This is a notification 3","This is a notification 4","This is a notification 5");
+
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
@@ -157,9 +163,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     protected void onStart() {
         super.onStart();
         navigationView.setCheckedItem(R.id.home);
-
-
-
     }
 
     @Override
@@ -207,7 +210,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         adapter = new NotificationAdapter(products, this);
         thisRecycler.setAdapter(adapter);
     }
-
 
     // recycler setup
     public void loadRecycler(RecyclerView thisRecycler, List<Product> products, int columns) {
@@ -299,6 +301,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
                 } else {
                     // add cards to recyclers
                     Toast.makeText(getApplicationContext(), "Loading..  " + category +" " + itemsList.size(), Toast.LENGTH_LONG).show();
+                    recommendedProducts = (ArrayList<Product>) itemsList;
                     loadRecyclerHorizontal(recommendedRecycler, itemsList, 1);
                 }
             }
@@ -322,9 +325,38 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     @Override
     public void onSearch(String search) {
         Log.i(TAG,"onSearch received "+search);
+        newlyListedRecycler.setVisibility(View.GONE);
+        newHeader.setVisibility(View.GONE);
+        recommendedHeader.setText("Searched Items...");
+        loadRecyclerHorizontal(recommendedRecycler, searchProducts(recommendedProducts, search), 1);
+    }
+
+    public List<Product> searchProducts(List<Product> recommendedProducts, String searchKeyword) {
+        List<Product> searchResult;
+        if(searchKeyword.trim().isEmpty()) {
+            searchResult = recommendedProducts;
+        } else {
+            ArrayList<Product> temp = new ArrayList<>();
+            for(Product product : recommendedProducts) {
+                if(product.getTitle().toLowerCase().contains(searchKeyword.toLowerCase())
+                        || product.getDescription().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                    temp.add(product);
+                }
+            }
+            searchResult = temp;
+            Log.i("Size of temp products: ", String.valueOf(searchResult.size()));
+        }
+        return searchResult;
     }
 
     public void setNavigationHeader() {
 
+    }
+
+    @Override
+    public void onSearchBack() {
+        newlyListedRecycler.setVisibility(View.VISIBLE);
+        newHeader.setVisibility(View.VISIBLE);
+        recommendedHeader.setText("Recommended For You");
     }
 }

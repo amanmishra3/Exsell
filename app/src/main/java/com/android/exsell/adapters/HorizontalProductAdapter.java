@@ -2,6 +2,8 @@ package com.android.exsell.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +23,19 @@ import com.android.exsell.models.Product;
 import com.android.exsell.listeners.productListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalProductAdapter.MyViewHolder> {
     private List<Product> products;
+    private List<Product> productsSource;
     private String TAG = "HorizontalProductAdapter";
     private Context context;
+    private Timer timer;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-//        View currentItem;
         CardView card;
         TextView textViewTitle, textViewPrice, textViewDescription;
         ImageView imageViewIcon;
@@ -48,6 +54,7 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
     public HorizontalProductAdapter(List<Product> data, Context context){
         this.products = data;
         this.context = context;
+        this.productsSource = data;
     }
 
 

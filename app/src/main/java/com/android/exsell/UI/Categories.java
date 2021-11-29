@@ -3,11 +3,14 @@ package com.android.exsell.UI;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,18 +19,28 @@ import android.widget.LinearLayout;
 
 import com.android.exsell.R;
 import com.android.exsell.adapters.CategoryAdapter;
+import com.android.exsell.adapters.NotificationAdapter;
+import com.android.exsell.fragments.FragmentSearchBar;
+import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Category;
+import com.android.exsell.models.Notifications;
+import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
-public class Categories extends AppCompatActivity {
+public class Categories extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback {
 
+    private String TAG = "Categories";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
+    RecyclerView notificationRecycler;
     private ImageView search, wishlist, addListing, message, notification;
     public static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -38,28 +51,27 @@ public class Categories extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_categories);
-        layoutTop = findViewById(R.id.layoutTopBar);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameTopBar, new FragmentTopBar());
+        fragmentTransaction.commit();
+
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
-        search = (ImageView) layoutTop.findViewById(R.id.searchButton);
-        search.setOnClickListener(new TopBottomNavigationListener(R.id.searchButton, getApplicationContext()));
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
-        notification = (ImageView) findViewById(R.id.notificationButton);
-        notification.setOnClickListener(new TopBottomNavigationListener(R.id.notificationButton, getApplicationContext()));
-        layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
-            }
-            
-        });
+
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
+
         loadProducts();
         categoryRecycler = (RecyclerView) findViewById(R.id.recyclerViewCategoryTiles);
         categoryRecycler.setNestedScrollingEnabled(false);
@@ -67,6 +79,17 @@ public class Categories extends AppCompatActivity {
         adapter = new CategoryAdapter(categoryNames);
         categoryRecycler.setAdapter(adapter);
     }
+
+    public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
+        layoutManager = new GridLayoutManager(this, columns);
+        thisRecycler.setHasFixedSize(true); // set has fixed size
+        thisRecycler.setLayoutManager(layoutManager); // set layout manager
+
+        // create and set adapter
+        adapter = new NotificationAdapter(products, this);
+        thisRecycler.setAdapter(adapter);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -98,6 +121,30 @@ public class Categories extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ItemListing.class);
         // pass data about which product is clicked
         startActivity(intent);
+    }
+
+    @Override
+    public void onHamburgerClickCallback() {
+        Log.i(TAG,"onHamburgerClickCallback");
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onNotificationBellClick() {
+        Log.i(TAG,"onNotificationBellClick");
+        drawer.closeDrawer(GravityCompat.START, false);
+        drawer.openDrawer(GravityCompat.END);
+    }
+
+    public void setNavigationHeader() {
+
+    }
+
+    @Override
+    public void onSearch(String search) {
+        Log.i(TAG,"onSearch received "+search);
+        //startActivity(new Intent(getApplicationContext(), Home.class));
     }
 
 }
