@@ -50,6 +50,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -197,6 +198,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                                                     }
                                                     if(!sameMessage) {
                                                         previewArrayList.add(preview);
+                                                        Collections.sort(previewArrayList);
                                                         adapter.notifyItemInserted(previewArrayList.size() - 1);
                                                     }
                                                 } else {
