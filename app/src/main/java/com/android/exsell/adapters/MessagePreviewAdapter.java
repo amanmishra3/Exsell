@@ -102,6 +102,7 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
         holder.nameText.setText(name);
         holder.messageText.setText(message);
         holder.deliveredAt.setText(time);
+        // TODO implement profilePic
 //        holder.profilePic.setImage(profilePic);
     }
 
