@@ -54,7 +54,8 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     NavigationView navigationView;
     RecyclerView notificationRecycler;
     private RecyclerView.LayoutManager layoutManager;
-    public static RecyclerView.Adapter adapter;
+    public static RecyclerView.Adapter notificationAdapter;
+    MessagePreviewAdapter adapter;
 
     private ArrayList<Preview> previewArrayList;
     private RecyclerView recyclerView;
@@ -90,10 +91,8 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         recyclerView = findViewById(R.id.message_preview_list);
-        previewArrayList = new ArrayList<>();
 
-//        setPreviewInfo();  // use sample data
-        getMessagePreviews(); // use firebase data
+        getMessagePreviews();
 
         setAdapter();
     }
@@ -104,34 +103,21 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         thisRecycler.setLayoutManager(layoutManager); // set layout manager
 
         // create and set adapter
-        adapter = new NotificationAdapter(products, this);
-        thisRecycler.setAdapter(adapter);
+        notificationAdapter = new NotificationAdapter(products, this);
+        thisRecycler.setAdapter(notificationAdapter);
     }
 
     private void setAdapter() {
         Log.i(TAG, "setAdapter");
-        MessagePreviewAdapter adapter = new MessagePreviewAdapter(previewArrayList, this);
+        adapter = new MessagePreviewAdapter(previewArrayList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
 
-    public void setPreviewInfo() {
-        Log.i(TAG, "setPreviewInfo");
-        Calendar timeStamp = Calendar.getInstance();
-        previewArrayList.add(new Preview("1", "andrew", "hello there", timeStamp, null));
-        previewArrayList.add(new Preview("2", "jack", "my name is jack", timeStamp, null));
-        previewArrayList.add(new Preview("3", "paul", "wheres the gabagoo", timeStamp, null));
-        previewArrayList.add(new Preview("4", "sam", "how much?????", timeStamp, null));
-    }
-
     public void getMessagePreviews() {
         Log.i(TAG, "getMessagePreviews");
-        /*
-        TODO  fix ui to update when previewArrayList<messages> changes
-         */
-        ;
         mAuth = FirebaseAuth.getInstance();
         String uidSelf = mAuth.getCurrentUser().getUid();
 
@@ -156,6 +142,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                                 String name = doc.getString("otherName");
                                 preview.setName(name);
 
+                                // TODO implement profilePic query
 //                        Image profilePic = (Image) doc.get("otherPic");
 //                        preview.setProfilePic(profilePic);
 
@@ -174,13 +161,14 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                                                 }
                                                 if (snapshot != null && snapshot.exists()) {
                                                     String message = snapshot.getString("previewMessage");
-                                                    Log.i(TAG, preview.getMessage() + " ");
                                                     preview.setMessage(message);
 
-                                                    Calendar calendar = Calendar.getInstance();
-                                                    Map<String, Object> map = (Map<String, Object>) snapshot.get("previewTimeStamp");
-                                                    calendar.setTime(((Timestamp) map.get("time")).toDate());
-                                                    preview.setTimeStamp(calendar);
+                                                    if(!message.equals(null) && !message.equals("")) {
+                                                        Calendar calendar = Calendar.getInstance();
+                                                        Map<String, Object> map = (Map<String, Object>) snapshot.get("previewTimeStamp");
+                                                        calendar.setTime(((Timestamp) map.get("time")).toDate());
+                                                        preview.setTimeStamp(calendar);
+                                                    }
 
                                                     boolean sameMessage = false;
                                                     for(Preview p : previewArrayList) {

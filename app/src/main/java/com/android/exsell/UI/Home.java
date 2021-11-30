@@ -34,7 +34,6 @@ import android.widget.Toast;
 import com.android.exsell.R;
 import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.adapters.NotificationAdapter;
-import com.android.exsell.chat.MessagePreviews;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
