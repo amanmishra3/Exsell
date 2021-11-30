@@ -57,8 +57,8 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     private View parent;
     private UserDb userDb;
     private Map<String, Object> product;
-    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification;
-    private TextView title, description, price, tags;
+    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification, profilePic;
+    private TextView title, description, price, tags, userEmail, userName;
     private Button contact_seller;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +208,10 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         Log.i(TAG,"onHamburgerClickCallback");
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
+        userName = (TextView) drawer.findViewById(R.id.userNameNav);
+        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+        getUserDetails();
     }
 
     @Override
@@ -230,5 +234,12 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     @Override
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
+    }
+    public void getUserDetails(){
+        userName.setText((String) UserDb.myUser.get("name"));
+        userEmail.setText((String) UserDb.myUser.get("email"));
+        if(UserDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        }
     }
 }

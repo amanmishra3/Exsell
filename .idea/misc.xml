@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/activity_categories.xml" value="0.2966666666666667" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_item_listing.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/activity_item_listing_diff.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_item_listing_old.xml" value="0.20969202898550723" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1157548125633232" />
         <entry key="app/src/main/res/layout/activity_my_listings.xml" value="0.1046875" />

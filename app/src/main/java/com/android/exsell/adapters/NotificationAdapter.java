@@ -34,7 +34,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         //        View currentItem;
         private ConstraintLayout notificationTile;
         TextView textViewTitle, textViewPrice, textViewTags;
-        ImageView imageViewIcon;
+        ImageView imageViewIcon, notificationIcon;
         private JSONObject selectedNotification;
 
         public MyViewHolder(View itemView){
@@ -43,6 +43,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             this.notificationTile = (ConstraintLayout) itemView.findViewById(R.id.notification_main);
             this.textViewTitle = (TextView) itemView.findViewById(R.id.tv_notification);
 //            this.imageViewIcon = (ImageView) itemView.findViewById(R.id.itemImage);
+            this.notificationIcon = (ImageView) itemView.findViewById(R.id.notificationButton);
         }
     }
 

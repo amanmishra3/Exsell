@@ -61,9 +61,19 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_item_tile_horizontal, parent, false);
-        MyViewHolder myViewHolder = new MyViewHolder(view);
+        String className = context.getClass().getName();
+        Log.i(TAG, "Horizontal Product Adapter called by " + className);
+        MyViewHolder myViewHolder;
+        if (className.equals("com.android.exsell.UI.MyListings") ) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.layout_item_tile_horizontal_my_listing, parent, false);
+            myViewHolder = new MyViewHolder(view);
+        }
+        else{
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.layout_item_tile_horizontal, parent, false);
+            myViewHolder = new MyViewHolder(view);
+        }
         return myViewHolder;
     }
 

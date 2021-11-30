@@ -5,7 +5,7 @@
     android:id="@+id/navigation_bar_header_relativelayout">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profilePic"
+        android:id="@+id/profilePicNav"
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginStart="@dimen/_16sdp"
@@ -13,12 +13,12 @@
         android:src="@drawable/tanmay"/>
 
     <TextView
-        android:id="@+id/userName"
+        android:id="@+id/userNameNav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tanmay Kandelwal"
         android:textColor="@color/black"
-        android:layout_below="@+id/profilePic"
+        android:layout_below="@+id/profilePicNav"
         android:layout_marginTop="@dimen/_5sdp"
         android:textStyle="bold"
         android:layout_marginStart="@dimen/_16sdp"
@@ -27,12 +27,12 @@
         />
 
     <TextView
-        android:id="@+id/userEmail"
+        android:id="@+id/userEmailNav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TKandelwal@scu.edu"
         android:textColor="@color/black"
-        android:layout_below="@+id/userName"
+        android:layout_below="@+id/userNameNav"
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginStart="@dimen/_16sdp"
         android:textSize="@dimen/_12ssp"
@@ -41,7 +41,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_below="@+id/userEmail"
+        android:layout_below="@+id/userEmailNav"
         style="@style/line"/>
 
 </RelativeLayout>
