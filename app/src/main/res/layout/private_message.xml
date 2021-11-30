@@ -53,16 +53,6 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/line"
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:paddingTop="5dip"
-        android:gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/pmTopBar"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#000" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/private_message"
         android:layout_width="match_parent"
@@ -71,7 +61,7 @@
         app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line" />
+        app:layout_constraintTop_toBottomOf="@+id/pmTopBar" />
 
     <TextView
         android:id="@+id/text_indicator"
