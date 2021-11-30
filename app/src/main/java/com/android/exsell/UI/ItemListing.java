@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -28,20 +27,17 @@ import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
-import com.android.exsell.listeners.BasicOnClickListeners;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Users;
 import com.android.exsell.services.SendMessage;
 import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.auth.User;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +55,9 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     private Map<String, Object> product;
     private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification, profilePic;
     private TextView title, description, price, tags, userEmail, userName;
-    private Button contact_seller;
+    private Button contact_seller, meet_seller;
+    private com.google.firebase.firestore.GeoPoint seller_location;
+    Double latitude, longitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +89,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         description = (TextView) parent.findViewById(R.id.description);
         tags = (TextView) parent.findViewById(R.id.tags);
         contact_seller =  (Button) parent.findViewById(R.id.contact_seller);
+        meet_seller = (Button) parent.findViewById(R.id.meetSellerBtn);
         addToWishlist = (ImageView) parent.findViewById(R.id.add_to_wishlist);
         // <--
 
@@ -125,6 +124,10 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         String stringTags = String.join(", ", listTags);
         tags.setText("Tags: "+stringTags);
 
+        seller_location = (com.google.firebase.firestore.GeoPoint) product.get("location");
+        latitude = seller_location.getLatitude();
+        longitude = seller_location.getLongitude();
+
         checkWishList();
 
         addToWishlist.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +148,16 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                         }
                     }
                 });
+            }
+        });
+
+        meet_seller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemListing.this, MapActivity.class);
+                intent.putExtra("seller_latitude", String.valueOf(latitude));
+                intent.putExtra("seller_longitude", String.valueOf(longitude));
+                startActivity(intent);
             }
         });
     }
@@ -235,6 +248,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
     }
+
     public void getUserDetails(){
         userName.setText((String) UserDb.myUser.get("name"));
         userEmail.setText((String) UserDb.myUser.get("email"));

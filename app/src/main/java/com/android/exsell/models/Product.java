@@ -11,12 +11,14 @@ import android.util.Base64;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class Product {
     List<String> categories;
     List<String> search;
     Date createdOn;
+    com.google.firebase.firestore.GeoPoint location;
 
     public Product() { };
     public Product(String id, String title, int price, int image, List<String> tags){
@@ -156,8 +159,15 @@ public class Product {
         this.createdOn = createdOn;
     }
 
+    public GeoPoint getLocation() {
+        return location;
+    }
 
-//    public Bitmap decodeImage(String imgString) {
+    public void setLocation(GeoPoint location) {
+        this.location = location;
+    }
+
+    //    public Bitmap decodeImage(String imgString) {
 //        byte[] bytes= Base64.decode(imgString,Base64.DEFAULT);
 //        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
 //        return bitmap;

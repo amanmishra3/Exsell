@@ -178,7 +178,8 @@
                                 android:layout_marginHorizontal="5dp"
                                 android:layout_weight="1"
                                 android:backgroundTint="@color/colorThemeYellow"
-                                android:text="Meet Seller"
+                                android:id="@+id/meetSellerBtn"
+                                android:text="See on Map"
                                 android:textColor="@color/black"
                                 android:fontFamily="@font/montserrat"
                                 />
