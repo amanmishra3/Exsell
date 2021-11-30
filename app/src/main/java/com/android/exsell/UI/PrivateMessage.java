@@ -124,66 +124,37 @@ public class PrivateMessage extends AppCompatActivity {
         Log.i(TAG, "sendMessage");
         String message = newMessage.getText().toString();
         if (!message.isEmpty()) {
-            createMessage(message, null);
+            createMessage(message);
             newMessage.setText("");
         }
     }
 
-    public void createMessage(String m, String mid) {
-        Log.i(TAG, "createMessage " +mid);
+    public void createMessage(String m) {
+        Log.i(TAG, "createMessage " + m);
         mAuth = FirebaseAuth.getInstance();
-        String messageid = mid == null ? messageId : mid;
 //      Add message to database
         Message message = new Message();
         message.setMessage(m);
         message.setSender(mAuth.getCurrentUser().getUid());
         message.setTimeStamp(Calendar.getInstance());
 
-        FirebaseFirestore.getInstance().collection("messages").document(messageid)
+        FirebaseFirestore.getInstance().collection("messages").document(messageId)
                 .collection("messages").document().set(message);
 
 //      Update the most recent message in database
         Map<String, Object> preview = new HashMap<>();
         preview.put("previewMessage", m);
         preview.put("previewTimeStamp", Calendar.getInstance());
-        preview.put("messageId", messageid);
+        preview.put("messageId", messageId);
 
-        FirebaseFirestore.getInstance().collection("messages").document(messageid).set(preview);
+        FirebaseFirestore.getInstance().collection("messages").document(messageId).set(preview);
 
 //      Scroll to the bottom of the chat
-        if(mid == null) {
-            recyclerView.scrollToPosition(messageArrayList.size() - 1);
-        }
+        recyclerView.scrollToPosition(messageArrayList.size() - 1);
     }
 
     public void onClick(View view) {
         Intent intent = new Intent(this, MessagePreviews.class);
         startActivity(intent);
-    }
-
-    public void createThread(String selfUid, String otherUid, String selfName, String otherName) {
-        String newThreadId;
-        if (selfUid.compareTo(otherUid) < 0) {
-            newThreadId = otherUid + selfUid;
-        } else {
-            newThreadId = selfUid + otherUid;
-        }
-        Map<String, Object> selfEntry = new HashMap<>();
-        Map<String, Object> otherEntry = new HashMap<>();
-
-        selfEntry.put("messageId", newThreadId);
-        otherEntry.put("messageId", newThreadId);
-
-        selfEntry.put("otherName", otherName);
-        otherEntry.put("otherName", selfName);
-
-        // TODO implement profilePic query
-        selfEntry.put("otherPic", "");
-        otherEntry.put("otherPic", "");
-
-        FirebaseFirestore.getInstance().collection("Users").document(selfUid)
-                .collection("messages").document(newThreadId).set(selfEntry);
-        FirebaseFirestore.getInstance().collection("Users").document(otherUid)
-                .collection("messages").document(newThreadId).set(otherEntry);
     }
 }

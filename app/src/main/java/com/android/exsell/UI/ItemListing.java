@@ -268,7 +268,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
 
         String messageId = userId.compareTo(sellerId) < 0 ? userId + sellerId: sellerId + userId;
 
-        String message = "Hello " + seller + ", I am interested in buying " + product.get("title");
+        String message = "Hello " + seller + ", I am interested in buying your " + product.get("title");
         String sender = userId;
         Calendar timeStamp = Calendar.getInstance();
 
@@ -290,6 +290,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         FirebaseFirestore.getInstance().collection("messages").document(messageId)
                 .set(newMessagePreview);
 
+        // TODO implement profilePic
         Map<String, Object> selfThread = new HashMap<>();
         selfThread.put("messageId", messageId);
         selfThread.put("otherName", otherName);
@@ -297,6 +298,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         FirebaseFirestore.getInstance().collection("Users").document(selfUid)
                 .collection("messages").document(messageId).set(selfThread);
 
+        // TODO implement profilePic
         Map<String, Object> otherThread = new HashMap<>();
         otherThread.put("messageId", messageId);
         otherThread.put("otherName", selfName);

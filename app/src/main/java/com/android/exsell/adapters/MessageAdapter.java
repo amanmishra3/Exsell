@@ -91,15 +91,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 && timeStamp.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
                 && timeStamp.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
 
-            String hour = String.valueOf(timeStamp.get(Calendar.HOUR));
+            String hour;
+            if(timeStamp.get(Calendar.HOUR_OF_DAY) > 12)
+                hour = String.valueOf(timeStamp.get(Calendar.HOUR));
+            else
+                hour = String.valueOf(timeStamp.get(Calendar.HOUR_OF_DAY));
             String min = String.valueOf(timeStamp.get(Calendar.MINUTE));
             if(min.length()==1)
                 min = "0" + min;
-            String sec = String.valueOf(timeStamp.get(Calendar.SECOND));
-            if(sec.length()==1)
-                sec = "0" + sec;
+            String ampm = timeStamp.get(Calendar.AM_PM) == 0 ? "AM": "PM";
 
-            time = hour + ":" + min + ":" + sec;
+            time = hour + ":" + min + " " + ampm;
         } else {
             String day = String.valueOf(timeStamp.get(Calendar.DATE));
             String month = String.valueOf(timeStamp.get(Calendar.MONTH));
