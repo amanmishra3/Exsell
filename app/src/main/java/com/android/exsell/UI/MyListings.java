@@ -171,6 +171,7 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         adapter = new HorizontalProductAdapter(products, this);
         thisRecycler.setAdapter(adapter);
     }
+
     public void itemDetails(View v) {
         Intent intent = new Intent(getApplicationContext(), ItemListing.class);
         // pass data about which product is clicked
