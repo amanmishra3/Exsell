@@ -55,7 +55,9 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     private Map<String, Object> product;
     private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification, profilePic;
     private TextView title, description, price, tags, userEmail, userName;
-    private Button contact_seller;
+    private Button contact_seller, meet_seller;
+    private com.google.firebase.firestore.GeoPoint seller_location;
+    Double latitude, longitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +89,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         description = (TextView) parent.findViewById(R.id.description);
         tags = (TextView) parent.findViewById(R.id.tags);
         contact_seller =  (Button) parent.findViewById(R.id.contact_seller);
+        meet_seller = (Button) parent.findViewById(R.id.meetSellerBtn);
         addToWishlist = (ImageView) parent.findViewById(R.id.add_to_wishlist);
         // <--
 
@@ -121,6 +124,12 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         String stringTags = String.join(", ", listTags);
         tags.setText("Tags: "+stringTags);
 
+        seller_location = (com.google.firebase.firestore.GeoPoint) product.get("location");
+        if(seller_location != null) {
+            latitude = seller_location.getLatitude();
+            longitude = seller_location.getLongitude();
+        }
+
         checkWishList();
 
         addToWishlist.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +151,16 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                         }
                     }
                 });
+            }
+        });
+
+        meet_seller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemListing.this, MapActivity.class);
+                intent.putExtra("seller_latitude", String.valueOf(latitude));
+                intent.putExtra("seller_longitude", String.valueOf(longitude));
+                startActivity(intent);
             }
         });
     }
@@ -232,6 +251,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
     }
+
     public void getUserDetails(){
         userName.setText((String) UserDb.myUser.get("name"));
         userEmail.setText((String) UserDb.myUser.get("email"));
