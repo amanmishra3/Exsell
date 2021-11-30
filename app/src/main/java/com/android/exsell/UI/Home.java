@@ -70,11 +70,12 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
-    private ImageView search, wishlist, addListing, message, notification, profilePic;
+    private ImageView search, wishlist, addListing, message, notification, profilePic, hamburger;
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
     private int noteClickedPosition = -1;
     private TextView newHeader, recommendedHeader, userName, userEmail;
+    private int flag= 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,14 +142,20 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         ll = (LinearLayout) findViewById(R.id.linear);
         loadCategoryImages();
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.nav_open, R.string.nav_close) {
+
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
+                if (flag == 1){
 
-                notification = (ImageView) findViewById(R.id.notificationButton);
-                notification.setImageResource(R.drawable.ic_notifications);
-
-
-
+                hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                hamburger.setImageResource(R.drawable.ic_left_navigation_menu_button);
+                flag = 0;
+                }
+                else if(flag == 2){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications);
+                    flag = 0;
+                }
             }
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -157,6 +164,13 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
                 notification = (ImageView) findViewById(R.id.notificationButton);
                 notification.setImageResource(R.drawable.ic_notifications_black_24dp);
                 onNotificationBellClick();
+                flag = 2;
+                }
+                else if(drawer.isDrawerOpen(GravityCompat.START)){
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_menu_open);
+                    onHamburgerClickCallback();
+                    flag = 1;
                 }
 
             }
