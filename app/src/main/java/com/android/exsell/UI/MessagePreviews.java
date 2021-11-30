@@ -253,7 +253,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                                         String name = (String) tmp.get("name");
                                         String msg = doc.getString("previewMessage");
                                         Log.i(TAG, "adapter data "+messageId+" "+name+ " "+msg);
-                                        previewArrayList.add(new Preview(messageId, name, "msg", Calendar.getInstance(), null));
+                                        previewArrayList.add(new Preview(messageId, name, msg, Calendar.getInstance(), null));
                                     }
                                     setAdapter();
                                 }

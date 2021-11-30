@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -246,6 +247,12 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         String chatId = userId + sellerId;
         PrivateMessage p = new PrivateMessage();
         p.createMessage(message, chatId);
-        userDb.setupChatId(userId, sellerId, (String) UserDb.myUser.get("name"), seller, null, null);
+        Toast.makeText(this,"Contactiong Seller Please wait.. ", Toast.LENGTH_LONG).show();
+        userDb.setupChatId(userId, sellerId, (String) UserDb.myUser.get("name"), seller, null, null, new UserDb.getChatCallback() {
+            @Override
+            public void onCallback(boolean done) {
+                startActivity(new Intent(getApplicationContext(), MessagePreviews.class));
+            }
+        });
     }
 }

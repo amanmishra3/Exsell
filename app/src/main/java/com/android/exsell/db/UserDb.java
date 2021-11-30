@@ -220,18 +220,29 @@ public class UserDb {
 //        Notifications.updateNotifications();
     }
 
-    public void setupChatId(String userId, String sellerId, String buyer, String seller, String imageSeller, String imageBuyer) {
+    public void setupChatId(String userId, String sellerId, String buyer, String seller, String imageSeller, String imageBuyer, getChatCallback callback) {
         String chatId = userId + sellerId;
         Map<String, Object> mp = new HashMap<>();
         mp.put("messageId", chatId);
         mp.put("otherNames", seller);
         mp.put("otherPic", imageSeller);
         DocumentReference documentReference = userCollectionReference.document(userId).collection("messages").document(chatId);
-        documentReference.set(mp);
-        documentReference = userCollectionReference.document(sellerId).collection("messages").document(chatId);
-        mp.put("otherNames", buyer);
-        mp.put("otherPic", imageBuyer);
-        documentReference.set(mp);
+        documentReference.set(mp)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        DocumentReference documentReference2 = userCollectionReference.document(sellerId).collection("messages").document(chatId);
+                        mp.put("otherNames", buyer);
+                        mp.put("otherPic", imageBuyer);
+                        documentReference2.set(mp)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        callback.onCallback(true);
+                                    }
+                                });
+                    }
+                });
 
     }
 
@@ -269,6 +280,6 @@ public class UserDb {
         void onCallback(List<String> notifications);
     }
     public interface getChatCallback {
-        void onCallback(List<String> chatIds);
+        void onCallback(boolean done);
     }
 }
