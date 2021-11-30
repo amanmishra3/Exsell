@@ -91,6 +91,27 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         loadProducts();
+        Product searchParam = new Product();
+        if(mAuth.getCurrentUser() != null)
+            searchParam.setSeller(mAuth.getCurrentUser().getUid());
+        itemDb.searchItems(searchParam, new ItemDb.getItemsCallback() {
+            @Override
+            public void onCallback(java.util.List<Product> itemsList) {
+                if(itemsList == null || itemsList.size() == 0) {
+                    Toast.makeText(getApplicationContext(), "You Have 0 items Listed for Sale please add some", Toast.LENGTH_LONG).show();
+                    noitem.setVisibility(View.VISIBLE);
+                    newlyListedRecycler = (RecyclerView) findViewById(R.id.recyclerViewMyTiles);
+                    loadRecycler(newlyListedRecycler, null);
+                } else  {
+                    noitem.setVisibility(View.INVISIBLE);
+                    // add cards to recyclers
+                    newlyListedRecycler = (RecyclerView) findViewById(R.id.recyclerViewMyTiles);
+                    newlyListedRecycler.setNestedScrollingEnabled(false);
+                    newProducts = (ArrayList<Product>) itemsList;
+                    loadRecycler(newlyListedRecycler, itemsList); // loads fake products into arraylists for recyclers
+                }
+            }
+        });
     }
 
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
