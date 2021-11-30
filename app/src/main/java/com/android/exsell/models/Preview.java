@@ -5,26 +5,30 @@ import android.media.Image;
 import java.util.Calendar;
 
 public class Preview {
-    String uid;
+    String messageId;
     String name;
     String message;
     Calendar timeStamp;
     Image profilePic;
 
-    public Preview(String uid, String name, String message, Calendar timeStamp, Image profilePic) {
-        this.uid = uid;
+    public Preview(String messageId, String name, String message, Calendar timeStamp, Image profilePic) {
+        this.messageId = messageId;
         this.name = name;
         this.message = message;
         this.timeStamp = timeStamp;
         this.profilePic = profilePic;
     }
 
-    public String getUid() {
-        return uid;
+    public Preview() {
+
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getName() {

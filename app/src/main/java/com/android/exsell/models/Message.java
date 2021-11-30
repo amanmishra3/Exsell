@@ -13,6 +13,10 @@ public class Message {
         this.timeStamp = timeStamp;
     }
 
+    public Message() {
+
+    }
+
     public String getMessage() {
         return message;
     }

@@ -79,6 +79,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         String message = messageArrayList.get(position).getMessage();
         Calendar timeStamp = messageArrayList.get(position).getTimeStamp();
+        Log.i(TAG, timeStamp.getTime().toString());
 
         String time;
 
@@ -100,7 +101,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             String month = String.valueOf(timeStamp.get(Calendar.MONTH));
             String year = String.valueOf(timeStamp.get(Calendar.YEAR));
 
-            time = day + "/" + month + "/" + year;
+            time = month + "/" + day + "/" + year;
         }
 
         if (getItemViewType(position) == TYPE_OTHER) {
