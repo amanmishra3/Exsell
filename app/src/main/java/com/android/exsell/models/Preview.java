@@ -4,7 +4,7 @@ import android.media.Image;
 
 import java.util.Calendar;
 
-public class Preview {
+public class Preview implements Comparable {
     String messageId;
     String name;
     String message;
@@ -69,5 +69,10 @@ public class Preview {
                 && this.message.compareTo(preview.getMessage()) == 0
                 && this.timeStamp.getTime().toString().compareTo(preview.getTimeStamp().getTime().toString()) == 0;
         return result;
+    }
+
+    @Override
+    public int compareTo(Object preview) {
+        return ((Preview)preview).getTimeStamp().compareTo(this.timeStamp);
     }
 }
