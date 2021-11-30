@@ -265,23 +265,6 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
             Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
         }
     }
-//    public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller) {
-//        Log.i(TAG, "  ");
-//        String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
-//        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
-//        message = "Hey, I am interested in " + product.get("title");
-//        String chatId = userId + sellerId;
-//        PrivateMessage p = new PrivateMessage();
-//        p.createMessage(message, chatId);
-//        Toast.makeText(this,"Contactiong Seller Please wait.. ", Toast.LENGTH_LONG).show();
-//        userDb.setupChatId(userId, sellerId, (String) UserDb.myUser.get("name"), seller, null, null, new UserDb.getChatCallback() {
-//            @Override
-//            public void onCallback(boolean done) {
-//                startActivity(new Intent(getApplicationContext(), MessagePreviews.class));
-//            }
-//        });
-//    }
-
     public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller, String userImage, String sellerImage) {
         Log.i(TAG, "setupChatWithSeller");
         String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
@@ -307,7 +290,8 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         Map<String, Object> newMessagePreview = new HashMap<>();
         newMessagePreview.put("previewMessage", message);
         newMessagePreview.put("previewTimeStamp", timeStamp);
-        FirebaseFirestore.getInstance().collection("messages").document(messageId).set(newMessagePreview);
+        FirebaseFirestore.getInstance().collection("messages").document(messageId)
+                .set(newMessagePreview);
 
         Map<String, Object> selfThread = new HashMap<>();
         selfThread.put("messageId", messageId);
