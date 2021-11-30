@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:visibility="invisible"/>
 
-        <include layout="@layout/layout_bottom_bar_wishlist" />
+        <include layout="@layout/layout_bottom_bar" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

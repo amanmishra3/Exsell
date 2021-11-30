@@ -32,6 +32,7 @@ import com.android.exsell.models.Product;
 import com.android.exsell.models.Wishlist;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -48,9 +49,9 @@ public class WishlistActivity extends AppCompatActivity implements FragmentTopBa
     private ItemDb itemDb;
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView wishlistRecycler;
-    private static ArrayList<Wishlist> wishlistItems;
-    private ImageView search, wishlist, addListing, message, notification;
-    private TextView noitem;
+    private static ArrayList<Product> wishlistItems;
+    private ImageView search, wishlist, addListing, message, notification, wishlistIcon, profilePic;
+    private TextView noitem, userName, userEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +65,8 @@ public class WishlistActivity extends AppCompatActivity implements FragmentTopBa
         fragmentTransaction.commit();
 
         layoutBottom = findViewById(R.id.layoutBottomBar);
+        wishlistIcon = layoutBottom.findViewById(R.id.wishlistButton);
+        wishlistIcon.setImageResource(R.drawable.ic_heart2);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
@@ -79,7 +82,6 @@ public class WishlistActivity extends AppCompatActivity implements FragmentTopBa
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
-        loadProducts();
         List<String> myWishList = new ArrayList<>();
         if(FirebaseAuth.getInstance().getCurrentUser() != null && UserDb.myUser != null)
             myWishList = (List<String>)UserDb.myUser.get("wishlist");
@@ -123,6 +125,7 @@ public class WishlistActivity extends AppCompatActivity implements FragmentTopBa
                         noitem.setVisibility(View.INVISIBLE);
                         wishlistRecycler = (RecyclerView) findViewById(R.id.recyclerViewWishlistTiles);
                         wishlistRecycler.setNestedScrollingEnabled(false);
+                        wishlistItems = (ArrayList<Product>) itemsList;
                         loadRecycler(wishlistRecycler, itemsList);
                         adapter = new WishlistAdapter(itemsList, getApplicationContext());
                         wishlistRecycler.setAdapter(adapter);
@@ -131,20 +134,7 @@ public class WishlistActivity extends AppCompatActivity implements FragmentTopBa
             });
         }
     }
-    public void loadProducts() {
-        String[] fakeTags = {"Textbooks", "COEN"};
-        Wishlist product1 = new Wishlist(1,"Product 1", 8, R.drawable.test_image, fakeTags);
-        Wishlist product2 = new Wishlist(2,"Product 2", 2, R.drawable.test_image, fakeTags);
-        Wishlist product3 = new Wishlist(3,"Product 3", 10, R.drawable.test_image, fakeTags);
-        Wishlist product4 = new Wishlist(4,"Product 4", 25, R.drawable.test_image, fakeTags);
-        // add to arraylists
-        wishlistItems = new ArrayList<Wishlist>();
-        wishlistItems.add(product1);
-        wishlistItems.add(product2);
-        wishlistItems.add(product3);
-        wishlistItems.add(product4);
 
-    }
     public void loadRecycler(RecyclerView thisRecycler, List<Product> items){
         layoutManager = new GridLayoutManager(this, 2);
         thisRecycler.setHasFixedSize(true); // set has fixed size
@@ -164,6 +154,10 @@ public class WishlistActivity extends AppCompatActivity implements FragmentTopBa
         Log.i(TAG,"onHamburgerClickCallback");
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
+        userName = (TextView) drawer.findViewById(R.id.userNameNav);
+        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+        getUserDetails();
     }
 
     @Override
@@ -176,15 +170,38 @@ public class WishlistActivity extends AppCompatActivity implements FragmentTopBa
     public void setNavigationHeader() {
 
     }
-
     @Override
     public void onSearch(String search) {
         Log.i(TAG,"onSearch received "+search);
-        //startActivity(new Intent(getApplicationContext(), Home.class));
+        loadRecycler(wishlistRecycler, searchProducts(wishlistItems, search));
+    }
+    public List<Product> searchProducts(List<Product> recommendedProducts, String searchKeyword) {
+        List<Product> searchResult;
+        if(searchKeyword.trim().isEmpty()) {
+            searchResult = recommendedProducts;
+        } else {
+            ArrayList<Product> temp = new ArrayList<>();
+            for(Product product : recommendedProducts) {
+                if(product.getTitle().toLowerCase().contains(searchKeyword.toLowerCase())
+                        || product.getDescription().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                    temp.add(product);
+                }
+            }
+            searchResult = temp;
+            Log.i("Size of temp products: ", String.valueOf(searchResult.size()));
+        }
+        return searchResult;
     }
 
     @Override
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
+    }
+    public void getUserDetails(){
+        userName.setText((String) UserDb.myUser.get("name"));
+        userEmail.setText((String) UserDb.myUser.get("email"));
+        if(UserDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        }
     }
 }

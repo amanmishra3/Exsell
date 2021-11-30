@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
-    private String TAG = "Categories";
+    private String TAG = "ItemListing";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -52,8 +52,8 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     private View parent;
     private UserDb userDb;
     private Map<String, Object> product;
-    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification;
-    private TextView title, description, price, tags;
+    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification, profilePic;
+    private TextView title, description, price, tags, userEmail, userName;
     private Button contact_seller;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +136,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                     @Override
                     public void onCallback(Users user) {
                         if(user != null) {
+                            Log.i(TAG, " user gotback ");
                             setupChatWithSeller(user.getRegisterationToken(), (String)UserDb.myUser.get("userId"), user.getUserId(), user.getFname());
                         }
                     }
@@ -203,6 +204,10 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         Log.i(TAG,"onHamburgerClickCallback");
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
+        userName = (TextView) drawer.findViewById(R.id.userNameNav);
+        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+        getUserDetails();
     }
 
     @Override
@@ -226,10 +231,21 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
     }
-
+    public void getUserDetails(){
+        userName.setText((String) UserDb.myUser.get("name"));
+        userEmail.setText((String) UserDb.myUser.get("email"));
+        if(UserDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        }
+    }
     public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller) {
+        Log.i(TAG, "  ");
         String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
         SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
-        String chatId = (String)product.get("productId");
+        message = "Hey, I am interested in " + product.get("title");
+        String chatId = userId + sellerId;
+        PrivateMessage p = new PrivateMessage();
+        p.createMessage(message, chatId);
+        userDb.setupChatId(userId, sellerId, (String) UserDb.myUser.get("name"), seller, null, null);
     }
 }

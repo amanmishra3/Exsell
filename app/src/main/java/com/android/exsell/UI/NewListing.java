@@ -34,6 +34,7 @@ import com.android.exsell.adapters.NotificationAdapter;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.AppSettingsDb;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
@@ -44,6 +45,7 @@ import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -66,9 +68,9 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     private String TAG = "NewListing ";
     private ItemDb itemDb;
     private MyFirebaseStorage myStorage;
-    private ImageView search, wishlist, addListing, message, addImage, notification;
+    private ImageView search, wishlist, addListing, message, addImage, notification, addListingIcon, profilePic;
     private Button addItem;
-    private TextView title, description, tags, price;
+    private TextView title, description, tags, price, userName, userEmail;
     private LinearLayout progressLayout;
     private Spinner s;
     private AlertDialog.Builder builder;
@@ -89,6 +91,8 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         appSettingsDb = AppSettingsDb.newInstance();
 
         layoutBottom = findViewById(R.id.layoutBottomBar);
+        addListingIcon = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
+        addListingIcon.setImageResource(R.drawable.ic_additem);
         drawerlist = (DrawerLayout) findViewById(R.id.drawerLayoutItem);
         navigationView = findViewById(R.id.navigationMenuItem);
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
@@ -259,15 +263,19 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
-        //drawer.closeDrawer(GravityCompat.END, false);
-        //drawer.openDrawer(GravityCompat.START);
+        drawerlist.closeDrawer(GravityCompat.END, false);
+        drawerlist.openDrawer(GravityCompat.START);
+        userName = (TextView) drawerlist.findViewById(R.id.userNameNav);
+        userEmail = (TextView) drawerlist.findViewById(R.id.userEmailNav);
+        profilePic = (ImageView) drawerlist.findViewById(R.id.profilePicNav);
+        getUserDetails();
     }
 
     @Override
     public void onNotificationBellClick() {
         Log.i(TAG,"onNotificationBellClick");
-        //drawer.closeDrawer(GravityCompat.START, false);
-        //drawer.openDrawer(GravityCompat.END);
+        drawerlist.closeDrawer(GravityCompat.START, false);
+        drawerlist.openDrawer(GravityCompat.END);
     }
 
     public void setNavigationHeader() {
@@ -283,6 +291,13 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
+    }
+    public void getUserDetails(){
+        userName.setText((String) UserDb.myUser.get("name"));
+        userEmail.setText((String) UserDb.myUser.get("email"));
+        if(UserDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        }
     }
 
 }

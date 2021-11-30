@@ -1,6 +1,17 @@
 package com.android.exsell.UI;
 
-import androidx.annotation.NonNull;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -11,30 +22,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.exsell.R;
 import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.adapters.NotificationAdapter;
-import com.android.exsell.chat.MessagePreviews;
+import com.android.exsell.adapters.ProductAdapter;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.AppSettingsDb;
 import com.android.exsell.db.ItemDb;
@@ -45,20 +36,15 @@ import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
-import com.android.exsell.adapters.ProductAdapter;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.auth.User;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     // side navigation
@@ -67,7 +53,8 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     DrawerLayout drawer;
     NavigationView navigationView;
     HorizontalProductAdapter horizontalProductAdapterSearch;
-
+    private long backPressedTime;
+    private Toast backToast;
     // categories
     LinearLayout ll;
     int[] categoryImages = {R.drawable.ic_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports};
@@ -85,11 +72,12 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
-    private ImageView search, wishlist, addListing, message, notification;
+    private ImageView search, wishlist, addListing, message, notification, profilePic, hamburger;
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
     private int noteClickedPosition = -1;
-    private TextView newHeader, recommendedHeader;
+    private TextView newHeader, recommendedHeader, userName, userEmail;
+    private int flag= 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,9 +111,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         view.setHorizontalScrollBarEnabled(false);
         view.setVerticalScrollBarEnabled(false);
         navigationView = findViewById(R.id.navigationMenuHome);
-
         navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
-
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
@@ -155,11 +141,48 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         recommendedRecycler = (RecyclerView) findViewById(R.id.recommended_recycler);
         recommendedRecycler.setNestedScrollingEnabled(true);
         loadRecyclerHorizontal(recommendedRecycler, recommendedProducts, 1);
-
         // add category images to linear layout
         ll = (LinearLayout) findViewById(R.id.linear);
         loadCategoryImages();
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.nav_open, R.string.nav_close) {
 
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (flag == 1){
+
+                hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                hamburger.setImageResource(R.drawable.ic_left_navigation_menu_button);
+                flag = 0;
+                }
+                else if(flag == 2){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications);
+                    flag = 0;
+                }
+            }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Do whatever you want here
+                if(drawer.isDrawerOpen(GravityCompat.END)){
+                notification = (ImageView) findViewById(R.id.notificationButton);
+                notification.setImageResource(R.drawable.ic_notifications_black_24dp);
+                onNotificationBellClick();
+                flag = 2;
+                }
+                else if(drawer.isDrawerOpen(GravityCompat.START)){
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_menu_open);
+                    onHamburgerClickCallback();
+                    flag = 1;
+                }
+
+            }
+        };
+        drawer.addDrawerListener(mDrawerToggle);
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+
+        }
     }
 
     @Override
@@ -233,6 +256,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         // create and set adapter
         adapter = new HorizontalProductAdapter(products, this);
         thisRecycler.setAdapter(adapter);
+
     }
 
     // category images
@@ -251,7 +275,23 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             ll.addView(imageView);
         }
     }
+    @Override
+    public void onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            backToast.cancel();
+            Intent main_activity = new Intent(getApplicationContext(), Home.class);
+            main_activity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            main_activity.putExtra("EXIT", true);
+            startActivity(main_activity);
+            return;
+        } else {
+            backToast = Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT);
+            backToast.show();
+        }
 
+        backPressedTime = System.currentTimeMillis();
+
+    }
     // onclick handler for categories
     // as of now, just creates a Toast
     public void moveToCategory(View view) {
@@ -302,7 +342,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
 
                 } else {
                     // add cards to recyclers
-                    Toast.makeText(getApplicationContext(), "Loading..  " + category +" " + itemsList.size(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Loading..  " + category +" " + itemsList.size(), Toast.LENGTH_LONG).show();
                     recommendedProducts = (ArrayList<Product>) itemsList;
                     loadRecyclerHorizontal(recommendedRecycler, itemsList, 1);
                 }
@@ -315,6 +355,10 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         Log.i(TAG,"onHamburgerClickCallback");
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
+        userName = (TextView) drawer.findViewById(R.id.userNameNav);
+        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+        getUserDetails();
     }
 
     @Override
@@ -361,5 +405,12 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         newHeader.setVisibility(View.VISIBLE);
         recommendedHeader.setText("Recommended For You");
         loadRecyclerHorizontal(recommendedRecycler, recommendedProducts, 1);
+    }
+    public void getUserDetails(){
+        userName.setText((String) UserDb.myUser.get("name"));
+        userEmail.setText((String) UserDb.myUser.get("email"));
+        if(userDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        }
     }
 }
