@@ -33,12 +33,15 @@ import com.android.exsell.models.Users;
 import com.android.exsell.services.SendMessage;
 import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -259,20 +262,66 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
             Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
         }
     }
+//    public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller) {
+//        Log.i(TAG, "  ");
+//        String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
+//        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
+//        message = "Hey, I am interested in " + product.get("title");
+//        String chatId = userId + sellerId;
+//        PrivateMessage p = new PrivateMessage();
+//        p.createMessage(message, chatId);
+//        Toast.makeText(this,"Contactiong Seller Please wait.. ", Toast.LENGTH_LONG).show();
+//        userDb.setupChatId(userId, sellerId, (String) UserDb.myUser.get("name"), seller, null, null, new UserDb.getChatCallback() {
+//            @Override
+//            public void onCallback(boolean done) {
+//                startActivity(new Intent(getApplicationContext(), MessagePreviews.class));
+//            }
+//        });
+//    }
+
     public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller) {
-        Log.i(TAG, "  ");
-        String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
-        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
-        message = "Hey, I am interested in " + product.get("title");
-        String chatId = userId + sellerId;
-        PrivateMessage p = new PrivateMessage();
-        p.createMessage(message, chatId);
-        Toast.makeText(this,"Contactiong Seller Please wait.. ", Toast.LENGTH_LONG).show();
-        userDb.setupChatId(userId, sellerId, (String) UserDb.myUser.get("name"), seller, null, null, new UserDb.getChatCallback() {
-            @Override
-            public void onCallback(boolean done) {
-                startActivity(new Intent(getApplicationContext(), MessagePreviews.class));
-            }
-        });
+        Log.i(TAG, "setupChatWithSeller");
+
+        String messageId = userId.compareTo(sellerId) < 0 ? userId + sellerId: sellerId + userId;
+
+        String message = "Hello " + seller + ", I am interested in buying " + product.get("title");
+        String sender = userId;
+        Calendar timeStamp = Calendar.getInstance();
+
+        String selfName = UserDb.myUser.get("name").toString();
+        String selfUid = userId;
+        String otherName = seller;
+        String otherUid = sellerId;
+
+        Map<String, Object> newMessage = new HashMap<>();
+        newMessage.put("message", message);
+        newMessage.put("sender", sender);
+        newMessage.put("timeStamp", timeStamp);
+        FirebaseFirestore.getInstance().collection("messages").document(messageId)
+                .collection("messages").document().set(newMessage);
+
+        Map<String, Object> newMessagePreview = new HashMap<>();
+        newMessagePreview.put("previewMessage", message);
+        newMessagePreview.put("previewTimeStamp", timeStamp);
+        FirebaseFirestore.getInstance().collection("messages").document(messageId).set(newMessagePreview);
+
+        Map<String, Object> selfThread = new HashMap<>();
+        selfThread.put("messageId", messageId);
+        selfThread.put("otherName", otherName);
+        selfThread.put("otherPic", null);
+        FirebaseFirestore.getInstance().collection("Users").document(selfUid)
+                .collection("messages").document(messageId).set(selfThread);
+
+        Map<String, Object> otherThread = new HashMap<>();
+        otherThread.put("messageId", messageId);
+        otherThread.put("otherName", selfName);
+        otherThread.put("otherPic", null);
+        FirebaseFirestore.getInstance().collection("Users").document(otherUid)
+                .collection("messages").document(messageId).set(otherThread);
+
+        Intent intent = new Intent(this, PrivateMessage.class);
+        intent.putExtra("messageId", messageId);
+        intent.putExtra("name", otherName);
+        startActivity(intent);
     }
 }
