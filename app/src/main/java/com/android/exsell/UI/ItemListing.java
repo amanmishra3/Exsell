@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
-    private String TAG = "Categories";
+    private String TAG = "ItemListing";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -125,8 +125,10 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         tags.setText("Tags: "+stringTags);
 
         seller_location = (com.google.firebase.firestore.GeoPoint) product.get("location");
-        latitude = seller_location.getLatitude();
-        longitude = seller_location.getLongitude();
+        if(seller_location != null) {
+            latitude = seller_location.getLatitude();
+            longitude = seller_location.getLongitude();
+        }
 
         checkWishList();
 
@@ -144,7 +146,8 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                     @Override
                     public void onCallback(Users user) {
                         if(user != null) {
-                            SendMessage.sendMessage(user.getRegisterationToken(), " Seller Notification", UserDb.myUser.get("name") + "wants to buy" + product.get("title"), "intent", new Date());
+                            Log.i(TAG, " user gotback ");
+                            setupChatWithSeller(user.getRegisterationToken(), (String)UserDb.myUser.get("userId"), user.getUserId(), user.getFname());
                         }
                     }
                 });
@@ -255,5 +258,15 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         if(UserDb.myUser.containsKey("imageUri")) {
             Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
         }
+    }
+    public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller) {
+        Log.i(TAG, "  ");
+        String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
+        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
+        message = "Hey, I am interested in " + product.get("title");
+        String chatId = userId + sellerId;
+        PrivateMessage p = new PrivateMessage();
+        p.createMessage(message, chatId);
+        userDb.setupChatId(userId, sellerId, (String) UserDb.myUser.get("name"), seller, null, null);
     }
 }

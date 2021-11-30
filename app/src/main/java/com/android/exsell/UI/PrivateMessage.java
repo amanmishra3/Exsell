@@ -78,7 +78,6 @@ public class PrivateMessage extends AppCompatActivity {
 
     public void getMessages() {
         Log.i(TAG, "getMessages");
-
         messageArrayList = new ArrayList<>();
         FirebaseFirestore.getInstance().collection("messages").document(messageId)
                 .collection("messages").orderBy("timeStamp")
@@ -124,33 +123,36 @@ public class PrivateMessage extends AppCompatActivity {
         Log.i(TAG, "sendMessage");
         String message = newMessage.getText().toString();
         if (!message.isEmpty()) {
-            createMessage(message);
+            createMessage(message, null);
             newMessage.setText("");
         }
     }
 
-    public void createMessage(String m) {
-        Log.i(TAG, "createMessage");
+    public void createMessage(String m, String mid) {
+        Log.i(TAG, "createMessage " +mid);
         mAuth = FirebaseAuth.getInstance();
-
+        String messageid = mid == null ? messageId : mid;
 //      Add message to database
         Message message = new Message();
         message.setMessage(m);
         message.setSender(mAuth.getCurrentUser().getUid());
         message.setTimeStamp(Calendar.getInstance());
 
-        FirebaseFirestore.getInstance().collection("messages").document(messageId)
+        FirebaseFirestore.getInstance().collection("messages").document(messageid)
                 .collection("messages").document().set(message);
 
 //      Update the most recent message in database
         Map<String, Object> preview = new HashMap<>();
         preview.put("previewMessage", m);
         preview.put("previewTimeStamp", Calendar.getInstance());
+        preview.put("messageId", messageid);
 
-        FirebaseFirestore.getInstance().collection("messages").document(messageId).set(preview);
+        FirebaseFirestore.getInstance().collection("messages").document(messageid).set(preview);
 
 //      Scroll to the bottom of the chat
-        recyclerView.scrollToPosition(messageArrayList.size() - 1);
+        if(mid == null) {
+            recyclerView.scrollToPosition(messageArrayList.size() - 1);
+        }
     }
 
     public void onClick(View view) {

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -29,7 +30,11 @@ import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Preview;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firestore.v1.MapValue;
 import com.squareup.picasso.Picasso;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,8 +47,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +59,6 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     private static final String TAG = "MessagePreviews";
 
     FirebaseAuth mAuth;
-
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -67,6 +74,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.message_preview_list);
 
@@ -94,13 +102,15 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
+
+
         recyclerView = findViewById(R.id.message_preview_list);
         previewArrayList = new ArrayList<>();
 
-//        setPreviewInfo();  // use sample data
-        getMessagePreviews(); // use firebase data
+        setPreviewInfo();  // set adapter
+//        getMessagePreviews(); // use firebase data
 
-        setAdapter();
+//        setAdapter();
     }
 
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
@@ -122,21 +132,17 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         recyclerView.setAdapter(adapter);
     }
 
-    public void setPreviewInfo() {
-        Log.i(TAG, "setPreviewInfo");
-        Calendar timeStamp = Calendar.getInstance();
-        previewArrayList.add(new Preview("1", "andrew", "hello there", timeStamp, null));
-        previewArrayList.add(new Preview("2", "jack", "my name is jack", timeStamp, null));
-        previewArrayList.add(new Preview("3", "paul", "wheres the gabagoo", timeStamp, null));
-        previewArrayList.add(new Preview("4", "sam", "how much?????", timeStamp, null));
-    }
+//    public void setPreviewInfo() {
+//        Log.i(TAG, "setPreviewInfo");
+//        Calendar timeStamp = Calendar.getInstance();
+//        previewArrayList.add(new Preview("1", "andrew", "hello there", timeStamp, null));
+//        previewArrayList.add(new Preview("2", "jack", "my name is jack", timeStamp, null));
+//        previewArrayList.add(new Preview("3", "paul", "wheres the gabagoo", timeStamp, null));
+//        previewArrayList.add(new Preview("4", "sam", "how much?????", timeStamp, null));
+//    }
 
     public void getMessagePreviews() {
         Log.i(TAG, "getMessagePreviews");
-        /*
-        TODO  fix ui to update when previewArrayList<messages> changes
-         */
-        ;
         mAuth = FirebaseAuth.getInstance();
         String uidSelf = mAuth.getCurrentUser().getUid();
 
@@ -166,7 +172,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
                                 preview.setMessage("");
                                 preview.setTimeStamp(Calendar.getInstance());
-
+                                setAdapter();
                                 FirebaseFirestore.getInstance()
                                         .collection("messages").document(messageId)
                                         .addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -211,6 +217,55 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                     }
                 });
 //        previewArrayList.sort();
+    }
+
+    public void setPreviewInfo() {
+        mAuth = FirebaseAuth.getInstance();
+        String uidSelf = mAuth.getCurrentUser().getUid();
+        FirebaseFirestore.getInstance()
+                .collection("Users").document(uidSelf).collection("messages")
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(queryDocumentSnapshots != null) {
+                    List<String> myChats = new ArrayList<>();
+                    Map<String, Object> mp= new HashMap<>();
+                    for(DocumentSnapshot doc: queryDocumentSnapshots) {
+                        Log.i(TAG, "doc data "+doc.getData());
+                        myChats.add(doc.getString("messageId"));
+                        Map<String, Object> tmp = new HashMap<>();
+                        tmp.put("messageId",doc.getString("messageId") );
+                        tmp.put("name", doc.getString("otherNames"));
+                        tmp.put("profilePic", doc.getString("otherPic"));
+                        mp.put(doc.getString("messageId"), tmp);
+                    }
+                    FirebaseFirestore.getInstance()
+                            .collection("messages")
+                            .whereIn(FieldPath.documentId(), myChats)
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    for(DocumentSnapshot doc: queryDocumentSnapshots) {
+                                        Log.i(TAG, "doc data 2 "+doc.getData());
+                                        String messageId = doc.getString("messageId");
+                                        Map<String, Object> tmp = (Map<String, Object>) mp.get(messageId);
+                                        String name = (String) tmp.get("name");
+                                        String msg = doc.getString("previewMessage");
+                                        Log.i(TAG, "adapter data "+messageId+" "+name+ " "+msg);
+                                        previewArrayList.add(new Preview(messageId, name, "msg", Calendar.getInstance(), null));
+                                    }
+                                    setAdapter();
+                                }
+                            });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     @Override

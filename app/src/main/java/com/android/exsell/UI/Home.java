@@ -27,6 +27,7 @@ import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.adapters.NotificationAdapter;
 import com.android.exsell.adapters.ProductAdapter;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
+import com.android.exsell.db.AppSettingsDb;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
@@ -67,6 +68,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private Object List;
     private ItemDb itemDb;
     private UserDb userDb;
+    private AppSettingsDb appSettingsDb;
     private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
@@ -82,6 +84,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         super.onCreate(savedInstanceState);
         itemDb = ItemDb.newInstance();
         userDb = UserDb.newInstance();
+        appSettingsDb = AppSettingsDb.newInstance();
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() != null) {
             userDb.setMyUser();
@@ -194,7 +197,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.closeDrawer(GravityCompat.START, false);
         navigationView.setCheckedItem(R.id.home);
-
     }
 
 
