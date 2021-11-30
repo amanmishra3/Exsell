@@ -259,15 +259,15 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
-        //drawer.closeDrawer(GravityCompat.END, false);
-        //drawer.openDrawer(GravityCompat.START);
+        drawerlist.closeDrawer(GravityCompat.END, false);
+        drawerlist.openDrawer(GravityCompat.START);
     }
 
     @Override
     public void onNotificationBellClick() {
         Log.i(TAG,"onNotificationBellClick");
-        //drawer.closeDrawer(GravityCompat.START, false);
-        //drawer.openDrawer(GravityCompat.END);
+        drawerlist.closeDrawer(GravityCompat.START, false);
+        drawerlist.openDrawer(GravityCompat.END);
     }
 
     public void setNavigationHeader() {
