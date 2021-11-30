@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
 import com.android.exsell.models.Message;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +20,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final String TAG = "MessageAdapter";
     private ArrayList<Message> messageArrayList;
 
-    private static final int TYPE_OTHER = 0;
-    private static final int TYPE_SELF = 1;
+    private static final int TYPE_SELF = 0;
+    private static final int TYPE_OTHER = 1;
 
     public MessageAdapter(ArrayList<Message> messageArrayList) {
         Log.i(TAG, "MessageAdapter");
@@ -52,10 +53,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         Log.i(TAG, "getItemViewType");
-        if (messageArrayList.get(position).getSender() == 0) {
-            return TYPE_OTHER;
-        } else {
+        String uidSelf = FirebaseAuth.getInstance().getUid();
+        String uidSender = messageArrayList.get(position).getSender();
+        Log.i(TAG, "uidSender: " + uidSender + messageArrayList.get(position).getMessage());
+        if (uidSender.compareTo(uidSelf) == 0) {
             return TYPE_SELF;
+        } else {
+            return TYPE_OTHER;
         }
     }
 
@@ -79,6 +83,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         String message = messageArrayList.get(position).getMessage();
         Calendar timeStamp = messageArrayList.get(position).getTimeStamp();
+        Log.i(TAG, timeStamp.getTime().toString());
 
         String time;
 
@@ -100,7 +105,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             String month = String.valueOf(timeStamp.get(Calendar.MONTH));
             String year = String.valueOf(timeStamp.get(Calendar.YEAR));
 
-            time = day + "/" + month + "/" + year;
+            time = month + "/" + day + "/" + year;
         }
 
         if (getItemViewType(position) == TYPE_OTHER) {
@@ -115,6 +120,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemCount() {
         Log.i(TAG, "getItemCount");
+        if(messageArrayList == null)
+            return 0;
         return messageArrayList.size();
     }
 }

@@ -3,12 +3,12 @@ package com.android.exsell.UI;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -31,15 +31,26 @@ import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Preview;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 public class MessagePreviews extends AppCompatActivity implements MessagePreviewAdapter.OnSelectListener, FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     private static final String TAG = "MessagePreviews";
+
+    FirebaseAuth mAuth;
 
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
@@ -86,7 +97,8 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         recyclerView = findViewById(R.id.message_preview_list);
         previewArrayList = new ArrayList<>();
 
-        setPreviewInfo(); // TODO replace with getMessagePreviews() when implementedgit
+//        setPreviewInfo();  // use sample data
+        getMessagePreviews(); // use firebase data
 
         setAdapter();
     }
@@ -122,32 +134,96 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     public void getMessagePreviews() {
         Log.i(TAG, "getMessagePreviews");
         /*
-        TODO
-        For each message thread that user has
-            Preview preview = new Preview()
-            preview.uid = get contacts uid
-            preview.name = get contacts name
-            preview.message = get most recent message
-            preview.timeStamp = get timestamp for most recent message
-            preview.profilePic = get contacts profile pic
-
-            previewArrayList.append(previews)
-
-         Sort list in descending order by preview.time
+        TODO  fix ui to update when previewArrayList<messages> changes
          */
+        ;
+        mAuth = FirebaseAuth.getInstance();
+        String uidSelf = mAuth.getCurrentUser().getUid();
+
+        previewArrayList = new ArrayList<>();
+        FirebaseFirestore.getInstance()
+                .collection("Users").document(uidSelf).collection("messages")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+                        for (QueryDocumentSnapshot doc : value) {
+                            if (doc.exists()) {
+                                Preview preview = new Preview();
+
+                                String messageId = doc.getString("messageId");
+                                preview.setMessageId(messageId);
+
+                                String name = doc.getString("otherName");
+                                preview.setName(name);
+
+//                        Image profilePic = (Image) doc.get("otherPic");
+//                        preview.setProfilePic(profilePic);
+
+                                preview.setMessage("");
+                                preview.setTimeStamp(Calendar.getInstance());
+
+                                FirebaseFirestore.getInstance()
+                                        .collection("messages").document(messageId)
+                                        .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                                                @Nullable FirebaseFirestoreException e) {
+                                                if (e != null) {
+                                                    Log.w(TAG, "Listen failed.", e);
+                                                    return;
+                                                }
+                                                if (snapshot != null && snapshot.exists()) {
+                                                    String message = snapshot.getString("previewMessage");
+                                                    Log.i(TAG, preview.getMessage() + " ");
+                                                    preview.setMessage(message);
+
+                                                    Calendar calendar = Calendar.getInstance();
+                                                    Map<String, Object> map = (Map<String, Object>) snapshot.get("previewTimeStamp");
+                                                    calendar.setTime(((Timestamp) map.get("time")).toDate());
+                                                    preview.setTimeStamp(calendar);
+
+                                                    boolean sameMessage = false;
+                                                    for(Preview p : previewArrayList) {
+                                                        if(p.isSame(preview)) {
+                                                            sameMessage = true;
+                                                            break;
+                                                        } else if(p.getMessageId().compareTo(preview.getMessageId()) == 0) {
+                                                            previewArrayList.remove(p);
+                                                            break;
+                                                        }
+                                                    }
+                                                    if(!sameMessage) {
+                                                        previewArrayList.add(preview);
+                                                        adapter.notifyItemInserted(previewArrayList.size() - 1);
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "Current data: null");
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+//        previewArrayList.sort();
     }
 
     @Override
     public void onSelectClick(int position) {
-        Intent intent = new Intent(this, PrivateMessage.class );
-        intent.putExtra("uid",  previewArrayList.get(position).getUid());
-        intent.putExtra("name",  previewArrayList.get(position).getName());
+        Intent intent = new Intent(this, PrivateMessage.class);
+        intent.putExtra("messageId", previewArrayList.get(position).getMessageId());
+        intent.putExtra("name", previewArrayList.get(position).getName());
         startActivity(intent);
     }
 
     @Override
     public void onHamburgerClickCallback() {
-        Log.i(TAG,"onHamburgerClickCallback");
+        Log.i(TAG, "onHamburgerClickCallback");
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
         userName = (TextView) drawer.findViewById(R.id.userNameNav);
@@ -158,7 +234,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG,"onNotificationBellClick");
+        Log.i(TAG, "onNotificationBellClick");
         drawer.closeDrawer(GravityCompat.START, false);
         drawer.openDrawer(GravityCompat.END);
     }
@@ -169,7 +245,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     @Override
     public void onSearch(String search) {
-        Log.i(TAG,"onSearch received "+search);
+        Log.i(TAG, "onSearch received " + search);
         //startActivity(new Intent(getApplicationContext(), Home.class));
     }
 

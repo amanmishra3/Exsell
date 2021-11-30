@@ -5,26 +5,30 @@ import android.media.Image;
 import java.util.Calendar;
 
 public class Preview {
-    String uid;
+    String messageId;
     String name;
     String message;
     Calendar timeStamp;
     Image profilePic;
 
-    public Preview(String uid, String name, String message, Calendar timeStamp, Image profilePic) {
-        this.uid = uid;
+    public Preview(String messageId, String name, String message, Calendar timeStamp, Image profilePic) {
+        this.messageId = messageId;
         this.name = name;
         this.message = message;
         this.timeStamp = timeStamp;
         this.profilePic = profilePic;
     }
 
-    public String getUid() {
-        return uid;
+    public Preview() {
+
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getName() {
@@ -57,5 +61,13 @@ public class Preview {
 
     public void setProfilePic(Image profilePic) {
         this.profilePic = profilePic;
+    }
+
+    public boolean isSame(Preview preview) {
+        boolean result = this.messageId.compareTo(preview.getMessageId()) == 0
+                && this.name.compareTo(preview.getName()) == 0
+                && this.message.compareTo(preview.getMessage()) == 0
+                && this.timeStamp.getTime().toString().compareTo(preview.getTimeStamp().getTime().toString()) == 0;
+        return result;
     }
 }

@@ -1,16 +1,22 @@
 package com.android.exsell.models;
 
+import android.util.Log;
+
 import java.util.Calendar;
 
 public class Message {
     String message;
-    int sender; // 0: other, 1: self
+    String sender; // 0: other, 1: self
     Calendar timeStamp;
 
-    public Message(String message, int sender, Calendar timeStamp) {
+    public Message(String message, String senderUid, Calendar timeStamp) {
         this.message = message;
-        this.sender = sender;
+        this.sender = senderUid;
         this.timeStamp = timeStamp;
+    }
+
+    public Message() {
+
     }
 
     public String getMessage() {
@@ -21,11 +27,11 @@ public class Message {
         this.message = message;
     }
 
-    public int getSender() {
+    public String getSender() {
         return sender;
     }
 
-    public void setSender(int sender) {
+    public void setSender(String sender) {
         this.sender = sender;
     }
 
@@ -35,5 +41,12 @@ public class Message {
 
     public void setTimeStamp(Calendar timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public boolean isSame(Message message) {
+        boolean result = this.sender.compareTo(message.getSender()) == 0
+                && this.message.compareTo(message.getMessage()) == 0
+                && this.timeStamp.getTime().toString().compareTo(message.getTimeStamp().getTime().toString()) == 0;
+        return result;
     }
 }
