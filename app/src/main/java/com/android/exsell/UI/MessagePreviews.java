@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -30,12 +29,7 @@ import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Preview;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.FieldPath;
-import com.google.firestore.v1.MapValue;
-import com.squareup.picasso.Picasso;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -44,15 +38,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -210,56 +202,6 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                         }
                     }
                 });
-//        previewArrayList.sort();
-    }
-
-    public void setPreviewInfo() {
-        mAuth = FirebaseAuth.getInstance();
-        String uidSelf = mAuth.getCurrentUser().getUid();
-        FirebaseFirestore.getInstance()
-                .collection("Users").document(uidSelf).collection("messages")
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if(queryDocumentSnapshots != null) {
-                    List<String> myChats = new ArrayList<>();
-                    Map<String, Object> mp= new HashMap<>();
-                    for(DocumentSnapshot doc: queryDocumentSnapshots) {
-                        Log.i(TAG, "doc data "+doc.getData());
-                        myChats.add(doc.getString("messageId"));
-                        Map<String, Object> tmp = new HashMap<>();
-                        tmp.put("messageId",doc.getString("messageId") );
-                        tmp.put("name", doc.getString("otherNames"));
-                        tmp.put("profilePic", doc.getString("otherPic"));
-                        mp.put(doc.getString("messageId"), tmp);
-                    }
-                    FirebaseFirestore.getInstance()
-                            .collection("messages")
-                            .whereIn(FieldPath.documentId(), myChats)
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    for(DocumentSnapshot doc: queryDocumentSnapshots) {
-                                        Log.i(TAG, "doc data 2 "+doc.getData());
-                                        String messageId = doc.getString("messageId");
-                                        Map<String, Object> tmp = (Map<String, Object>) mp.get(messageId);
-                                        String name = (String) tmp.get("name");
-                                        String msg = doc.getString("previewMessage");
-                                        Log.i(TAG, "adapter data "+messageId+" "+name+ " "+msg);
-                                        previewArrayList.add(new Preview(messageId, name, msg, Calendar.getInstance(), null));
-                                    }
-                                    setAdapter();
-                                }
-                            });
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
     }
 
     @Override
