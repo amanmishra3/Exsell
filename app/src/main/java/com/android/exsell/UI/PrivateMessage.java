@@ -1,6 +1,7 @@
 package com.android.exsell.UI;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -58,9 +59,9 @@ public class PrivateMessage extends AppCompatActivity {
         messageId = extras.get("messageId").toString();
         String name = extras.get("name").toString();
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
+
         contactName = findViewById(R.id.contact_name);
         contactName.setText(name);
-        Log.i(TAG, "messageId: " + messageId);
 
         getMessages();
 
@@ -158,5 +159,31 @@ public class PrivateMessage extends AppCompatActivity {
     public void onClick(View view) {
         Intent intent = new Intent(this, MessagePreviews.class);
         startActivity(intent);
+    }
+
+    public void createThread(String selfUid, String otherUid, String selfName, String otherName) {
+        String newThreadId;
+        if (selfUid.compareTo(otherUid) < 0) {
+            newThreadId = otherUid + selfUid;
+        } else {
+            newThreadId = selfUid + otherUid;
+        }
+        Map<String, Object> selfEntry = new HashMap<>();
+        Map<String, Object> otherEntry = new HashMap<>();
+
+        selfEntry.put("messageId", newThreadId);
+        otherEntry.put("messageId", newThreadId);
+
+        selfEntry.put("otherName", otherName);
+        otherEntry.put("otherName", selfName);
+
+        // TODO implement profilePic query
+        selfEntry.put("otherPic", "");
+        otherEntry.put("otherPic", "");
+
+        FirebaseFirestore.getInstance().collection("Users").document(selfUid)
+                .collection("messages").document(newThreadId).set(selfEntry);
+        FirebaseFirestore.getInstance().collection("Users").document(otherUid)
+                .collection("messages").document(newThreadId).set(otherEntry);
     }
 }
