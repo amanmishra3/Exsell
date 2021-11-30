@@ -119,7 +119,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
-        <include layout="@layout/layout_bottom_bar_addlisting" />
+        <include layout="@layout/layout_bottom_bar" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

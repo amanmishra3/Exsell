@@ -66,9 +66,10 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Log.i(TAG, "onBindViewHolder");
+        Log.i(TAG, "onBindViewHolder "+previewArrayList.get(position));
         String name = previewArrayList.get(position).getName();
-        name = name.substring(0, 1).toUpperCase() + name.substring(1);
+        if(name!= null)
+            name = name.substring(0, 1).toUpperCase() + name.substring(1);
         String message = previewArrayList.get(position).getMessage();
         Calendar timeStamp = previewArrayList.get(position).getTimeStamp();
         Image profilePic = previewArrayList.get(position).getProfilePic();

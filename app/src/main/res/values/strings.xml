@@ -13,4 +13,6 @@
     <string name="category">Category</string>
     <string name="description">Description</string>
     <string name="priceItalic"><b><i>$100</i></b></string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 </resources>

@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -28,26 +27,23 @@ import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
-import com.android.exsell.listeners.BasicOnClickListeners;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Users;
 import com.android.exsell.services.SendMessage;
 import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.auth.User;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class ItemListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
-    private String TAG = "Categories";
+    private String TAG = "ItemListing";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -57,9 +53,11 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     private View parent;
     private UserDb userDb;
     private Map<String, Object> product;
-    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification;
-    private TextView title, description, price, tags;
-    private Button contact_seller;
+    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification, profilePic;
+    private TextView title, description, price, tags, userEmail, userName;
+    private Button contact_seller, meet_seller;
+    private com.google.firebase.firestore.GeoPoint seller_location;
+    Double latitude, longitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +89,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         description = (TextView) parent.findViewById(R.id.description);
         tags = (TextView) parent.findViewById(R.id.tags);
         contact_seller =  (Button) parent.findViewById(R.id.contact_seller);
+        meet_seller = (Button) parent.findViewById(R.id.meetSellerBtn);
         addToWishlist = (ImageView) parent.findViewById(R.id.add_to_wishlist);
         // <--
 
@@ -125,6 +124,12 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         String stringTags = String.join(", ", listTags);
         tags.setText("Tags: "+stringTags);
 
+        seller_location = (com.google.firebase.firestore.GeoPoint) product.get("location");
+        if(seller_location != null) {
+            latitude = seller_location.getLatitude();
+            longitude = seller_location.getLongitude();
+        }
+
         checkWishList();
 
         addToWishlist.setOnClickListener(new View.OnClickListener() {
@@ -141,10 +146,21 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                     @Override
                     public void onCallback(Users user) {
                         if(user != null) {
-                            SendMessage.sendMessage(user.getRegisterationToken(), " Seller Notification", UserDb.myUser.get("name") + "wants to buy" + product.get("title"), "intent", new Date());
+                            Log.i(TAG, " user gotback ");
+                            setupChatWithSeller(user.getRegisterationToken(), (String)UserDb.myUser.get("userId"), user.getUserId(), user.getFname());
                         }
                     }
                 });
+            }
+        });
+
+        meet_seller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemListing.this, MapActivity.class);
+                intent.putExtra("seller_latitude", String.valueOf(latitude));
+                intent.putExtra("seller_longitude", String.valueOf(longitude));
+                startActivity(intent);
             }
         });
     }
@@ -208,6 +224,10 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         Log.i(TAG,"onHamburgerClickCallback");
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
+        userName = (TextView) drawer.findViewById(R.id.userNameNav);
+        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+        getUserDetails();
     }
 
     @Override
@@ -230,5 +250,29 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     @Override
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
+    }
+
+    public void getUserDetails(){
+        userName.setText((String) UserDb.myUser.get("name"));
+        userEmail.setText((String) UserDb.myUser.get("email"));
+        if(UserDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        }
+    }
+    public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller) {
+        Log.i(TAG, "  ");
+        String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
+        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
+        message = "Hey, I am interested in " + product.get("title");
+        String chatId = userId + sellerId;
+        PrivateMessage p = new PrivateMessage();
+        p.createMessage(message, chatId);
+        Toast.makeText(this,"Contactiong Seller Please wait.. ", Toast.LENGTH_LONG).show();
+        userDb.setupChatId(userId, sellerId, (String) UserDb.myUser.get("name"), seller, null, null, new UserDb.getChatCallback() {
+            @Override
+            public void onCallback(boolean done) {
+                startActivity(new Intent(getApplicationContext(), MessagePreviews.class));
+            }
+        });
     }
 }

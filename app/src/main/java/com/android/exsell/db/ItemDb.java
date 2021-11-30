@@ -58,7 +58,7 @@ public class ItemDb {
         selectedProduct.put("categories", item.getCategories());
         selectedProduct.put("createdOn", item.getCreatedOn());
         selectedProduct.put("seller", item.getSeller());
-
+        selectedProduct.put("location", item.getLocation());
     }
 
     public CollectionReference getItemCollectionReference() {
@@ -69,12 +69,12 @@ public class ItemDb {
         List<String> searchKeywords = searchKeywords(item);
         item.setSearch(searchKeywords);
         item.setCreatedOn(new Date());
-        Log.i(TAG, " my iamge "+ item.getImageUri());
+        Log.i(TAG, " my image "+ item.getImageUri());
         itemCollectionReference.add(item)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.i(TAG, "Succefully inserted");
+                        Log.i(TAG, "Successfully inserted");
                         item.setProductId(documentReference.getId());
                         // add the itemId to ItemId body
                         updateItem(item);

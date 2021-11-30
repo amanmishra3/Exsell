@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <FrameLayout
-        android:id="@+id/frameTopBar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"/>
-
-<androidx.drawerlayout.widget.DrawerLayout
     android:id="@+id/drawerLayoutItem"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,10 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <include layout="@layout/layout_top_bar" />
+
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_39sdp"
             android:layout_marginBottom="@dimen/_39sdp"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/_10sdp"
@@ -75,7 +68,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/image"
                     tools:layout_editor_absoluteX="5dp"
-                    >
+                 >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/activity_item_listing_inner_constraint2"
@@ -90,27 +83,15 @@
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="10dp"
                             android:layout_marginStart="@dimen/_5sdp"
-                            android:fontFamily="@font/montserrat"
                             android:text="@string/title"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_20sdp"
+                            android:textSize="30dp"
                             android:textStyle="bold"
+                            android:gravity="center_horizontal"
                             app:layout_constraintBottom_toTopOf="@+id/description"
-                            app:layout_constraintEnd_toStartOf="@+id/price"
-                            app:layout_constraintStart_toStartOf="parent" />
-
-                        <TextView
-                            android:id="@+id/price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="5dp"
-                            android:layout_marginEnd="@dimen/_5sdp"
-                            android:text="@string/price"
-                            android:textSize="18sp"
-                            android:textColor="@color/black"
-                            app:layout_constraintBottom_toTopOf="@+id/description"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             android:fontFamily="@font/montserrat"
+                            android:textColor="@color/black"
+
                             />
 
                         <!-- Description -->
@@ -124,9 +105,24 @@
                             android:text="Description here. Very long to prove a point. Keeps going and should wrap"
                             android:layout_marginStart="@dimen/_5sdp"
                             app:layout_constraintTop_toBottomOf="@+id/title"
-                            tools:layout_editor_absoluteX="16dp"
+                            android:gravity="center_horizontal"
                             android:fontFamily="@font/montserrat"
+                            android:textSize="@dimen/_14sdp"
                             />
+
+                        <TextView
+                            android:id="@+id/price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="5dp"
+                            android:fontFamily="@font/montserrat"
+                            android:gravity="center_horizontal"
+                            android:text="@string/price"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_16sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tags" />
 
                         <TextView
                             android:id="@+id/tags"
@@ -135,7 +131,6 @@
                             android:layout_marginVertical="5dp"
                             android:layout_marginStart="@dimen/_5sdp"
                             android:layout_marginEnd="@dimen/_5sdp"
-                            android:textStyle="italic"
                             android:text="Tags: "
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/description"
@@ -158,10 +153,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="5dp"
                             android:orientation="horizontal"
-                            app:layout_constraintTop_toBottomOf="@+id/tags">
+                            app:layout_constraintTop_toBottomOf="@+id/price">
 
                             <Button
-                                android:id="@+id/contact_seller"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="5dp"
@@ -171,17 +165,7 @@
                                 android:text="Contact Seller"
                                 android:textColor="@color/black"
                                 android:fontFamily="@font/montserrat"
-                                />
-                            <Button
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="5dp"
-                                android:layout_weight="1"
-                                android:backgroundTint="@color/colorThemeYellow"
-                                android:id="@+id/meetSellerBtn"
-                                android:text="See on Map"
-                                android:textColor="@color/black"
-                                android:fontFamily="@font/montserrat"
+
                                 />
 
                         </LinearLayout>
@@ -206,16 +190,7 @@
         app:itemTextColor="@color/black"
         app:menu="@menu/navigation_menu" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:id="@+id/right_drawer"
-        android:fitsSystemWindows="true"
-        android:layout_marginEnd="-72dp"/>
-
 </androidx.drawerlayout.widget.DrawerLayout>
-</LinearLayout>
 
 
 
