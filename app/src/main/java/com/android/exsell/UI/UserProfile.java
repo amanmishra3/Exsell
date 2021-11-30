@@ -196,4 +196,5 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
         UserDb.myUser.put("dob", null);
         UserDb.myUser.put("dob", date);
     }
+
 }

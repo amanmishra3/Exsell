@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.exsell.R;
 import com.android.exsell.adapters.MessagePreviewAdapter;
 import com.android.exsell.adapters.NotificationAdapter;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
@@ -28,6 +30,7 @@ import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Preview;
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -47,8 +50,8 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     private ArrayList<Preview> previewArrayList;
     private RecyclerView recyclerView;
-    private ImageView search, wishlist, addListing, message, notification;
-
+    private ImageView search, wishlist, addListing, message, notification, messageIcon, profilePic;
+    private TextView userName, userEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
@@ -62,6 +65,8 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         fragmentTransaction.commit();
 
         layoutBottom = findViewById(R.id.layoutBottomBar);
+        messageIcon = (ImageView) layoutBottom.findViewById(R.id.chatButton);
+        messageIcon.setImageResource(R.drawable.ic_chat2);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
 
@@ -145,6 +150,10 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         Log.i(TAG,"onHamburgerClickCallback");
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
+        userName = (TextView) drawer.findViewById(R.id.userNameNav);
+        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+        getUserDetails();
     }
 
     @Override
@@ -167,5 +176,12 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     @Override
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
+    }
+    public void getUserDetails(){
+        userName.setText((String) UserDb.myUser.get("name"));
+        userEmail.setText((String) UserDb.myUser.get("email"));
+        if(UserDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        }
     }
 }

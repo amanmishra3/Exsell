@@ -27,6 +27,7 @@ import com.android.exsell.adapters.MylistAdapter;
 import com.android.exsell.adapters.NotificationAdapter;
 import com.android.exsell.adapters.ProductAdapter;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
@@ -35,6 +36,7 @@ import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -55,8 +57,8 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
     private static ArrayList<Product> newProducts, recommendedProducts;
     private Object List;
     private ItemDb itemDb;
-    private ImageView search, wishlist, addListing, message, notification;
-    private TextView noitem;
+    private ImageView search, wishlist, addListing, message, notification, profilePic;
+    private TextView noitem, sold, userName, userEmail, newHeader, recommendedHeader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +91,6 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         loadProducts();
-
     }
 
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
@@ -124,6 +125,7 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
                     // add cards to recyclers
                     newlyListedRecycler = (RecyclerView) findViewById(R.id.recyclerViewMyTiles);
                     newlyListedRecycler.setNestedScrollingEnabled(false);
+                    newProducts = (ArrayList<Product>) itemsList;
                     loadRecycler(newlyListedRecycler, itemsList); // loads fake products into arraylists for recyclers
                 }
             }
@@ -180,6 +182,10 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         Log.i(TAG,"onHamburgerClickCallback");
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.openDrawer(GravityCompat.START);
+        userName = (TextView) drawer.findViewById(R.id.userNameNav);
+        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+        getUserDetails();
     }
 
     @Override
@@ -196,11 +202,36 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     public void onSearch(String search) {
         Log.i(TAG,"onSearch received "+search);
-        //startActivity(new Intent(getApplicationContext(), Home.class));
+        loadRecycler(newlyListedRecycler, searchProducts(newProducts, search));
+    }
+
+    public List<Product> searchProducts(List<Product> recommendedProducts, String searchKeyword) {
+        List<Product> searchResult;
+        if(searchKeyword.trim().isEmpty()) {
+            searchResult = recommendedProducts;
+        } else {
+            ArrayList<Product> temp = new ArrayList<>();
+            for(Product product : recommendedProducts) {
+                if(product.getTitle().toLowerCase().contains(searchKeyword.toLowerCase())
+                        || product.getDescription().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                    temp.add(product);
+                }
+            }
+            searchResult = temp;
+            Log.i("Size of temp products: ", String.valueOf(searchResult.size()));
+        }
+        return searchResult;
     }
 
     @Override
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
+    }
+    public void getUserDetails(){
+        userName.setText((String) UserDb.myUser.get("name"));
+        userEmail.setText((String) UserDb.myUser.get("email"));
+        if(UserDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        }
     }
 }
