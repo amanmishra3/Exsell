@@ -150,7 +150,10 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                     public void onCallback(Users user) {
                         if(user != null) {
                             Log.i(TAG, " user gotback ");
-                            setupChatWithSeller(user.getRegisterationToken(), (String)UserDb.myUser.get("userId"), user.getUserId(), user.getFname());
+                            String userImage = new String();
+                            if(UserDb.myUser.get("imageUri") != null)
+                                userImage = (String) UserDb.myUser.get("imageUri");
+                            setupChatWithSeller(user.getRegisterationToken(), (String)UserDb.myUser.get("userId"), user.getUserId(), user.getFname(), userImage, user.getImageUri());
                         }
                     }
                 });
@@ -279,12 +282,13 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
 //        });
 //    }
 
-    public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller) {
+    public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller, String userImage, String sellerImage) {
         Log.i(TAG, "setupChatWithSeller");
+        String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
+        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
 
         String messageId = userId.compareTo(sellerId) < 0 ? userId + sellerId: sellerId + userId;
-
-        String message = "Hello " + seller + ", I am interested in buying " + product.get("title");
+        message = "Hello " + seller + ", I am interested in buying " + product.get("title");
         String sender = userId;
         Calendar timeStamp = Calendar.getInstance();
 
@@ -308,14 +312,14 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         Map<String, Object> selfThread = new HashMap<>();
         selfThread.put("messageId", messageId);
         selfThread.put("otherName", otherName);
-        selfThread.put("otherPic", null);
+        selfThread.put("otherPic", sellerImage);
         FirebaseFirestore.getInstance().collection("Users").document(selfUid)
                 .collection("messages").document(messageId).set(selfThread);
 
         Map<String, Object> otherThread = new HashMap<>();
         otherThread.put("messageId", messageId);
         otherThread.put("otherName", selfName);
-        otherThread.put("otherPic", null);
+        otherThread.put("otherPic", userImage);
         FirebaseFirestore.getInstance().collection("Users").document(otherUid)
                 .collection("messages").document(messageId).set(otherThread);
 

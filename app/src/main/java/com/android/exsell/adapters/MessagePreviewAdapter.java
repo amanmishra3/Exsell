@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
 import com.android.exsell.models.Preview;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAdapter.MyViewHolder> {
     private static final String TAG = "MessagePreviewAdapter";
@@ -33,7 +36,7 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
         private TextView nameText;
         private TextView messageText;
         private TextView deliveredAt;
-        private ImageView profilePic;
+        private CircleImageView profilePic;
 
         OnSelectListener onSelectListener;
 
@@ -45,7 +48,7 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
             nameText = view.findViewById(R.id.contact_name);
             messageText = view.findViewById(R.id.message_preview);
             deliveredAt = view.findViewById(R.id.time_stamp);
-            profilePic = view.findViewById(R.id.profile_pic);
+            profilePic = (CircleImageView) view.findViewById(R.id.profile_pic);
 
             view.setOnClickListener(this);
         }
@@ -72,7 +75,7 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
             name = name.substring(0, 1).toUpperCase() + name.substring(1);
         String message = previewArrayList.get(position).getMessage();
         Calendar timeStamp = previewArrayList.get(position).getTimeStamp();
-        Image profilePic = previewArrayList.get(position).getProfilePic();
+        String profilePic = previewArrayList.get(position).getProfilePic();
 
         String time;
 
@@ -100,7 +103,8 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
         holder.nameText.setText(name);
         holder.messageText.setText(message);
         holder.deliveredAt.setText(time);
-//        holder.profilePic.setImage(profilePic);
+        if(profilePic != null && profilePic.length() > 0)
+            Picasso.get().load(profilePic).into(holder.profilePic);
     }
 
     @Override

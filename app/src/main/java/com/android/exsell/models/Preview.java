@@ -9,9 +9,9 @@ public class Preview {
     String name;
     String message;
     Calendar timeStamp;
-    Image profilePic;
+    String profilePic;
 
-    public Preview(String messageId, String name, String message, Calendar timeStamp, Image profilePic) {
+    public Preview(String messageId, String name, String message, Calendar timeStamp, String profilePic) {
         this.messageId = messageId;
         this.name = name;
         this.message = message;
@@ -55,11 +55,11 @@ public class Preview {
         this.timeStamp = timeStamp;
     }
 
-    public Image getProfilePic() {
+    public String getProfilePic() {
         return profilePic;
     }
 
-    public void setProfilePic(Image profilePic) {
+    public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
 

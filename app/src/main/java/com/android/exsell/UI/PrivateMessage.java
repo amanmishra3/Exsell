@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +47,8 @@ public class PrivateMessage extends AppCompatActivity {
 
     String messageId;
 
+    private ImageView profilePic;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
@@ -55,13 +59,22 @@ public class PrivateMessage extends AppCompatActivity {
 
         newMessage = findViewById(R.id.new_chat_message);
 
+        profilePic = (ImageView) findViewById(R.id.profile_pic);
+
         Bundle extras = getIntent().getExtras();
         messageId = extras.get("messageId").toString();
         String name = extras.get("name").toString();
+        String imageUri = new String();
+        if(extras.get("imageUri") != null)
+            imageUri = extras.get("imageUri").toString();
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
 
         contactName = findViewById(R.id.contact_name);
         contactName.setText(name);
+
+        if(imageUri != null && imageUri.length() > 0) {
+            Picasso.get().load(imageUri).fit().into(profilePic);
+        }
 
         getMessages();
 

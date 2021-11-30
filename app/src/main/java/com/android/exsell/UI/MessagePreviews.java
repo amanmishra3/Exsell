@@ -157,6 +157,9 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                                 String name = doc.getString("otherName");
                                 preview.setName(name);
 
+                                String imageUri = doc.getString("otherPic");
+                                preview.setProfilePic(imageUri);
+
                                 // TODO implement profilePic query
 //                        Image profilePic = (Image) doc.get("otherPic");
 //                        preview.setProfilePic(profilePic);
@@ -211,60 +214,12 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 //        previewArrayList.sort();
     }
 
-    public void setPreviewInfo() {
-        mAuth = FirebaseAuth.getInstance();
-        String uidSelf = mAuth.getCurrentUser().getUid();
-        FirebaseFirestore.getInstance()
-                .collection("Users").document(uidSelf).collection("messages")
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if(queryDocumentSnapshots != null) {
-                    List<String> myChats = new ArrayList<>();
-                    Map<String, Object> mp= new HashMap<>();
-                    for(DocumentSnapshot doc: queryDocumentSnapshots) {
-                        Log.i(TAG, "doc data "+doc.getData());
-                        myChats.add(doc.getString("messageId"));
-                        Map<String, Object> tmp = new HashMap<>();
-                        tmp.put("messageId",doc.getString("messageId") );
-                        tmp.put("name", doc.getString("otherNames"));
-                        tmp.put("profilePic", doc.getString("otherPic"));
-                        mp.put(doc.getString("messageId"), tmp);
-                    }
-                    FirebaseFirestore.getInstance()
-                            .collection("messages")
-                            .whereIn(FieldPath.documentId(), myChats)
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    for(DocumentSnapshot doc: queryDocumentSnapshots) {
-                                        Log.i(TAG, "doc data 2 "+doc.getData());
-                                        String messageId = doc.getString("messageId");
-                                        Map<String, Object> tmp = (Map<String, Object>) mp.get(messageId);
-                                        String name = (String) tmp.get("name");
-                                        String msg = doc.getString("previewMessage");
-                                        Log.i(TAG, "adapter data "+messageId+" "+name+ " "+msg);
-                                        previewArrayList.add(new Preview(messageId, name, msg, Calendar.getInstance(), null));
-                                    }
-                                    setAdapter();
-                                }
-                            });
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-    }
-
     @Override
     public void onSelectClick(int position) {
         Intent intent = new Intent(this, PrivateMessage.class);
         intent.putExtra("messageId", previewArrayList.get(position).getMessageId());
         intent.putExtra("name", previewArrayList.get(position).getName());
+        intent.putExtra("imageUri", previewArrayList.get(position).getProfilePic());
         startActivity(intent);
     }
 
