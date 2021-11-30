@@ -18,6 +18,7 @@ import java.util.List;
 
 public class AppSettingsDb {
     private static AppSettingsDb appSettingsDb;
+    private static String APIKey;
     private CollectionReference appSettingsReference;
     private FirebaseFirestore db;
     private String TAG = "App Settings Db";
@@ -28,9 +29,25 @@ public class AppSettingsDb {
         return appSettingsDb;
     }
 
+    public static String getAPIKey() {
+        return APIKey;
+    }
+
     public AppSettingsDb() {
         db = FirebaseFirestore.getInstance();
         appSettingsReference = db.collection("appSettings");
+        appSettingsReference.document("apikey")
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Log.i(TAG , "wefwef "+task.getResult().getData().get("key"));
+                    APIKey = (String)task.getResult().getData().get("key");
+                } else {
+                    Log.i(TAG, "no documents ", task.getException());
+                }
+            }
+        });
     }
     public void getCategories(getCategoryCallback callback) {
         appSettingsReference.document("categories")
@@ -47,6 +64,7 @@ public class AppSettingsDb {
             }
         });
     }
+
 
     public interface getCategoryCallback {
         public void onCallback(List<String> categories);

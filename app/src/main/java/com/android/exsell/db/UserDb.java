@@ -84,6 +84,8 @@ public class UserDb {
                     myUser.put("contact", user.getContact());
                 if(user.getImageUri() != null)
                     myUser.put("imageUri", user.getImageUri());
+                if(user.getChatIds() != null)
+                    myUser.put("chatIds", user.getChatIds());
             }
         });
     }
@@ -211,6 +213,12 @@ public class UserDb {
         documentReference.update("notification", FieldValue.arrayUnion(notification));
 //        Notifications.updateNotifications();
     }
+    public void addChat(String userId, String chatId) {
+        Log.i(TAG, "Item Id "+userId);
+        DocumentReference documentReference = userCollectionReference.document(userId);
+        documentReference.update("chats", FieldValue.arrayUnion(chatId));
+//        Notifications.updateNotifications();
+    }
 
     public void getNotifications(String userId, getNotificationsCallback callback) {
         userCollectionReference.document(userId).get()
@@ -244,5 +252,8 @@ public class UserDb {
     }
     public interface getNotificationsCallback {
         void onCallback(List<String> notifications);
+    }
+    public interface getChatCallback {
+        void onCallback(List<String> chatIds);
     }
 }

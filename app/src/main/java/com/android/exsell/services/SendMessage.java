@@ -2,6 +2,7 @@ package com.android.exsell.services;
 
 import android.util.Log;
 
+import com.android.exsell.db.AppSettingsDb;
 import com.android.exsell.db.UserDb;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -19,13 +20,13 @@ import java.util.Date;
 import javax.net.ssl.HttpsURLConnection;
 
 public class SendMessage {
-    private static String serverKey = "AAAAUNRgr6g:APA91bFhKP-1SArpphNucmgVa1_UldAUWF7O9Xy16AoyC--19rSKSIF69eBOV9qmZoEnx4CiehvOJJntBskS36x-MYRJRyG30iD_Ut7Z1RwL25rHr11XAzDKwVpK-vlTRkKdeLsNyw69";
+    private static String serverKey = AppSettingsDb.getAPIKey();
     private static String apiurl = "https://fcm.googleapis.com/fcm/send";
 
     public SendMessage () {};
     public static void sendMessage(String token, String title, String message, String type, Date time) {
         try{
-            Log.i("SendMessage"," "+token);
+            Log.i("SendMessage"," "+serverKey);
             JSONObject msg = new JSONObject();
             JSONObject notification = new JSONObject();
             msg.put("to", token);

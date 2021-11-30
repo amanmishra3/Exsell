@@ -8,8 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ClipData;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -28,20 +26,17 @@ import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
-import com.android.exsell.listeners.BasicOnClickListeners;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Users;
 import com.android.exsell.services.SendMessage;
 import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.auth.User;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -141,7 +136,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                     @Override
                     public void onCallback(Users user) {
                         if(user != null) {
-                            SendMessage.sendMessage(user.getRegisterationToken(), " Seller Notification", UserDb.myUser.get("name") + "wants to buy" + product.get("title"), "intent", new Date());
+                            setupChatWithSeller(user.getRegisterationToken(), (String)UserDb.myUser.get("userId"), user.getUserId(), user.getFname());
                         }
                     }
                 });
@@ -230,5 +225,11 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     @Override
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
+    }
+
+    public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller) {
+        String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
+        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
+        String chatId = (String)product.get("productId");
     }
 }

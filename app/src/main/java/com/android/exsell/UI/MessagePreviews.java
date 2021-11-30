@@ -3,7 +3,6 @@ package com.android.exsell.UI;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.exsell.R;
 import com.android.exsell.adapters.MessagePreviewAdapter;
 import com.android.exsell.adapters.NotificationAdapter;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
@@ -31,13 +31,17 @@ import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 public class MessagePreviews extends AppCompatActivity implements MessagePreviewAdapter.OnSelectListener, FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
     private static final String TAG = "MessagePreviews";
-
+    Calendar cal = new GregorianCalendar();
+    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -49,10 +53,12 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     private RecyclerView recyclerView;
     private ImageView search, wishlist, addListing, message, notification;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.message_preview_list);
 
@@ -78,9 +84,11 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
+
+
         recyclerView = findViewById(R.id.message_preview_list);
         previewArrayList = new ArrayList<>();
-
+        getMessagePreviews();
         setPreviewInfo(); // TODO replace with getMessagePreviews() when implementedgit
 
         setAdapter();
@@ -117,7 +125,6 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     public void getMessagePreviews() {
         Log.i(TAG, "getMessagePreviews");
         /*
-        TODO
         For each message thread that user has
             Preview preview = new Preview()
             preview.uid = get contacts uid
