@@ -135,12 +135,17 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         mAuth = FirebaseAuth.getInstance();
         String uidSelf = mAuth.getCurrentUser().getUid();
 
+        previewArrayList = new ArrayList<>();
         FirebaseFirestore.getInstance()
                 .collection("Users").document(uidSelf).collection("messages")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value,
                                         @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
                         for (QueryDocumentSnapshot doc : value) {
                             if (doc.exists()) {
                                 Preview preview = new Preview();
@@ -177,12 +182,19 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                                                     calendar.setTime(((Timestamp) map.get("time")).toDate());
                                                     preview.setTimeStamp(calendar);
 
-                                                    if (previewArrayList.contains(preview)) {
-                                                        Log.i(TAG, String.valueOf(previewArrayList.indexOf(preview)));
-                                                        int index = previewArrayList.indexOf(preview);
-                                                        previewArrayList.set(index, preview);
-                                                    } else {
+                                                    boolean sameMessage = false;
+                                                    for(Preview p : previewArrayList) {
+                                                        if(p.isSame(preview)) {
+                                                            sameMessage = true;
+                                                            break;
+                                                        } else if(p.getMessageId().compareTo(preview.getMessageId()) == 0) {
+                                                            previewArrayList.remove(p);
+                                                            break;
+                                                        }
+                                                    }
+                                                    if(!sameMessage) {
                                                         previewArrayList.add(preview);
+                                                        adapter.notifyItemInserted(previewArrayList.size() - 1);
                                                     }
                                                 } else {
                                                     Log.d(TAG, "Current data: null");

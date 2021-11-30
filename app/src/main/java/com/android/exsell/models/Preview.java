@@ -62,4 +62,12 @@ public class Preview {
     public void setProfilePic(Image profilePic) {
         this.profilePic = profilePic;
     }
+
+    public boolean isSame(Preview preview) {
+        boolean result = this.messageId.compareTo(preview.getMessageId()) == 0
+                && this.name.compareTo(preview.getName()) == 0
+                && this.message.compareTo(preview.getMessage()) == 0
+                && this.timeStamp.getTime().toString().compareTo(preview.getTimeStamp().getTime().toString()) == 0;
+        return result;
+    }
 }

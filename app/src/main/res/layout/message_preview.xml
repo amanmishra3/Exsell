@@ -35,7 +35,10 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/contact_name"
         android:layout_alignBottom="@+id/profile_pic_card"
-        android:textSize="20sp" />
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="20sp"
+        android:paddingEnd="20dp"/>
 
     <TextView
         android:id="@+id/time_stamp"

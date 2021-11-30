@@ -24,18 +24,16 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
 public class PrivateMessage extends AppCompatActivity {
     private static final String TAG = "PrivateMessage";
 
     private ArrayList<Message> messageArrayList;
+    MessageAdapter adapter;
     private RecyclerView recyclerView;
 
     FirebaseAuth mAuth;
@@ -64,48 +62,24 @@ public class PrivateMessage extends AppCompatActivity {
         contactName.setText(name);
         Log.i(TAG, "messageId: " + messageId);
 
-//        setMessageInfo(); // use sample data
-        getMessages(); // use firebase data
+        getMessages();
 
         setAdapter();
-
-        recyclerView.scrollToPosition(messageArrayList.size() - 1);
     }
 
     private void setAdapter() {
         Log.i(TAG, "setAdapter");
-        MessageAdapter adapter = new MessageAdapter(messageArrayList);
+        adapter = new MessageAdapter(messageArrayList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
 
-    public void setMessageInfo() {
-        Log.i(TAG, "setPreviewInfo");
-        Calendar timeStamp = Calendar.getInstance();
-        messageArrayList.add(new Message("Hello there!!!", 0, timeStamp));
-        messageArrayList.add(new Message("How are you doing??", 1, timeStamp));
-        messageArrayList.add(new Message("Is that item still available?", 0, timeStamp));
-        messageArrayList.add(new Message("Are you still looking to buy that gabagoo", 1, timeStamp));
-        messageArrayList.add(new Message("YES!!!\n How much are you looking for $$$$?", 0, timeStamp));
-        messageArrayList.add(new Message("I was looking for $300", 1, timeStamp));
-        messageArrayList.add(new Message("WOOWOWOWOWOWOW", 0, timeStamp));
-        messageArrayList.add(new Message("So kind!!!!", 0, timeStamp));
-        messageArrayList.add(new Message("Could you come down to $150?", 0, timeStamp));
-        messageArrayList.add(new Message("You got yourself a deal!!", 1, timeStamp));
-        messageArrayList.add(new Message("When will you come and get it", 1, timeStamp));
-    }
-
     public void getMessages() {
         Log.i(TAG, "getMessages");
-        /*
-        TODO  fix ui to update when messageArrayList<messages> changes
-         */
+
         messageArrayList = new ArrayList<>();
-        mAuth = FirebaseAuth.getInstance();
-        String uidSelf = mAuth.getCurrentUser().getUid();
-        Log.i(TAG, messageId + " ");
         FirebaseFirestore.getInstance().collection("messages").document(messageId)
                 .collection("messages").orderBy("timeStamp")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -118,21 +92,28 @@ public class PrivateMessage extends AppCompatActivity {
                         }
                         for (QueryDocumentSnapshot doc : value) {
                             if(doc.exists()) {
-
                                 Message message = new Message();
-                                message.setMessage(doc.getString("message"));
 
-                                if(doc.getString("sender") == uidSelf)
-                                    message.setSender(0);
-                                else
-                                    message.setSender(1);
+                                message.setMessage(doc.getString("message"));
+                                message.setSender(doc.getString("sender"));
 
                                 Calendar calendar = Calendar.getInstance();
                                 Map<String, Object> map = (Map<String, Object>) doc.get("timeStamp");
                                 calendar.setTime(((Timestamp) map.get("time")).toDate());
                                 message.setTimeStamp(calendar);
 
-                                messageArrayList.add(message);
+                                boolean found = false;
+                                for(Message m : messageArrayList) {
+                                    if(m.isSame(message)) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if(!found) {
+                                    messageArrayList.add(message);
+                                    adapter.notifyItemInserted(messageArrayList.size() - 1);
+                                    recyclerView.scrollToPosition(messageArrayList.size() - 1);
+                                }
                             }
                         }
                     }
@@ -150,19 +131,26 @@ public class PrivateMessage extends AppCompatActivity {
 
     public void createMessage(String m) {
         Log.i(TAG, "createMessage");
-        Map<String, Object> message = new HashMap<>();
-        message.put("message", m);
-        message.put("timeStamp", Calendar.getInstance());
-        message.put("sender", mAuth.getCurrentUser().getUid());
+        mAuth = FirebaseAuth.getInstance();
 
-        Map<String, Object> preview = new HashMap<>();
-        preview.put("previewMessage", m);
-        preview.put("previewTimeStamp", Calendar.getInstance());
+//      Add message to database
+        Message message = new Message();
+        message.setMessage(m);
+        message.setSender(mAuth.getCurrentUser().getUid());
+        message.setTimeStamp(Calendar.getInstance());
 
         FirebaseFirestore.getInstance().collection("messages").document(messageId)
                 .collection("messages").document().set(message);
 
+//      Update the most recent message in database
+        Map<String, Object> preview = new HashMap<>();
+        preview.put("previewMessage", m);
+        preview.put("previewTimeStamp", Calendar.getInstance());
+
         FirebaseFirestore.getInstance().collection("messages").document(messageId).set(preview);
+
+//      Scroll to the bottom of the chat
+        recyclerView.scrollToPosition(messageArrayList.size() - 1);
     }
 
     public void onClick(View view) {
