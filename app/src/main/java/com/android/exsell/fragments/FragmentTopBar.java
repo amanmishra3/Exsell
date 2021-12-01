@@ -27,7 +27,7 @@ public class FragmentTopBar extends Fragment implements NotificationEvent {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_bar, container, false);
-        FirebaseNotificationService.notificationEventRegister(this::newNotification);
+//        FirebaseNotificationService.notificationEventRegister(this::newNotification);
         this.navbarHamburgerOnClickCallback = (navbarHamburgerOnClickCallback) getActivity();
         this.notificationBellClickCallback = (NotificationBellClickCallback) getActivity();
         this.notificationBell = (ImageView) view.findViewById(R.id.notificationButton);
