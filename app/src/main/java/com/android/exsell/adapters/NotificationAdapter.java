@@ -77,13 +77,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             @Override
             public void onClick(View v) {
 //                Home.itemDetails(products.get(position), position);
-                Log.i(TAG, "ProductAdapter "+holder.selectedNotification);
+                Log.i(TAG, "ProductAdapter "+holder.selectedNotification+" "+context);
                 Intent intent = new Intent(context, PrivateMessage.class);
                 try {
                     intent.putExtra("messageId", (String)holder.selectedNotification.get("messageId"));
                     intent.putExtra("name", (String)holder.selectedNotification.get("name"));
-                    userDb.updateNotifications((String) UserDb.myUser.get("userId"), holder.selectedNotification);
-                } catch(Exception e) {}
+                    if(holder.selectedNotification.has("new")) {
+                        userDb.updateNotifications((String) UserDb.myUser.get("userId"), holder.selectedNotification);
+                    }
+                } catch(Exception e) {
+                    Log.i(TAG, Log.getStackTraceString(e));
+                }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

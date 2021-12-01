@@ -167,7 +167,9 @@ public class PrivateMessage extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        Intent intent = new Intent(this, MessagePreviews.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, MessagePreviews.class);
+//        startActivity(intent);
+        //SOme weird stuff happening with the backstack, commenting out for now
+        finish();
     }
 }

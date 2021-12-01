@@ -30,6 +30,7 @@ import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Users;
+import com.android.exsell.services.FirebaseNotificationService;
 import com.android.exsell.services.SendMessage;
 import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
@@ -46,7 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
+public class ItemListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack, FirebaseNotificationService.notifcationReloaded {
     private String TAG = "ItemListing";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
@@ -143,14 +144,6 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
 //        if(mAuth.getCurrentUser() != null) {
 //            userDb.setMyUser();
 
-            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
-                @Override
-                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
-                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-                    notificationRecycler.setNestedScrollingEnabled(true);
-                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
-                }
-            });
 //        }
 
         contact_seller.setOnClickListener(new View.OnClickListener() {
@@ -180,6 +173,10 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                 startActivity(intent);
             }
         });
+
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
     }
 
 
@@ -195,7 +192,8 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     @Override
     protected void onResume() {
         super.onResume();
-        drawer.closeDrawer(Gravity.LEFT, false);
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.closeDrawer(GravityCompat.START, false);
     }
     public void contactSeller(View view){
 //        Intent intent = new Intent(this, Home.class);
@@ -324,5 +322,12 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         intent.putExtra("messageId", messageId);
         intent.putExtra("name", otherName);
         startActivity(intent);
+    }
+
+    @Override
+    public void reloadCallback(List<JSONObject> notifications) {
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, notifications, 1);
     }
 }

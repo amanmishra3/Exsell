@@ -36,6 +36,7 @@ import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
+import com.android.exsell.services.FirebaseNotificationService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
+public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack, FirebaseNotificationService.notifcationReloaded {
     // side navigation
     private String TAG = "Home";
     LinearLayout layoutTop, layoutBottom;
@@ -178,17 +179,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             finish();
 
         }
-        if(mAuth.getCurrentUser() != null) {
-            userDb.setMyUser();
-            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
-                @Override
-                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
-                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-                    notificationRecycler.setNestedScrollingEnabled(true);
-                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
-                }
-            });
-        }
+        FirebaseNotificationService.NotificationReloader(this::reloadCallback);
     }
 
     @Override
@@ -423,5 +414,12 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         if(userDb.myUser.containsKey("imageUri")) {
             Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
         }
+    }
+
+    @Override
+    public void reloadCallback(java.util.List<JSONObject> notifications) {
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, notifications, 1);
     }
 }

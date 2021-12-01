@@ -58,7 +58,7 @@ public class Notifications {
             } catch(Exception e) {}
         }
     }
-    public static void updateNotifications(Context context, notificationUpdateCallback callback) {
+    public static void updateNotifications(notificationUpdateCallback callback) {
 //        myNotifications = new ArrayList<>();
         UserDb userDb = UserDb.newInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -80,6 +80,8 @@ public class Notifications {
                                 notificationObj.add(0, tmp);
                                 newNotification = true;
                             }else {
+                                if(!myNotifications.contains(tmp))
+                                    myNotifications.add(tmp);
                                 notificationObj.add(tmp);
                             }
                         } catch (Exception e) {
@@ -87,7 +89,7 @@ public class Notifications {
                         }
                     }
                     if(newNotification) {
-                        Toast.makeText(context, "New Notification received",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "New Notification received",Toast.LENGTH_SHORT).show();
                     }
                     callback.onCallback(notificationObj, newNotification);
                 }

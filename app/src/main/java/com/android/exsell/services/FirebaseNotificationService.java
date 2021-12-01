@@ -11,6 +11,7 @@ import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
 import com.android.exsell.UI.Home;
@@ -30,11 +31,13 @@ import java.util.List;
 public class FirebaseNotificationService extends FirebaseMessagingService {
     private UserDb userDb;
     private FirebaseAuth mAuth;
+    private static boolean started = false;
     private static List<NotificationEvent> events;
     @Override
     public void onCreate() {
         super.onCreate();
         userDb = UserDb.newInstance();
+
     }
     public static void notificationEventRegister(NotificationEvent e) {
         if(events == null) {
@@ -63,8 +66,10 @@ public class FirebaseNotificationService extends FirebaseMessagingService {
             } catch(Exception e) {
 
             }
-            for(NotificationEvent event: events) {
-                event.newNotification();
+            if(events != null) {
+                for(NotificationEvent event: events) {
+                    event.newNotification();
+                }
             }
             mAuth = FirebaseAuth.getInstance();
             if(notification != null && mAuth.getCurrentUser() != null) {
@@ -101,7 +106,7 @@ public class FirebaseNotificationService extends FirebaseMessagingService {
         // Pass the intent to switch to the MainActivity
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_IMMUTABLE);
         String channelId = "Default";
         NotificationCompat.Builder builder = new  NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -116,5 +121,22 @@ public class FirebaseNotificationService extends FirebaseMessagingService {
         manager.notify(NotificationCompat.PRIORITY_HIGH, builder.build());
     }
 
+    public static void NotificationReloader(notifcationReloaded reloader) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null && !started) {
+            started = true;
+            Notifications.updateNotifications( new Notifications.notificationUpdateCallback() {
+                @Override
+                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
+                    Notifications.setMyNotifications(notifications);
+                    reloader.reloadCallback(notifications);
+                }
+            });
+        }
+    }
+
+    public interface notifcationReloaded {
+        public void reloadCallback(List<JSONObject> notifications);
+    }
 
 }

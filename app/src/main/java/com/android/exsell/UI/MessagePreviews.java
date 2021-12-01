@@ -30,6 +30,7 @@ import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Preview;
+import com.android.exsell.services.FirebaseNotificationService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,7 +50,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class MessagePreviews extends AppCompatActivity implements MessagePreviewAdapter.OnSelectListener, FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
+public class MessagePreviews extends AppCompatActivity implements MessagePreviewAdapter.OnSelectListener, FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack, FirebaseNotificationService.notifcationReloaded {
     private static final String TAG = "MessagePreviews";
 
     FirebaseAuth mAuth;
@@ -94,16 +95,6 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
 
 //        if(mAuth.getCurrentUser() != null) {
-            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
-                @Override
-                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
-                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-                    notificationRecycler.setNestedScrollingEnabled(true);
-                    Toast.makeText(getApplicationContext(), "New Notification received",Toast.LENGTH_LONG).show();
-                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
-
-                }
-            });
 //    }
 
 
@@ -113,6 +104,16 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         getMessagePreviews();
 
         setAdapter();
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.closeDrawer(GravityCompat.START, false);
     }
 
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
@@ -264,5 +265,12 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         if(UserDb.myUser.containsKey("imageUri")) {
             Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
         }
+    }
+
+    @Override
+    public void reloadCallback(List<JSONObject> notifications) {
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, notifications, 1);
     }
 }

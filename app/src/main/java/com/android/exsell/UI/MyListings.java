@@ -34,6 +34,7 @@ import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
+import com.android.exsell.services.FirebaseNotificationService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
@@ -43,7 +44,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyListings extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
+public class MyListings extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack, FirebaseNotificationService.notifcationReloaded {
     private String TAG = "My Listings";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
@@ -86,17 +87,6 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
 
-        if(mAuth.getCurrentUser() != null) {
-            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
-                @Override
-                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
-                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-                    notificationRecycler.setNestedScrollingEnabled(true);
-                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
-
-                }
-            });
-        }
 
         loadProducts();
         Product searchParam = new Product();
@@ -120,6 +110,9 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
                 }
             }
         });
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
     }
 
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
@@ -263,5 +256,12 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         if(UserDb.myUser.containsKey("imageUri")) {
             Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
         }
+    }
+
+    @Override
+    public void reloadCallback(List<JSONObject> notifications) {
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, notifications, 1);
     }
 }

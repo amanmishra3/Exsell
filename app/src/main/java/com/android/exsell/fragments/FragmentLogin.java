@@ -113,6 +113,7 @@ public class FragmentLogin extends Fragment {
             if(user.isEmailVerified()) {
                 Intent intent = new Intent(getActivity(), Home.class);
                 startActivity(intent);
+                getActivity().finish();
             } else {
                 Toast.makeText(getActivity(), "Please verify Email",
                         Toast.LENGTH_SHORT).show();
