@@ -8,6 +8,7 @@ public class Message {
     String message;
     String sender; // 0: other, 1: self
     Calendar timeStamp;
+    String messageId;
 
     public Message(String message, String senderUid, Calendar timeStamp) {
         this.message = message;
@@ -41,6 +42,14 @@ public class Message {
 
     public void setTimeStamp(Calendar timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public boolean isSame(Message message) {

@@ -39,11 +39,11 @@
             android:id="@+id/notificationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_notifications"
             android:layout_gravity="center_vertical"
-            app:tint="@color/black"
+            android:layout_marginStart="180dp"
             android:padding="10dp"
-            android:layout_marginStart="180dp"/>
+            android:src="@drawable/ic_notifications"
+            app:tint="@color/black" />
 
         <ImageView
             android:id="@+id/searchButton"

@@ -4,14 +4,14 @@ import android.media.Image;
 
 import java.util.Calendar;
 
-public class Preview {
+public class Preview implements Comparable {
     String messageId;
     String name;
     String message;
     Calendar timeStamp;
-    Image profilePic;
+    String profilePic;
 
-    public Preview(String messageId, String name, String message, Calendar timeStamp, Image profilePic) {
+    public Preview(String messageId, String name, String message, Calendar timeStamp, String profilePic) {
         this.messageId = messageId;
         this.name = name;
         this.message = message;
@@ -55,11 +55,11 @@ public class Preview {
         this.timeStamp = timeStamp;
     }
 
-    public Image getProfilePic() {
+    public String getProfilePic() {
         return profilePic;
     }
 
-    public void setProfilePic(Image profilePic) {
+    public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
 
@@ -69,5 +69,10 @@ public class Preview {
                 && this.message.compareTo(preview.getMessage()) == 0
                 && this.timeStamp.getTime().toString().compareTo(preview.getTimeStamp().getTime().toString()) == 0;
         return result;
+    }
+
+    @Override
+    public int compareTo(Object preview) {
+        return ((Preview)preview).getTimeStamp().compareTo(this.timeStamp);
     }
 }

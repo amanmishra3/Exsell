@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
 import com.android.exsell.UI.ItemListing;
+import com.android.exsell.UI.NewListing;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.models.Product;
 import com.android.exsell.listeners.productListener;
@@ -37,13 +39,15 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         CardView card;
+        Button edit_item;
         TextView textViewTitle, textViewPrice, textViewDescription;
         ImageView imageViewIcon;
         private Product selectedProduct;
 
-        public MyViewHolder(View itemView){
+        public MyViewHolder(View itemView, boolean edit){
             super(itemView);
             this.card = (CardView) itemView.findViewById(R.id.layout_horizontal_card);
+            this.edit_item = edit ? (Button) itemView.findViewById(R.id.button_edit_profile) : null;
             this.textViewTitle = (TextView) itemView.findViewById(R.id.itemTitle);
             this.textViewPrice = (TextView) itemView.findViewById(R.id.itemPrice);
             this.textViewDescription = (TextView) itemView.findViewById(R.id.itemDescription);
@@ -67,12 +71,12 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
         if (className.equals("com.android.exsell.UI.MyListings") ) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.layout_item_tile_horizontal_my_listing, parent, false);
-            myViewHolder = new MyViewHolder(view);
+            myViewHolder = new MyViewHolder(view, true);
         }
         else{
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.layout_item_tile_horizontal, parent, false);
-            myViewHolder = new MyViewHolder(view);
+            myViewHolder = new MyViewHolder(view, false);
         }
         return myViewHolder;
     }
@@ -95,6 +99,23 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
                 context.startActivity(intent);
             }
         });
+        if(holder.edit_item != null) {
+            holder.edit_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, NewListing.class);
+                    intent.putExtra("imageUri", holder.selectedProduct.getImageUri());
+                    intent.putExtra("title", holder.selectedProduct.getTitle());
+                    intent.putExtra("description", holder.selectedProduct.getDescription());
+                    intent.putExtra("price", holder.selectedProduct.getPrice());
+                    intent.putExtra("productId", holder.selectedProduct.getProductId());
+                    intent.putExtra("load", "true");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            });
+        }
+
 
         textViewTitle.setText(products.get(position).getTitle());
         textViewPrice.setText("$"+products.get(position).getPrice());

@@ -9,13 +9,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,47 +61,65 @@ public class ItemDb {
         selectedProduct.put("categories", item.getCategories());
         selectedProduct.put("createdOn", item.getCreatedOn());
         selectedProduct.put("seller", item.getSeller());
-
+        selectedProduct.put("location", item.getLocation());
     }
 
     public CollectionReference getItemCollectionReference() {
         return itemCollectionReference;
     }
 
-    public void createItem(Product item, createItemsCallback callback) {
+    public void createItem(Product item, String productId, createItemsCallback callback) {
         List<String> searchKeywords = searchKeywords(item);
         item.setSearch(searchKeywords);
         item.setCreatedOn(new Date());
-        Log.i(TAG, " my iamge "+ item.getImageUri());
-        itemCollectionReference.add(item)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.i(TAG, "Succefully inserted");
-                        item.setProductId(documentReference.getId());
-                        // add the itemId to ItemId body
-                        updateItem(item);
-                        callback.onCallback(true, documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        callback.onCallback(false, null);
-                    }
-                });
+        Log.i(TAG, " my image "+ productId);
+        if(productId != null) {
+            itemCollectionReference.document(productId).set(item, SetOptions.merge())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            callback.onCallback(true, productId);
+                        }
+                    });
+        } else {
+            itemCollectionReference.add(item)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.i(TAG, "Successfully inserted");
+                            item.setProductId(documentReference.getId());
+                            // add the itemId to ItemId body
+                            updateItem(item);
+                            callback.onCallback(true, documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            callback.onCallback(false, null);
+                        }
+                    });
+        }
+
     }
     public void getAllItems(getItemsCallback callback) {
-        itemCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String uid = mAuth.getCurrentUser().getUid();
+        itemCollectionReference.orderBy("createdOn", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
                     QuerySnapshot querySnapshot = task.getResult();
                     List<Product> itemsList = querySnapshot.toObjects(Product.class);
+                    List<Product> res = new ArrayList<>();
                     for(Product it: itemsList) {
-                        Log.i(TAG," data recieved "+ it.getBuyer());
+                        if(!it.getSeller().equals(uid)) {
+                            Log.i(TAG, "getAll "+uid+ " - "+it.getSeller());
+                            res.add(it);
+                        }
                     }
-                    callback.onCallback(itemsList);
+                    callback.onCallback(res);
                 } else {
                     Log.i(TAG, "no documents ", task.getException());
 //                    callback.onCallback(null);
@@ -118,7 +139,7 @@ public class ItemDb {
             searchKeys.add(x.toLowerCase());
         Query query = itemCollectionReference.whereArrayContainsAny("search", searchKeys);
         Log.i(TAG," search keywords "+ searchKeys);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        query.orderBy("createdOn").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
@@ -134,7 +155,9 @@ public class ItemDb {
         });
     }
     public void searchItems(Product params, getItemsCallback callback) {
-        Query query = itemCollectionReference;
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String uid = mAuth.getCurrentUser().getUid();
+        Query query = itemCollectionReference.orderBy("createdOn", Query.Direction.DESCENDING);
         if(params.getBuyer() != null)
             query = itemCollectionReference.whereEqualTo("buyer", params.getBuyer());
         if(params.getStatus() != null)
@@ -153,7 +176,13 @@ public class ItemDb {
                 if(task.isSuccessful()) {
                     QuerySnapshot querySnapshot = task.getResult();
                     List<Product> itemsList = querySnapshot.toObjects(Product.class);
-                    callback.onCallback(itemsList);
+                    List<Product> res = new ArrayList<>();
+                    Log.i(TAG, "itemList "+params.getSeller());
+                    for(Product it: itemsList) {
+                        if(params.getSeller() != null || !it.getSeller().equals(uid))
+                            res.add(it);
+                    }
+                    callback.onCallback(res);
                 } else {
                     Log.i(TAG, "no documents ", task.getException());
                     callback.onCallback(null);

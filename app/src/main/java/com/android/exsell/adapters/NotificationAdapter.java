@@ -1,8 +1,10 @@
 package com.android.exsell.adapters;
 import com.android.exsell.R;
-import com.android.exsell.UI.ItemListing;
+import com.android.exsell.UI.PrivateMessage;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.models.Product;
+import com.google.firebase.firestore.auth.User;
 import com.squareup.picasso.Picasso;
 
 import android.content.Context;
@@ -27,6 +29,7 @@ import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
     private List<JSONObject> notifications;
+    private UserDb userDb;
     public String TAG = "ProductAdapter";
     private Context context;
 
@@ -50,6 +53,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public NotificationAdapter(List<JSONObject> data, Context context){
         this.notifications = data;
         this.context = context;
+        userDb = UserDb.newInstance();
     }
 
 
@@ -68,21 +72,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         TextView textViewPrice = holder.textViewPrice;
         TextView textViewTags = holder.textViewTags;
         ImageView imageView = holder.imageViewIcon;
+        holder.selectedNotification = notifications.get(position);
         holder.notificationTile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Home.itemDetails(products.get(position), position);
                 Log.i(TAG, "ProductAdapter "+holder.selectedNotification);
-//                ItemDb.setCurrentProduct(holder.selectedProduct);
-//                Intent intent = new Intent(context, ItemListing.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(intent);
+                Intent intent = new Intent(context, PrivateMessage.class);
+                try {
+                    intent.putExtra("messageId", (String)holder.selectedNotification.get("messageId"));
+                    intent.putExtra("name", (String)holder.selectedNotification.get("name"));
+                    userDb.updateNotifications((String) UserDb.myUser.get("userId"), holder.selectedNotification);
+                } catch(Exception e) {}
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         });
         holder.selectedNotification = notifications.get(position);
         String messageText = new String();
         try {
             messageText = (String)notifications.get(position).get("message");
+            if(notifications.get(position).has("new")) {
+                holder.notificationTile.setBackgroundColor(context.getResources().getColor(R.color.bumble));
+            }
         } catch(Exception e) {
         }
         textViewTitle.setText(messageText);

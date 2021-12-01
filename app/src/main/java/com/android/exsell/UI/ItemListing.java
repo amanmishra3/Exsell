@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -28,26 +27,27 @@ import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
-import com.android.exsell.listeners.BasicOnClickListeners;
 import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Users;
 import com.android.exsell.services.SendMessage;
 import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.auth.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ItemListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
-    private String TAG = "Categories";
+    private String TAG = "ItemListing";
     LinearLayout layoutTop, layoutBottom;
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -59,7 +59,9 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     private Map<String, Object> product;
     private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification, profilePic;
     private TextView title, description, price, tags, userEmail, userName;
-    private Button contact_seller;
+    private Button contact_seller, meet_seller;
+    private com.google.firebase.firestore.GeoPoint seller_location;
+    Double latitude, longitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +93,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         description = (TextView) parent.findViewById(R.id.description);
         tags = (TextView) parent.findViewById(R.id.tags);
         contact_seller =  (Button) parent.findViewById(R.id.contact_seller);
+        meet_seller = (Button) parent.findViewById(R.id.meetSellerBtn);
         addToWishlist = (ImageView) parent.findViewById(R.id.add_to_wishlist);
         // <--
 
@@ -106,9 +109,6 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
 
-        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-        notificationRecycler.setNestedScrollingEnabled(true);
-        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         //-->getting from static stuff for now
         if(product.containsKey("imageUri") && product.get("imageUri") != null) {
@@ -125,6 +125,12 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         String stringTags = String.join(", ", listTags);
         tags.setText("Tags: "+stringTags);
 
+        seller_location = (com.google.firebase.firestore.GeoPoint) product.get("location");
+        if(seller_location != null) {
+            latitude = seller_location.getLatitude();
+            longitude = seller_location.getLongitude();
+        }
+
         checkWishList();
 
         addToWishlist.setOnClickListener(new View.OnClickListener() {
@@ -134,6 +140,19 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
             }
         });
 
+//        if(mAuth.getCurrentUser() != null) {
+//            userDb.setMyUser();
+
+            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
+                @Override
+                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
+                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+                    notificationRecycler.setNestedScrollingEnabled(true);
+                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
+                }
+            });
+//        }
+
         contact_seller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,10 +160,24 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                     @Override
                     public void onCallback(Users user) {
                         if(user != null) {
-                            SendMessage.sendMessage(user.getRegisterationToken(), " Seller Notification", UserDb.myUser.get("name") + "wants to buy" + product.get("title"), "intent", new Date());
+                            Log.i(TAG, " user gotback ");
+                            String userImage = new String();
+                            if(UserDb.myUser.get("imageUri") != null)
+                                userImage = (String) UserDb.myUser.get("imageUri");
+                            setupChatWithSeller(user.getRegisterationToken(), (String)UserDb.myUser.get("userId"), user.getUserId(), user.getFname(), userImage, user.getImageUri());
                         }
                     }
                 });
+            }
+        });
+
+        meet_seller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemListing.this, MapActivity.class);
+                intent.putExtra("seller_latitude", String.valueOf(latitude));
+                intent.putExtra("seller_longitude", String.valueOf(longitude));
+                startActivity(intent);
             }
         });
     }
@@ -235,11 +268,61 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
     }
+
     public void getUserDetails(){
         userName.setText((String) UserDb.myUser.get("name"));
         userEmail.setText((String) UserDb.myUser.get("email"));
         if(UserDb.myUser.containsKey("imageUri")) {
             Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
         }
+    }
+    public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller, String userImage, String sellerImage) {
+        Log.i(TAG, "setupChatWithSeller");
+        String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
+        String messageId = userId.compareTo(sellerId) < 0 ? userId + sellerId: sellerId + userId;
+        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date(), (String)UserDb.myUser.get("name"),messageId );
+
+        message = "Hello " + seller + ", I am interested in buying " + product.get("title");
+        String sender = userId;
+        Calendar timeStamp = Calendar.getInstance();
+
+        String selfName = UserDb.myUser.get("name").toString();
+        String selfUid = userId;
+        String otherName = seller;
+        String otherUid = sellerId;
+
+        Map<String, Object> newMessage = new HashMap<>();
+        newMessage.put("message", message);
+        newMessage.put("sender", sender);
+        newMessage.put("timeStamp", timeStamp);
+        FirebaseFirestore.getInstance().collection("messages").document(messageId)
+                .collection("messages").document().set(newMessage);
+
+        Map<String, Object> newMessagePreview = new HashMap<>();
+        newMessagePreview.put("previewMessage", message);
+        newMessagePreview.put("previewTimeStamp", timeStamp);
+        FirebaseFirestore.getInstance().collection("messages").document(messageId)
+                .set(newMessagePreview);
+
+        // TODO implement profilePic
+        Map<String, Object> selfThread = new HashMap<>();
+        selfThread.put("messageId", messageId);
+        selfThread.put("otherName", otherName);
+        selfThread.put("otherPic", sellerImage);
+        FirebaseFirestore.getInstance().collection("Users").document(selfUid)
+                .collection("messages").document(messageId).set(selfThread);
+
+        // TODO implement profilePic
+        Map<String, Object> otherThread = new HashMap<>();
+        otherThread.put("messageId", messageId);
+        otherThread.put("otherName", selfName);
+        otherThread.put("otherPic", userImage);
+        FirebaseFirestore.getInstance().collection("Users").document(otherUid)
+                .collection("messages").document(messageId).set(otherThread);
+
+        Intent intent = new Intent(this, PrivateMessage.class);
+        intent.putExtra("messageId", messageId);
+        intent.putExtra("name", otherName);
+        startActivity(intent);
     }
 }

@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
 import com.android.exsell.models.Preview;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAdapter.MyViewHolder> {
     private static final String TAG = "MessagePreviewAdapter";
@@ -33,7 +36,7 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
         private TextView nameText;
         private TextView messageText;
         private TextView deliveredAt;
-        private ImageView profilePic;
+        private CircleImageView profilePic;
 
         OnSelectListener onSelectListener;
 
@@ -45,7 +48,7 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
             nameText = view.findViewById(R.id.contact_name);
             messageText = view.findViewById(R.id.message_preview);
             deliveredAt = view.findViewById(R.id.time_stamp);
-            profilePic = view.findViewById(R.id.profile_pic);
+            profilePic = (CircleImageView) view.findViewById(R.id.profile_pic);
 
             view.setOnClickListener(this);
         }
@@ -66,28 +69,31 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Log.i(TAG, "onBindViewHolder");
+        Log.i(TAG, "onBindViewHolder "+previewArrayList.get(position));
         String name = previewArrayList.get(position).getName();
-        name = name.substring(0, 1).toUpperCase() + name.substring(1);
+        if(name!= null)
+            name = name.substring(0, 1).toUpperCase() + name.substring(1);
         String message = previewArrayList.get(position).getMessage();
         Calendar timeStamp = previewArrayList.get(position).getTimeStamp();
-        Image profilePic = previewArrayList.get(position).getProfilePic();
+        String profilePic = previewArrayList.get(position).getProfilePic();
 
         String time;
 
         if (timeStamp.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)
                 && timeStamp.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH)
                 && timeStamp.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
-
-            String hour = String.valueOf(timeStamp.get(Calendar.HOUR));
+            String hour;
+            if(timeStamp.get(Calendar.HOUR_OF_DAY) > 12)
+                hour = String.valueOf(timeStamp.get(Calendar.HOUR));
+            else
+                hour = String.valueOf(timeStamp.get(Calendar.HOUR_OF_DAY));
             String min = String.valueOf(timeStamp.get(Calendar.MINUTE));
             if(min.length()==1)
                 min = "0" + min;
-            String sec = String.valueOf(timeStamp.get(Calendar.SECOND));
-            if(sec.length()==1)
-                sec = "0" + min;
 
-            time = hour + ":" + min + ":" + sec;
+            String ampm = timeStamp.get(Calendar.AM_PM) == 0 ? "AM": "PM";
+
+            time = hour + ":" + min + " " + ampm;
         } else {
             String day = String.valueOf(timeStamp.get(Calendar.DATE));
             String month = String.valueOf(timeStamp.get(Calendar.MONTH));
@@ -99,6 +105,9 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
         holder.nameText.setText(name);
         holder.messageText.setText(message);
         holder.deliveredAt.setText(time);
+        if(profilePic != null && profilePic.length() > 0)
+            Picasso.get().load(profilePic).into(holder.profilePic);
+        // TODO implement profilePic
 //        holder.profilePic.setImage(profilePic);
     }
 

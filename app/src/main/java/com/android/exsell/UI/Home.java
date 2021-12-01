@@ -27,6 +27,7 @@ import com.android.exsell.adapters.HorizontalProductAdapter;
 import com.android.exsell.adapters.NotificationAdapter;
 import com.android.exsell.adapters.ProductAdapter;
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
+import com.android.exsell.db.AppSettingsDb;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
 import com.android.exsell.fragments.FragmentSearchBar;
@@ -37,6 +38,7 @@ import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -67,6 +69,8 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private Object List;
     private ItemDb itemDb;
     private UserDb userDb;
+    private Notifications notificationDb;
+    private AppSettingsDb appSettingsDb;
     private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
     private ConstraintLayout constraintLayout;
@@ -82,11 +86,9 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         super.onCreate(savedInstanceState);
         itemDb = ItemDb.newInstance();
         userDb = UserDb.newInstance();
+        notificationDb = Notifications.newInstance();
+        appSettingsDb = AppSettingsDb.newInstance();
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null) {
-            userDb.setMyUser();
-            Notifications.updateNotifications();
-        }
         myStorage = new MyFirebaseStorage();
         Product p = new Product();
 
@@ -130,10 +132,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
                 }
             }
         });
-
-        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-        notificationRecycler.setNestedScrollingEnabled(true);
-        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         recommendedRecycler = (RecyclerView) findViewById(R.id.recommended_recycler);
         recommendedRecycler.setNestedScrollingEnabled(true);
@@ -180,12 +178,28 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             finish();
 
         }
+        if(mAuth.getCurrentUser() != null) {
+            userDb.setMyUser();
+            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
+                @Override
+                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
+                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+                    notificationRecycler.setNestedScrollingEnabled(true);
+                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
+                }
+            });
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         navigationView.setCheckedItem(R.id.home);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            userDb = UserDb.newInstance();
+            userDb.setMyUser();
+        }
     }
 
     @Override
@@ -194,7 +208,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.closeDrawer(GravityCompat.START, false);
         navigationView.setCheckedItem(R.id.home);
-
     }
 
 

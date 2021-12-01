@@ -15,6 +15,7 @@ public class Users {
     Date dob;
     List<String> orders;
     List<String> wishlist;
+    List<String> chatIds;
     String rating;
     String school;
     Date createdOn;
@@ -136,6 +137,14 @@ public class Users {
 
     public String getRegisterationToken() {
         return registerationToken;
+    }
+
+    public List<String> getChatIds() {
+        return chatIds;
+    }
+
+    public void setChatIds(List<String> chatIds) {
+        this.chatIds = chatIds;
     }
 
     public Map<String, Object> userAttributes() {

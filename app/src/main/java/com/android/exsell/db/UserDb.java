@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.models.Notifications;
@@ -15,9 +16,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import org.json.JSONObject;
+
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +90,8 @@ public class UserDb {
                     myUser.put("contact", user.getContact());
                 if(user.getImageUri() != null)
                     myUser.put("imageUri", user.getImageUri());
+                if(user.getChatIds() != null)
+                    myUser.put("chatIds", user.getChatIds());
             }
         });
     }
@@ -211,26 +219,78 @@ public class UserDb {
         documentReference.update("notification", FieldValue.arrayUnion(notification));
 //        Notifications.updateNotifications();
     }
+    public void updateNotifications(String userId, JSONObject notification) {
+        Log.i(TAG, "Item Id update  "+ notification);
+        DocumentReference documentReference = userCollectionReference.document(userId);
+        documentReference.update("notification", FieldValue.arrayRemove(notification.toString()));
+        notification.remove("new");
+        Log.i(TAG, "Item Id again  "+ notification);
+        documentReference = userCollectionReference.document(userId);
+        documentReference.update("notification", FieldValue.arrayUnion(notification.toString()));
+//        Notifications.updateNotifications();
+    }
 
-    public void getNotifications(String userId, getNotificationsCallback callback) {
-        userCollectionReference.document(userId).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+    public void setupChatId(String userId, String sellerId, String buyer, String seller, String imageSeller, String imageBuyer, getChatCallback callback) {
+        String chatId = userId + sellerId;
+        Map<String, Object> mp = new HashMap<>();
+        mp.put("messageId", chatId);
+        mp.put("otherNames", seller);
+        mp.put("otherPic", imageSeller);
+        DocumentReference documentReference = userCollectionReference.document(userId).collection("messages").document(chatId);
+        documentReference.set(mp)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists() && documentSnapshot.get("notification") != null) {
-                            Log.i("Notifications ", documentSnapshot.get("notification").toString());
-                            callback.onCallback((List<String>)documentSnapshot.get("notification"));
-                        }else {
-                            callback.onCallback(null);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
+                    public void onSuccess(Void unused) {
+                        DocumentReference documentReference2 = userCollectionReference.document(sellerId).collection("messages").document(chatId);
+                        mp.put("otherNames", buyer);
+                        mp.put("otherPic", imageBuyer);
+                        documentReference2.set(mp)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        callback.onCallback(true);
+                                    }
+                                });
                     }
                 });
+
+    }
+
+    public void getNotifications(String userId, getNotificationsCallback callback) {
+        userCollectionReference.document(userId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                if(documentSnapshot.exists() && documentSnapshot.get("notification") != null) {
+                    Log.i("Notifications ", documentSnapshot.get("notification").toString());
+                    List<String> notifications = (List<String>)documentSnapshot.get("notification");
+//                    Collections.sort(notifications);
+                    notifications = notifications.subList(0, notifications.size() > 15 ? 15 : notifications.size());
+                    callback.onCallback(notifications);
+                }else {
+                    callback.onCallback(null);
+                }
+            }
+        });
+//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        if(documentSnapshot.exists() && documentSnapshot.get("notification") != null) {
+//                            Log.i("Notifications ", documentSnapshot.get("notification").toString());
+//                            List<String> notifications = (List<String>)documentSnapshot.get("notification");
+//                            Collections.sort(notifications);
+//                            notifications = notifications.subList(0, 15);
+//                            callback.onCallback(notifications);
+//                        }else {
+//                            callback.onCallback(null);
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
     }
 
     public interface createUserCallback {
@@ -244,5 +304,8 @@ public class UserDb {
     }
     public interface getNotificationsCallback {
         void onCallback(List<String> notifications);
+    }
+    public interface getChatCallback {
+        void onCallback(boolean done);
     }
 }

@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_margin="20dp"
-            android:src="@drawable/exselllogo" />
+            android:src="@drawable/exsell_logo_bumble" />
 
         <GridLayout
             android:layout_width="match_parent"
