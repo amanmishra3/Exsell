@@ -7,10 +7,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.exsell.R;
@@ -33,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     private ItemDb itemDb;
     private UserDb userDb;
+    Animation anim1, anim2;
+    ImageView exsell1, exsell2;
+    public static int SPLASH_SCREEN = 5000;
 //    private MyFirebaseStorage storage;
 
     @Override
@@ -43,50 +50,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_main);
+        anim1 = AnimationUtils.loadAnimation(this, R.anim.top_animation);
+        anim2 = AnimationUtils.loadAnimation(this, R.anim.bottom_animation);
 
-        layoutTop = findViewById(R.id.layoutTopBar);
-        layoutBottom = findViewById(R.id.layoutBottomBar);
-        drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
-        navigationView = findViewById(R.id.navigationMenu);
-
-        layoutTop.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
+        exsell1 = (ImageView) findViewById(R.id.exsell1);
+        exsell2 = (ImageView) findViewById(R.id.exsell2);
+//        exsell1.setAnimation(anim2);
+        exsell2.setAnimation(anim1);
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, SearchBar.class));
+            public void run() {
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                Intent intent;
+                if (currentUser != null) {
+                    userDb = UserDb.newInstance();
+                    userDb.setMyUser();
+                    intent = new Intent(MainActivity.this, Home.class);
+                } else {
+                    intent = new Intent(MainActivity.this, LoginActivity.class);
+                }
+                startActivity(intent);
+                finish();
             }
-        });
-        layoutBottom.findViewById(R.id.wishlistButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, WishlistActivity.class));
-            }
-        });
-        layoutTop.findViewById(R.id.leftNavigationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
-            }
-        });
-        if(navigationView != null){
-            navigationView.setNavigationItemSelectedListener(this);
-        }
+        }, SPLASH_SCREEN);
 
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        Intent intent;
-        if (currentUser != null) {
-            userDb = UserDb.newInstance();
-            userDb.setMyUser();
-            intent = new Intent(this, Home.class);
-        } else {
-            intent = new Intent(this, LoginActivity.class);
-        }
-        startActivity(intent);
     }
 
     // temporary button

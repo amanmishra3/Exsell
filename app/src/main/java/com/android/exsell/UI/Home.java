@@ -38,6 +38,7 @@ import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -194,6 +195,11 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     protected void onStart() {
         super.onStart();
         navigationView.setCheckedItem(R.id.home);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            userDb = UserDb.newInstance();
+            userDb.setMyUser();
+        }
     }
 
     @Override

@@ -1,61 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.MainActivity"
-    android:id="@+id/drawerLayout">
+    tools:context=".MainActivity"
+    android:background="@color/bumble">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/exsell1"
+        android:layout_width="341dp"
+        android:layout_height="380dp"
+        android:src="@drawable/exsell_logo_white_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.472" />
 
-        <include layout="@layout/layout_top_bar"/>
+    <ImageView
+        android:id="@+id/exsell2"
+        android:layout_width="172dp"
+        android:layout_height="250dp"
+        android:src="@drawable/exselllogo_2_bumble"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.543"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.272" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_39sdp"
-            android:layout_marginBottom="@dimen/_39sdp"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/_10sdp">
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/recyclerViewItemTiles"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/layoutTopBar" />-->
-
-            <!-- Temporary to see layouts -->
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:text="Navigate to home activity"
-                android:onClick="move" />
-
-        </ScrollView>
-
-        <include layout="@layout/layout_bottom_bar"/>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:headerLayout="@layout/navigation_bar_header"
-        app:menu="@menu/navigation_menu"
-        android:layout_gravity="start"/>
-
-</androidx.drawerlayout.widget.DrawerLayout>
-
-
-
-
-
-
+</androidx.constraintlayout.widget.ConstraintLayout>
