@@ -86,9 +86,17 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
 
-        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-        notificationRecycler.setNestedScrollingEnabled(true);
-        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
+        if(mAuth.getCurrentUser() != null) {
+            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
+                @Override
+                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
+                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+                    notificationRecycler.setNestedScrollingEnabled(true);
+                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
+
+                }
+            });
+        }
 
         loadProducts();
         Product searchParam = new Product();

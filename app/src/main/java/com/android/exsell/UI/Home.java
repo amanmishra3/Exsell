@@ -68,6 +68,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private Object List;
     private ItemDb itemDb;
     private UserDb userDb;
+    private Notifications notificationDb;
     private AppSettingsDb appSettingsDb;
     private MyFirebaseStorage myStorage;
     private HorizontalScrollView view;
@@ -84,12 +85,9 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         super.onCreate(savedInstanceState);
         itemDb = ItemDb.newInstance();
         userDb = UserDb.newInstance();
+        notificationDb = Notifications.newInstance();
         appSettingsDb = AppSettingsDb.newInstance();
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null) {
-            userDb.setMyUser();
-            Notifications.updateNotifications();
-        }
         myStorage = new MyFirebaseStorage();
         Product p = new Product();
 
@@ -133,10 +131,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
                 }
             }
         });
-
-        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-        notificationRecycler.setNestedScrollingEnabled(true);
-        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         recommendedRecycler = (RecyclerView) findViewById(R.id.recommended_recycler);
         recommendedRecycler.setNestedScrollingEnabled(true);
@@ -182,6 +176,17 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
 
+        }
+        if(mAuth.getCurrentUser() != null) {
+            userDb.setMyUser();
+            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
+                @Override
+                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
+                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+                    notificationRecycler.setNestedScrollingEnabled(true);
+                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
+                }
+            });
         }
     }
 

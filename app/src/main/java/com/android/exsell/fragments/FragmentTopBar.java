@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -14,17 +15,22 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.android.exsell.R;
 import com.android.exsell.UI.Home;
+import com.android.exsell.services.FirebaseNotificationService;
+import com.android.exsell.services.NotificationEvent;
 
-public class FragmentTopBar extends Fragment {
+public class FragmentTopBar extends Fragment implements NotificationEvent {
     DrawerLayout drawer;
     private navbarHamburgerOnClickCallback navbarHamburgerOnClickCallback;
     private NotificationBellClickCallback notificationBellClickCallback;
+    private ImageView notificationBell;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_bar, container, false);
+        FirebaseNotificationService.notificationEventRegister(this::newNotification);
         this.navbarHamburgerOnClickCallback = (navbarHamburgerOnClickCallback) getActivity();
         this.notificationBellClickCallback = (NotificationBellClickCallback) getActivity();
+        this.notificationBell = (ImageView) view.findViewById(R.id.notificationButton);
         view.findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +68,11 @@ public class FragmentTopBar extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void newNotification() {
+        this.notificationBell.setImageResource(R.drawable.ic_bell);
     }
 
     public interface navbarHamburgerOnClickCallback {

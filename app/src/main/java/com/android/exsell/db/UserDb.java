@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.models.Notifications;
@@ -15,9 +16,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import org.json.JSONObject;
+
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -213,10 +219,14 @@ public class UserDb {
         documentReference.update("notification", FieldValue.arrayUnion(notification));
 //        Notifications.updateNotifications();
     }
-    public void addChat(String userId, String chatId) {
-        Log.i(TAG, "Item Id "+userId);
+    public void updateNotifications(String userId, JSONObject notification) {
+        Log.i(TAG, "Item Id update  "+ notification);
         DocumentReference documentReference = userCollectionReference.document(userId);
-        documentReference.update("chats", FieldValue.arrayUnion(chatId));
+        documentReference.update("notification", FieldValue.arrayRemove(notification.toString()));
+        notification.remove("new");
+        Log.i(TAG, "Item Id again  "+ notification);
+        documentReference = userCollectionReference.document(userId);
+        documentReference.update("notification", FieldValue.arrayUnion(notification.toString()));
 //        Notifications.updateNotifications();
     }
 
@@ -247,24 +257,40 @@ public class UserDb {
     }
 
     public void getNotifications(String userId, getNotificationsCallback callback) {
-        userCollectionReference.document(userId).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists() && documentSnapshot.get("notification") != null) {
-                            Log.i("Notifications ", documentSnapshot.get("notification").toString());
-                            callback.onCallback((List<String>)documentSnapshot.get("notification"));
-                        }else {
-                            callback.onCallback(null);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
+        userCollectionReference.document(userId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                if(documentSnapshot.exists() && documentSnapshot.get("notification") != null) {
+                    Log.i("Notifications ", documentSnapshot.get("notification").toString());
+                    List<String> notifications = (List<String>)documentSnapshot.get("notification");
+//                    Collections.sort(notifications);
+                    notifications = notifications.subList(0, notifications.size() > 15 ? 15 : notifications.size());
+                    callback.onCallback(notifications);
+                }else {
+                    callback.onCallback(null);
+                }
+            }
+        });
+//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        if(documentSnapshot.exists() && documentSnapshot.get("notification") != null) {
+//                            Log.i("Notifications ", documentSnapshot.get("notification").toString());
+//                            List<String> notifications = (List<String>)documentSnapshot.get("notification");
+//                            Collections.sort(notifications);
+//                            notifications = notifications.subList(0, 15);
+//                            callback.onCallback(notifications);
+//                        }else {
+//                            callback.onCallback(null);
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//
+//                    }
+//                });
     }
 
     public interface createUserCallback {

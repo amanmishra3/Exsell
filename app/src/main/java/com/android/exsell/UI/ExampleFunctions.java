@@ -17,11 +17,11 @@ public class ExampleFunctions {
     }
     public void DoNothing() {
         //to add Product;
-        itemDb.getAllItems(new ItemDb.getItemsCallback() {
-            @Override
-            public void onCallback(List<Product> itemsList) {
-            }
-        });
+//        itemDb.getAllItems(new ItemDb.getItemsCallback() {
+//            @Override
+//            public void onCallback(List<Product> itemsList) {
+//            }
+//        });
 
         // creating a Product obj for filtered searching, populate only the fields to filter leave the rest as it is
         Product search = new Product();
@@ -40,13 +40,13 @@ public class ExampleFunctions {
 //        search.setBargain(true);
 
         // create an item
-        itemDb.createItem(search , new ItemDb.createItemsCallback() {
-            @Override
-            public void onCallback(boolean ok, String id) {
-                if(ok) // on create callback insert views or star intents over here
-                    Log.i(TAG,"Document created with id "+id);
-            }
-        });
+//        itemDb.createItem(search , new ItemDb.createItemsCallback() {
+//            @Override
+//            public void onCallback(boolean ok, String id) {
+//                if(ok) // on create callback insert views or star intents over here
+//                    Log.i(TAG,"Document created with id "+id);
+//            }
+//        });
 
         // search items based on Product object
         itemDb.searchItems(search, new ItemDb.getItemsCallback() {

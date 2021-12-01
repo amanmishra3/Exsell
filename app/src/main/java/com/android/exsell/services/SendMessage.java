@@ -24,15 +24,20 @@ public class SendMessage {
     private static String apiurl = "https://fcm.googleapis.com/fcm/send";
 
     public SendMessage () {};
-    public static void sendMessage(String token, String title, String message, String type, Date time) {
+    public static void sendMessage(String token, String title, String message, String type, Date time, String name, String messageId) {
         try{
             Log.i("SendMessage"," "+serverKey);
             JSONObject msg = new JSONObject();
             JSONObject notification = new JSONObject();
+            JSONObject data = new JSONObject();
             msg.put("to", token);
             notification.put("title", title);
             notification.put("body", message);
+            data.put("intent", "chat");
+            data.put("name", name);
+            data.put("messageId", messageId);
             msg.put("notification", notification);
+            msg.put("data", data);
             JSONObject payloadJson = new JSONObject();
 
             URL url = new URL(apiurl);

@@ -75,6 +75,7 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     private Spinner s;
     private AlertDialog.Builder builder;
     private static final int galleryPick = 1;
+    private String productId, imageUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +136,26 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
                 });
             }
         });
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null && extras.getString("load") != null) {
+            Log.i(TAG, " intent data "+extras);
+            String title = extras.getString("title");
+            String description =  extras.getString("description");
+//            String tags = extras.getString("tags");
+            String  imageUri = extras.getString("imageUri");
+            String price = (extras.get("price").toString());
+            this.title.setText(title);
+            this.description.setText(description);
+            this.price.setText(price);
+            this.productId = extras.getString("productId");
+            this.imageUrl = imageUri;
+//            addListing.text
+//            this.tags
+            if(imageUri != null) {
+                Picasso.get().load(imageUri).into(this.addImage);
+            }
+        }
         //dummy items in the category
         List<String> arraySpinner = Arrays.asList("Select an item", "Books", "Electronics", "Furniture", "Sports", "Stationery");
         appSettingsDb.getCategories(new AppSettingsDb.getCategoryCallback() {
@@ -199,12 +220,18 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         addProduct.setCategories(Arrays.asList(s.getSelectedItem().toString()));
         addProduct.setDescription(itemDescription);
         addProduct.setSeller(itemSeller);
+        if(this.imageUrl != null) {
+            addProduct.setImageUri(this.imageUrl);
+        }
+        if(this.productId != null) {
+            addProduct.setProductId(this.productId);
+        }
         for(String tags: sTags.split(",")) {
             itemTags.add(tags.trim().toLowerCase());
         }
         addProduct.setTags(itemTags);
         addProduct.setPrice(itemPrice);
-        itemDb.createItem(addProduct, new ItemDb.createItemsCallback() {
+        itemDb.createItem(addProduct, productId, new ItemDb.createItemsCallback() {
             @Override
             public void onCallback(boolean ok, String id) {
                 if(!ok) {
@@ -212,15 +239,20 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
                     return;
                 }
                 Log.i(TAG,ok + " : id : "+id);
-                myStorage.uploadImage(uri, id, 0, new MyFirebaseStorage.downloadUrlCallback() {
-                    @Override
-                    public void onCallback(String url) {
-                        Log.i(TAG," My URI "+url);
-                        itemDb.getItemCollectionReference().document(id).update("imageUri", url);
-                        setDialog(false);
-                        callback.onCallback(true);
-                    }
-                });
+                if(uri == null) {
+                    setDialog(false);
+                    callback.onCallback(true);
+                } else {
+                    myStorage.uploadImage(uri, id, 0, new MyFirebaseStorage.downloadUrlCallback() {
+                        @Override
+                        public void onCallback(String url) {
+                            Log.i(TAG," My URI "+url);
+                            itemDb.getItemCollectionReference().document(id).update("imageUri", url);
+                            setDialog(false);
+                            callback.onCallback(true);
+                        }
+                    });
+                }
             }
         });
 

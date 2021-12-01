@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,28 +68,39 @@ public class ItemDb {
         return itemCollectionReference;
     }
 
-    public void createItem(Product item, createItemsCallback callback) {
+    public void createItem(Product item, String productId, createItemsCallback callback) {
         List<String> searchKeywords = searchKeywords(item);
         item.setSearch(searchKeywords);
         item.setCreatedOn(new Date());
-        Log.i(TAG, " my image "+ item.getImageUri());
-        itemCollectionReference.add(item)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.i(TAG, "Successfully inserted");
-                        item.setProductId(documentReference.getId());
-                        // add the itemId to ItemId body
-                        updateItem(item);
-                        callback.onCallback(true, documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        callback.onCallback(false, null);
-                    }
-                });
+        Log.i(TAG, " my image "+ productId);
+        if(productId != null) {
+            itemCollectionReference.document(productId).set(item, SetOptions.merge())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            callback.onCallback(true, productId);
+                        }
+                    });
+        } else {
+            itemCollectionReference.add(item)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.i(TAG, "Successfully inserted");
+                            item.setProductId(documentReference.getId());
+                            // add the itemId to ItemId body
+                            updateItem(item);
+                            callback.onCallback(true, documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            callback.onCallback(false, null);
+                        }
+                    });
+        }
+
     }
     public void getAllItems(getItemsCallback callback) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();

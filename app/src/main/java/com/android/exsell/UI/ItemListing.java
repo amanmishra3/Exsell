@@ -33,6 +33,7 @@ import com.android.exsell.models.Users;
 import com.android.exsell.services.SendMessage;
 import com.android.exsell.models.Notifications;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -108,9 +109,6 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
 
-        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
-        notificationRecycler.setNestedScrollingEnabled(true);
-        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         //-->getting from static stuff for now
         if(product.containsKey("imageUri") && product.get("imageUri") != null) {
@@ -141,6 +139,19 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                 addToWishList();
             }
         });
+
+//        if(mAuth.getCurrentUser() != null) {
+//            userDb.setMyUser();
+
+            Notifications.updateNotifications(this, new Notifications.notificationUpdateCallback() {
+                @Override
+                public void onCallback(java.util.List<JSONObject> notifications, boolean newNotification) {
+                    notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+                    notificationRecycler.setNestedScrollingEnabled(true);
+                    loadNotificationsRecycler(notificationRecycler, notifications, 1);
+                }
+            });
+//        }
 
         contact_seller.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -268,9 +279,9 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller, String userImage, String sellerImage) {
         Log.i(TAG, "setupChatWithSeller");
         String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
-        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date());
-
         String messageId = userId.compareTo(sellerId) < 0 ? userId + sellerId: sellerId + userId;
+        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date(), (String)UserDb.myUser.get("name"),messageId );
+
         message = "Hello " + seller + ", I am interested in buying " + product.get("title");
         String sender = userId;
         Calendar timeStamp = Calendar.getInstance();
