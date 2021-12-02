@@ -85,6 +85,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     if(holder.selectedNotification.has("new")) {
                         userDb.updateNotifications((String) UserDb.myUser.get("userId"), holder.selectedNotification);
                     }
+                    if(holder.selectedNotification.has("imageUri")) {
+                        intent.putExtra("imageUri", (String)holder.selectedNotification.get("imageUri"));
+                    }
                 } catch(Exception e) {
                     Log.i(TAG, Log.getStackTraceString(e));
                 }

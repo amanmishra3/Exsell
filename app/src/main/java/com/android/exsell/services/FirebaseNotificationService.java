@@ -60,6 +60,7 @@ public class FirebaseNotificationService extends FirebaseMessagingService {
                 notification.put("message", remoteMessage.getNotification().getBody());
                 notification.put("intent", remoteMessage.getData().get("chat"));
                 notification.put("messageId", remoteMessage.getData().get("messageId"));
+                notification.put("imageUri", remoteMessage.getData().get("imageUri"));
                 notification.put("name", remoteMessage.getData().get("name"));
                 notification.put("time", new Date());
                 notification.put("new", "true");

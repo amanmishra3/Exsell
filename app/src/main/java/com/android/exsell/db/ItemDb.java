@@ -236,6 +236,11 @@ public class ItemDb {
         DocumentReference documentReference = itemCollectionReference.document(itemId);
         documentReference.set(item);
     }
+    public void deleteItem(String itemId) {
+        Log.i(TAG, "Item Id "+itemId);
+        DocumentReference documentReference = itemCollectionReference.document(itemId);
+        documentReference.delete();
+    }
     public interface getItemsCallback {
         void onCallback(List<Product> itemsList);
     }

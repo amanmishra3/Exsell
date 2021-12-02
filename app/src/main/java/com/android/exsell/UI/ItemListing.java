@@ -278,7 +278,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         Log.i(TAG, "setupChatWithSeller");
         String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
         String messageId = userId.compareTo(sellerId) < 0 ? userId + sellerId: sellerId + userId;
-        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date(), (String)UserDb.myUser.get("name"),messageId );
+        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date(), (String)UserDb.myUser.get("name"),messageId, (String)UserDb.myUser.get("imageUri") );
 
         message = "Hello " + seller + ", I am interested in buying " + product.get("title");
         String sender = userId;

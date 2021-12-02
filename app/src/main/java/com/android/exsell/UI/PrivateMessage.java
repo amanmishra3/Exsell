@@ -67,6 +67,7 @@ public class PrivateMessage extends AppCompatActivity {
         String imageUri = new String();
         if(extras.get("imageUri") != null)
             imageUri = extras.get("imageUri").toString();
+        Log.i(TAG, "imageUri "+imageUri);
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
 
         contactName = findViewById(R.id.contact_name);

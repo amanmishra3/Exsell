@@ -1,6 +1,7 @@
 package com.android.exsell.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,17 +13,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.exsell.R;
 import com.android.exsell.UI.ItemListing;
+import com.android.exsell.UI.MyListings;
 import com.android.exsell.UI.NewListing;
 import com.android.exsell.db.ItemDb;
+import com.android.exsell.db.UserDb;
 import com.android.exsell.models.Product;
 import com.android.exsell.listeners.productListener;
+import com.google.firebase.firestore.auth.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -36,10 +42,11 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
     private String TAG = "HorizontalProductAdapter";
     private Context context;
     private Timer timer;
+    private ItemDb itemDb;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         CardView card;
-        Button edit_item;
+        Button edit_item, mark_sold;
         TextView textViewTitle, textViewPrice, textViewDescription;
         ImageView imageViewIcon;
         private Product selectedProduct;
@@ -48,6 +55,7 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
             super(itemView);
             this.card = (CardView) itemView.findViewById(R.id.layout_horizontal_card);
             this.edit_item = edit ? (Button) itemView.findViewById(R.id.button_edit_profile) : null;
+            this.mark_sold = edit ? (Button) itemView.findViewById(R.id.button_saved_videos) : null;
             this.textViewTitle = (TextView) itemView.findViewById(R.id.itemTitle);
             this.textViewPrice = (TextView) itemView.findViewById(R.id.itemPrice);
             this.textViewDescription = (TextView) itemView.findViewById(R.id.itemDescription);
@@ -59,6 +67,7 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
         this.products = data;
         this.context = context;
         this.productsSource = data;
+        itemDb = ItemDb.newInstance();
     }
 
 
@@ -112,6 +121,33 @@ public class HorizontalProductAdapter extends RecyclerView.Adapter<HorizontalPro
                     intent.putExtra("load", "true");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                }
+            });
+        }
+        if(holder.mark_sold != null) {
+            holder.mark_sold.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                    alert.setTitle("Mark as Sold");
+                    alert.setMessage("Are you sure you want to mark this item as SOLD?");
+                    alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(context, "Marking Item as sold",Toast.LENGTH_LONG);
+                            itemDb.deleteItem((String)holder.selectedProduct.getProductId());
+                            Intent intent = new Intent(context, MyListings.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            context.startActivity(intent);
+                        }
+                    });
+                    alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // close dialog
+                            dialog.cancel();
+                        }
+                    });
+                    alert.show();
                 }
             });
         }
