@@ -73,7 +73,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.MyView
 //                Home.itemDetails(products.get(position), position);
                 ItemDb.setCurrentProduct(holder.selectedProduct);
                 Intent intent = new Intent(context, ItemListing.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });
