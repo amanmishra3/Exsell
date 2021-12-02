@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.exsell.R;
@@ -31,12 +32,7 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        item.setCheckable(true);
-//        item.setChecked(true);
-//        if (previousMenuItem != null) {
-//            previousMenuItem.setChecked(false);
-//        }
-//        previousMenuItem = item;
+
         if (item.getItemId() == R.id.signOut) {
             onSignOut();
             return true;
@@ -85,12 +81,30 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
         context.startActivity(intent);
     }
 
+
+//    public void onSignOut() {
+//        AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(context.getApplicationContext());
+//        passwordResetDialog.setTitle("Sign Out");
+//        passwordResetDialog.setMessage("Do you want to sign out?");
+////        Log.i(TAG, "onSignOut");
+////        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+////        if (mAuth.getCurrentUser() != null) {
+////            mAuth.signOut();
+////        }
+////        UserDb.clearData();
+////        Notifications.clearData();
+////        ItemDb.clearData();
+////
+////        Intent intent = new Intent(context, LoginActivity.class);
+////        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////        context.startActivity(intent);
+//    }
+
     public void myList() {
         Log.i(TAG, "My List");
         Intent intent = new Intent(context, MyListings.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-
     }
 
 }

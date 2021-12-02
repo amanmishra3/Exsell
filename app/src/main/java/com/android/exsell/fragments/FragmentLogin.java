@@ -62,7 +62,7 @@ public class FragmentLogin extends Fragment {
                 Log.i(TAG, "Clicked Forgot Password");
                 EditText resetMail = new EditText(getActivity());
                 AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(getActivity());
-                passwordResetDialog.setTitle("Reset Password ?");
+                passwordResetDialog.setTitle("Reset Password");
                 passwordResetDialog.setMessage("Enter your Email to get the password reset link");
                 passwordResetDialog.setView(resetMail);
 
