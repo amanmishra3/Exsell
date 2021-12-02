@@ -1,6 +1,7 @@
 package com.android.exsell.listeners;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.MenuItem;
@@ -81,25 +82,6 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
         context.startActivity(intent);
     }
 
-
-//    public void onSignOut() {
-//        AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(context.getApplicationContext());
-//        passwordResetDialog.setTitle("Sign Out");
-//        passwordResetDialog.setMessage("Do you want to sign out?");
-////        Log.i(TAG, "onSignOut");
-////        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-////        if (mAuth.getCurrentUser() != null) {
-////            mAuth.signOut();
-////        }
-////        UserDb.clearData();
-////        Notifications.clearData();
-////        ItemDb.clearData();
-////
-////        Intent intent = new Intent(context, LoginActivity.class);
-////        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////        context.startActivity(intent);
-//    }
-
     public void myList() {
         Log.i(TAG, "My List");
         Intent intent = new Intent(context, MyListings.class);
@@ -108,7 +90,6 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
     }
 
 }
-
 
 //To call the listener
 // navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));

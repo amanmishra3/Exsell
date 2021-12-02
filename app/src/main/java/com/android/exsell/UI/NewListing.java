@@ -1,5 +1,6 @@
 package com.android.exsell.UI;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -155,9 +156,8 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
                                     new String[] {
                                             Manifest.permission.CAMERA
                                     }, 100);
-                            openCamera();
-                            dialog.dismiss();
-                        } else{
+                        }
+                        else{
                             openCamera();
                             dialog.dismiss();
                         }
@@ -219,6 +219,16 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
                 s.setAdapter(adapter);
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 100) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            }
+        }
     }
 
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
