@@ -88,7 +88,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 } catch(Exception e) {
                     Log.i(TAG, Log.getStackTraceString(e));
                 }
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(intent);
             }
         });

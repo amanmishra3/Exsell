@@ -19,6 +19,7 @@
         android:textAppearance="?android:textAppearanceSmall"
         android:layout_gravity="center_vertical"
         android:id="@+id/loading_msg"
+        android:fontFamily="@font/montserrat"
         android:layout_toEndOf="@+id/loader"
         android:layout_height="wrap_content" />
 

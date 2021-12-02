@@ -3,6 +3,7 @@ package com.android.exsell.UI;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -64,8 +66,9 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     private ArrayList<Preview> previewArrayList;
     private RecyclerView recyclerView;
-    private ImageView search, wishlist, addListing, message, notification, messageIcon, profilePic;
+    private ImageView search, wishlist, addListing, message, notification, messageIcon, profilePic, hamburger;
     private TextView userName, userEmail;
+    int flag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
@@ -93,6 +96,39 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.nav_open, R.string.nav_close) {
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (flag == 1){
+
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_left_navigation_menu_button);
+                    flag = 0;
+                }
+                else if(flag == 2){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications);
+                    flag = 0;
+                }
+            }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Do whatever you want here
+                if(drawer.isDrawerOpen(GravityCompat.END)){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications_black_24dp);
+                    flag = 2;
+                }
+                else if(drawer.isDrawerOpen(GravityCompat.START)){
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_menu_open);
+                    flag = 1;
+                }
+
+            }
+        };
+        drawer.addDrawerListener(mDrawerToggle);
 
 //        if(mAuth.getCurrentUser() != null) {
 //    }
@@ -107,6 +143,12 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 
     @Override
@@ -229,20 +271,31 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     @Override
     public void onHamburgerClickCallback() {
-        Log.i(TAG, "onHamburgerClickCallback");
-        drawer.closeDrawer(GravityCompat.END, false);
-        drawer.openDrawer(GravityCompat.START);
-        userName = (TextView) drawer.findViewById(R.id.userNameNav);
-        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
-        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
-        getUserDetails();
+        Log.i(TAG,"onHamburgerClickCallback");
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawer.closeDrawer(GravityCompat.END, false);
+            drawer.openDrawer(GravityCompat.START);
+            userName = (TextView) drawer.findViewById(R.id.userNameNav);
+            userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+            profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+            getUserDetails();
+
+        }
     }
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG, "onNotificationBellClick");
-        drawer.closeDrawer(GravityCompat.START, false);
-        drawer.openDrawer(GravityCompat.END);
+        if(drawer.isDrawerOpen(GravityCompat.END)) {
+            drawer.closeDrawer(GravityCompat.END);
+        }
+        else {
+            Log.i(TAG,"onNotificationBellClick");
+            drawer.closeDrawer(GravityCompat.START, false);
+            drawer.openDrawer(GravityCompat.END);
+        }
     }
 
     public void setNavigationHeader() {

@@ -1,5 +1,6 @@
 package com.android.exsell.UI;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -58,18 +59,19 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     private View parent;
     private UserDb userDb;
     private Map<String, Object> product;
-    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification, profilePic;
+    private ImageView search, wishlist, addListing, message, productImage, hamburger, addToWishlist, notification, profilePic;
     private TextView title, description, price, tags, userEmail, userName;
     private Button contact_seller, meet_seller;
     private com.google.firebase.firestore.GeoPoint seller_location;
+    private int flag = 0;
     Double latitude, longitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 8)
-        {
+        if (SDK_INT > 8) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -87,13 +89,13 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         userDb = UserDb.newInstance();
         // side navigation
         //-->
-        parent  = (View) findViewById(R.id.activity_item_listing_inner_constraint);
+        parent = (View) findViewById(R.id.activity_item_listing_inner_constraint);
         productImage = (ImageView) parent.findViewById(R.id.image);
         title = (TextView) parent.findViewById(R.id.title);
         price = (TextView) parent.findViewById(R.id.price);
         description = (TextView) parent.findViewById(R.id.description);
         tags = (TextView) parent.findViewById(R.id.tags);
-        contact_seller =  (Button) parent.findViewById(R.id.contact_seller);
+        contact_seller = (Button) parent.findViewById(R.id.contact_seller);
         meet_seller = (Button) parent.findViewById(R.id.meetSellerBtn);
         addToWishlist = (ImageView) parent.findViewById(R.id.add_to_wishlist);
         // <--
@@ -110,24 +112,56 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
 
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.nav_open, R.string.nav_close) {
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (flag == 1) {
+
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_left_navigation_menu_button);
+                    flag = 0;
+                } else if (flag == 2) {
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications);
+                    flag = 0;
+                }
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Do whatever you want here
+                if (drawer.isDrawerOpen(GravityCompat.END)) {
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications_black_24dp);
+                    flag = 2;
+                } else if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_menu_open);
+                    flag = 1;
+                }
+
+            }
+        };
+        drawer.addDrawerListener(mDrawerToggle);
 
         //-->getting from static stuff for now
-        if(product.containsKey("imageUri") && product.get("imageUri") != null) {
-            Picasso.get().load((String)product.get("imageUri")).into(productImage);
+        if (product.containsKey("imageUri") && product.get("imageUri") != null) {
+            Picasso.get().load((String) product.get("imageUri")).into(productImage);
         } else {
             productImage.setImageResource(R.drawable.test_image);
         }
-        title.setText((String)product.get("title"));
-        price.setText("$"+product.get("price").toString());
-        description.setText((String)product.get("description"));
+        title.setText((String) product.get("title"));
+        price.setText("$" + product.get("price").toString());
+        description.setText((String) product.get("description"));
         tags.setText("");
         List<String> listTags;
         listTags = (List<String>) product.get("tags");
         String stringTags = String.join(", ", listTags);
-        tags.setText("Tags: "+stringTags);
+        tags.setText("Tags: " + stringTags);
 
         seller_location = (com.google.firebase.firestore.GeoPoint) product.get("location");
-        if(seller_location != null) {
+        if (seller_location != null) {
             latitude = seller_location.getLatitude();
             longitude = seller_location.getLongitude();
         }
@@ -149,15 +183,15 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         contact_seller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userDb.getUser((String)product.get("seller"), new UserDb.getUserCallback() {
+                userDb.getUser((String) product.get("seller"), new UserDb.getUserCallback() {
                     @Override
                     public void onCallback(Users user) {
-                        if(user != null) {
+                        if (user != null) {
                             Log.i(TAG, " user gotback ");
                             String userImage = new String();
-                            if(UserDb.myUser.get("imageUri") != null)
+                            if (UserDb.myUser.get("imageUri") != null)
                                 userImage = (String) UserDb.myUser.get("imageUri");
-                            setupChatWithSeller(user.getRegisterationToken(), (String)UserDb.myUser.get("userId"), user.getUserId(), user.getFname(), userImage, user.getImageUri());
+                            setupChatWithSeller(user.getRegisterationToken(), (String) UserDb.myUser.get("userId"), user.getUserId(), user.getFname(), userImage, user.getImageUri());
                         }
                     }
                 });
@@ -173,7 +207,6 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                 startActivity(intent);
             }
         });
-
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
@@ -195,39 +228,42 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.closeDrawer(GravityCompat.START, false);
     }
-    public void contactSeller(View view){
+
+    public void contactSeller(View view) {
 //        Intent intent = new Intent(this, Home.class);
 //        intent.putExtra("sellerID", 0);
 //        startActivity(intent);
-        Toast.makeText(this, "Contacting seller",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Contacting seller", Toast.LENGTH_SHORT).show();
     }
 
-    public void buyNow(View view){
+    public void buyNow(View view) {
 //        Intent intent = new Intent(this, Home.class);
 //        intent.putExtra("sellerID", 0);
 //        startActivity(intent);
-        Toast.makeText(this, "Buy now",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Buy now", Toast.LENGTH_SHORT).show();
     }
+
     public void addToWishList() {
-        List<String> myWishlist = (List<String>)UserDb.myUser.get("wishlist");
-        if(myWishlist == null) {
+        List<String> myWishlist = (List<String>) UserDb.myUser.get("wishlist");
+        if (myWishlist == null) {
             myWishlist = new ArrayList<>();
         }
-        if(myWishlist.contains((String)product.get("productId")))  {
-            myWishlist.remove((String)product.get("productId"));
-            userDb.removeFromWishList((String)UserDb.myUser.get("userId"),(String)product.get("productId"));
+        if (myWishlist.contains((String) product.get("productId"))) {
+            myWishlist.remove((String) product.get("productId"));
+            userDb.removeFromWishList((String) UserDb.myUser.get("userId"), (String) product.get("productId"));
             addToWishlist.setImageResource(R.drawable.ic_heart_white);
-            Toast.makeText(this, "Item Removed from Wishlist",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Item Removed from Wishlist", Toast.LENGTH_LONG).show();
         } else {
-            myWishlist.add((String)product.get("productId"));
-            userDb.addToWishList((String)UserDb.myUser.get("userId"),(String)product.get("productId"));
+            myWishlist.add((String) product.get("productId"));
+            userDb.addToWishList((String) UserDb.myUser.get("userId"), (String) product.get("productId"));
             addToWishlist.setImageResource(R.drawable.ic_heart_yellow);
-            Toast.makeText(this, "Item added to Wishlist",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Item added to Wishlist", Toast.LENGTH_LONG).show();
         }
     }
+
     public void checkWishList() {
-        List<String> myWishlist = (List<String>)UserDb.myUser.get("wishlist");
-        if(myWishlist == null || !myWishlist.contains((String)product.get("productId"))) {
+        List<String> myWishlist = (List<String>) UserDb.myUser.get("wishlist");
+        if (myWishlist == null || !myWishlist.contains((String) product.get("productId"))) {
             addToWishlist.setImageResource(R.drawable.ic_heart_grey);
         } else {
             addToWishlist.setImageResource(R.drawable.ic_heart_yellow);
@@ -237,19 +273,30 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
-        drawer.closeDrawer(GravityCompat.END, false);
-        drawer.openDrawer(GravityCompat.START);
-        userName = (TextView) drawer.findViewById(R.id.userNameNav);
-        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
-        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
-        getUserDetails();
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawer.closeDrawer(GravityCompat.END, false);
+            drawer.openDrawer(GravityCompat.START);
+            userName = (TextView) drawer.findViewById(R.id.userNameNav);
+            userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+            profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+            getUserDetails();
+
+        }
     }
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG,"onNotificationBellClick");
-        drawer.closeDrawer(GravityCompat.START, false);
-        drawer.openDrawer(GravityCompat.END);
+        if(drawer.isDrawerOpen(GravityCompat.END)){
+            drawer.closeDrawer(GravityCompat.END);
+        }
+        else{
+            Log.i(TAG,"onNotificationBellClick");
+            drawer.closeDrawer(GravityCompat.START, false);
+            drawer.openDrawer(GravityCompat.END);
+        }
     }
 
     public void setNavigationHeader() {
@@ -258,7 +305,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
 
     @Override
     public void onSearch(String search) {
-        Log.i(TAG,"onSearch received "+search);
+        Log.i(TAG, "onSearch received " + search);
         //startActivity(new Intent(getApplicationContext(), Home.class));
     }
 
@@ -267,18 +314,19 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         Log.i("onSearchBack", "searchBack");
     }
 
-    public void getUserDetails(){
+    public void getUserDetails() {
         userName.setText((String) UserDb.myUser.get("name"));
         userEmail.setText((String) UserDb.myUser.get("email"));
-        if(UserDb.myUser.containsKey("imageUri")) {
-            Picasso.get().load((String)UserDb.myUser.get("imageUri")).into(profilePic);
+        if (UserDb.myUser.containsKey("imageUri")) {
+            Picasso.get().load((String) UserDb.myUser.get("imageUri")).into(profilePic);
         }
     }
+
     public void setupChatWithSeller(String regToken, String userId, String sellerId, String seller, String userImage, String sellerImage) {
         Log.i(TAG, "setupChatWithSeller");
         String message = UserDb.myUser.get("name") + " wants to buy " + product.get("title");
-        String messageId = userId.compareTo(sellerId) < 0 ? userId + sellerId: sellerId + userId;
-        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date(), (String)UserDb.myUser.get("name"),messageId );
+        String messageId = userId.compareTo(sellerId) < 0 ? userId + sellerId : sellerId + userId;
+        SendMessage.sendMessage(regToken, " Seller Notification ", message, "intent", new Date(), (String) UserDb.myUser.get("name"), messageId);
 
         message = "Hello " + seller + ", I am interested in buying " + product.get("title");
         String sender = userId;
