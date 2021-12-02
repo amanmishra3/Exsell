@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -58,8 +59,9 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
     private static ArrayList<Product> newProducts, recommendedProducts;
     private Object List;
     private ItemDb itemDb;
-    private ImageView search, wishlist, addListing, message, notification, profilePic;
+    private ImageView search, wishlist, addListing, message, notification, profilePic, hamburger;
     private TextView noitem, sold, userName, userEmail, newHeader, recommendedHeader;
+    private int flag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,7 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayoutListing);
         navigationView = findViewById(R.id.navigationMenu);
-        navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
+        navigationView.setNavigationItemSelectedListener(new navigationListener(this, this));
 
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
@@ -86,6 +88,39 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
         addListing.setOnClickListener(new TopBottomNavigationListener(R.id.addItemButton, getApplicationContext()));
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.nav_open, R.string.nav_close) {
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (flag == 1){
+
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_left_navigation_menu_button);
+                    flag = 0;
+                }
+                else if(flag == 2){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications);
+                    flag = 0;
+                }
+            }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Do whatever you want here
+                if(drawer.isDrawerOpen(GravityCompat.END)){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications_black_24dp);
+                    flag = 2;
+                }
+                else if(drawer.isDrawerOpen(GravityCompat.START)){
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_menu_open);
+                    flag = 1;
+                }
+
+            }
+        };
+        drawer.addDrawerListener(mDrawerToggle);
 
 
         loadProducts();
@@ -203,19 +238,30 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
-        drawer.closeDrawer(GravityCompat.END, false);
-        drawer.openDrawer(GravityCompat.START);
-        userName = (TextView) drawer.findViewById(R.id.userNameNav);
-        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
-        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
-        getUserDetails();
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawer.closeDrawer(GravityCompat.END, false);
+            drawer.openDrawer(GravityCompat.START);
+            userName = (TextView) drawer.findViewById(R.id.userNameNav);
+            userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+            profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+            getUserDetails();
+
+        }
     }
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG,"onNotificationBellClick");
-        drawer.closeDrawer(GravityCompat.START, false);
-        drawer.openDrawer(GravityCompat.END);
+        if(drawer.isDrawerOpen(GravityCompat.END)) {
+            drawer.closeDrawer(GravityCompat.END);
+        }
+        else {
+            Log.i(TAG,"onNotificationBellClick");
+            drawer.closeDrawer(GravityCompat.START, false);
+            drawer.openDrawer(GravityCompat.END);
+        }
     }
 
     public void setNavigationHeader() {

@@ -60,7 +60,7 @@ public class Categories extends AppCompatActivity implements FragmentTopBar.navb
         layoutBottom = findViewById(R.id.layoutBottomBar);
         drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationMenu);
-        navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
+        navigationView.setNavigationItemSelectedListener(new navigationListener(this, this));
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);

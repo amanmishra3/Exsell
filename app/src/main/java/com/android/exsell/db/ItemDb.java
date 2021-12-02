@@ -128,7 +128,7 @@ public class ItemDb {
         });
     }
 
-    // this fucktion to be used by search nav bar
+    // this function to be used by search nav bar
     public void searchProducts(String searchString, getItemsCallback callback) {
         if(searchString == null || searchString.length() <= 0) {
             callback.onCallback(null);

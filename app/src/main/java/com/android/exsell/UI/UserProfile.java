@@ -64,7 +64,6 @@ public class UserProfile extends AppCompatActivity implements DatePickerFragment
         userEmail = findViewById(R.id.userEmail);
         userPhone = findViewById(R.id.userPhone);
         userDob = findViewById(R.id.userDOB);
-        userRating = findViewById(R.id.userRating);
         close = findViewById(R.id.close);
         if(userDb.myUser != null) {
             userName.setText((String) userDb.myUser.getOrDefault("fname", "My Name"));

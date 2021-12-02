@@ -1,5 +1,6 @@
 package com.android.exsell.listeners;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,20 +27,17 @@ import com.google.firebase.auth.FirebaseAuth;
 public class navigationListener implements NavigationView.OnNavigationItemSelectedListener {
     private String TAG = "navigationListener";
     Context context;
+    Activity activity;
     static MenuItem previousMenuItem = null;
-    public navigationListener(Context context) {
+    public navigationListener(Context context, Activity activity) {
         Log.i(TAG, "const");
         this.context = context;
+        this.activity = activity;
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        item.setCheckable(true);
-//        item.setChecked(true);
-//        if (previousMenuItem != null) {
-//            previousMenuItem.setChecked(false);
-//        }
-//        previousMenuItem = item;
+
         if (item.getItemId() == R.id.signOut) {
             onSignOut();
             return true;
@@ -91,7 +89,8 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
                 ItemDb.clearData();
 
                 Intent intent = new Intent(context, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                activity.finish();
                 context.startActivity(intent);
             }
         });
@@ -109,11 +108,9 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
         Intent intent = new Intent(context, MyListings.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-
     }
 
 }
-
 
 //To call the listener
 // navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));

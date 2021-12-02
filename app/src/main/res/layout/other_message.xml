@@ -19,12 +19,14 @@
             android:id="@+id/otherMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
             android:maxWidth="250dp"/>
 
         <TextView
             android:id="@+id/otherMessageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
             android:layout_gravity="end"
             android:textSize="11sp"/>
     </LinearLayout>

@@ -1,8 +1,13 @@
 package com.android.exsell.UI;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -10,16 +15,22 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -49,10 +60,15 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class NewListing extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack {
@@ -68,7 +84,7 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     private String TAG = "NewListing ";
     private ItemDb itemDb;
     private MyFirebaseStorage myStorage;
-    private ImageView search, wishlist, addListing, message, addImage, notification, addListingIcon, profilePic;
+    private ImageView search, wishlist, addListing, message, addImage, notification, hamburger, addListingIcon, profilePic;
     private Button addItem;
     private TextView title, description, tags, price, userName, userEmail;
     private LinearLayout progressLayout;
@@ -76,6 +92,10 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     private AlertDialog.Builder builder;
     private static final int galleryPick = 1;
     private String productId, imageUrl;
+    private Dialog dialog;
+    private ImageView camera, gallery;
+    private int flag = 0;
+    String currentPhotoPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +105,11 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameTopBar, new FragmentTopBar());
         fragmentTransaction.commit();
+        dialog = new Dialog(NewListing.this);
+        dialog.setContentView(R.layout.layout_choose_image);
+        dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.background_dialog));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
 
         itemDb = ItemDb.newInstance();
         myStorage = new MyFirebaseStorage();
@@ -96,7 +121,7 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         addListingIcon.setImageResource(R.drawable.ic_additem);
         drawerlist = (DrawerLayout) findViewById(R.id.drawerLayoutItem);
         navigationView = findViewById(R.id.navigationMenuItem);
-        navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
+        navigationView.setNavigationItemSelectedListener(new navigationListener(NewListing.this, this));
 
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
@@ -107,6 +132,40 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
 
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerlist, R.string.nav_open, R.string.nav_close) {
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (flag == 1){
+
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_left_navigation_menu_button);
+                    flag = 0;
+                }
+                else if(flag == 2){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications);
+                    flag = 0;
+                }
+            }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Do whatever you want here
+                if(drawerlist.isDrawerOpen(GravityCompat.END)){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications_black_24dp);
+                    flag = 2;
+                }
+                else if(drawerlist.isDrawerOpen(GravityCompat.START)){
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_menu_open);
+                    flag = 1;
+                }
+
+            }
+        };
+        drawerlist.addDrawerListener(mDrawerToggle);
+
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         s = (Spinner) findViewById(R.id.category);
@@ -117,12 +176,40 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         tags = (TextView) findViewById(R.id.tags);
         price = (TextView) findViewById(R.id.price);
         addImage = (ImageView) findViewById(R.id.imageAdd);
+        camera = dialog.findViewById(R.id.cameraClick);
+        gallery = dialog.findViewById(R.id.galleryClick);
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                dialog.show();
+                camera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i(TAG, "Clicked camera");
+                        if(ContextCompat.checkSelfPermission(NewListing.this,
+                                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                            ActivityCompat.requestPermissions(NewListing.this,
+                                    new String[] {
+                                            Manifest.permission.CAMERA
+                                    }, 100);
+                        }
+                        else{
+                            openCamera();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                gallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i(TAG, "Clicked gallery");
+                        openGallery();
+                        dialog.dismiss();
+                    }
+                });
             }
         });
+
         addItem = (Button) findViewById(R.id.addListing);
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,6 +257,16 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 100) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            }
+        }
+    }
+
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
         layoutManager = new GridLayoutManager(this, columns);
         thisRecycler.setHasFixedSize(true); // set has fixed size
@@ -180,6 +277,11 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         thisRecycler.setAdapter(adapter);
     }
 
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePictureIntent, 100);
+    }
+
     private void openGallery() {
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, galleryPick);
@@ -188,22 +290,53 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            try {
-                final Uri imageUri = data.getData();
-//                addProduct.setImageUri(imageUri.toString());
-                uri = imageUri;
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                addImage.setImageBitmap(selectedImage);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+        if(requestCode == galleryPick) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    final Uri imageUri = data.getData();
+                    uri = imageUri;
+                    Log.i(TAG, String.valueOf(uri));
+                    final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    addImage.setImageBitmap(selectedImage);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                }
             }
-
-        }else {
+        }
+        else if(requestCode == 100) {
+            if(resultCode == RESULT_OK) {
+                Bitmap captureImage = (Bitmap) data.getExtras().get("data");
+                addImage.setImageBitmap(captureImage);
+                uri = getImageUri(getApplicationContext(), captureImage);
+                Log.i(TAG, String.valueOf(uri));
+            }
+        }
+        else {
             Toast.makeText(getApplicationContext(), "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        String path = "";
+        if (getContentResolver() != null) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+        return path;
     }
 
     private void addNewItem(uploadCompleteCallback callback) {
@@ -295,19 +428,30 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
-        drawerlist.closeDrawer(GravityCompat.END, false);
-        drawerlist.openDrawer(GravityCompat.START);
-        userName = (TextView) drawerlist.findViewById(R.id.userNameNav);
-        userEmail = (TextView) drawerlist.findViewById(R.id.userEmailNav);
-        profilePic = (ImageView) drawerlist.findViewById(R.id.profilePicNav);
-        getUserDetails();
+        if(drawerlist.isDrawerOpen(GravityCompat.START)){
+            drawerlist.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawerlist.closeDrawer(GravityCompat.END, false);
+            drawerlist.openDrawer(GravityCompat.START);
+            userName = (TextView) drawerlist.findViewById(R.id.userNameNav);
+            userEmail = (TextView) drawerlist.findViewById(R.id.userEmailNav);
+            profilePic = (ImageView) drawerlist.findViewById(R.id.profilePicNav);
+            getUserDetails();
+
+        }
     }
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG,"onNotificationBellClick");
-        drawerlist.closeDrawer(GravityCompat.START, false);
-        drawerlist.openDrawer(GravityCompat.END);
+        if(drawerlist.isDrawerOpen(GravityCompat.END)) {
+            drawerlist.closeDrawer(GravityCompat.END);
+        }
+        else {
+            Log.i(TAG,"onNotificationBellClick");
+            drawerlist.closeDrawer(GravityCompat.START, false);
+            drawerlist.openDrawer(GravityCompat.END);
+        }
     }
 
     public void setNavigationHeader() {

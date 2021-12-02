@@ -49,6 +49,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/_10sdp"
             android:textColor="@color/black"
+            android:fontFamily="@font/montserrat"
             android:textSize="@dimen/_18sdp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -69,6 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:visibility="gone"
+        android:fontFamily="@font/montserrat"
         app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -96,6 +98,7 @@
                 android:autofillHints="ignore"
                 android:hint="Aa"
                 android:inputType="textCapSentences|textMultiLine"
+                android:fontFamily="@font/montserrat"
                 android:maxLines="6" />
 
             <Button
@@ -106,6 +109,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginHorizontal="10dp"
                 android:backgroundTint="@color/bumble"
+                android:fontFamily="@font/montserrat"
                 android:onClick="sendMessage"
                 android:text="Send"
                 android:textColor="@color/black" />

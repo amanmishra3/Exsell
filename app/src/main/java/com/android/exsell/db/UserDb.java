@@ -73,11 +73,11 @@ public class UserDb {
         userDb.getUser(userId, new getUserCallback() {
             @Override
             public void onCallback(Users user) {
-                Log.i("setMyUser"," Name: "+user.getFname());
                 if(user == null) {
                     Log.i("UserDb",userId);
                     return;
                 }
+                Log.i("setMyUser"," Name: "+user.getFname());
                 myUser.put("name", user.getFname());
                 myUser.put("fname", user.getFname());
                 myUser.put("userId", user.getUserId());

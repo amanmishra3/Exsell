@@ -25,7 +25,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
         public MyViewHolder(View itemView){
             super(itemView);
-//            this.currentItem = itemView;
             this.textViewTitle = (TextView) itemView.findViewById(R.id.itemTitle);
             this.imageViewIcon = (ImageView) itemView.findViewById(R.id.itemImage);
         }
@@ -49,13 +48,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     public void onBindViewHolder(@NonNull CategoryAdapter.MyViewHolder holder, int position) {
         TextView textViewTitle = holder.textViewTitle;
         ImageView imageView = holder.imageViewIcon;
-//        holder.layoutNote.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Home.itemDetails(products.get(position), position);
-//            }
-//        });
-
         textViewTitle.setText(category.get(position).getTitle());
         imageView.setImageResource(category.get(position).getImage());
     }

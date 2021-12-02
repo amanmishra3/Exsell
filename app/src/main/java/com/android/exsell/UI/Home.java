@@ -30,6 +30,7 @@ import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.AppSettingsDb;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
+import com.android.exsell.fragments.FragmentLogin;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
@@ -59,8 +60,8 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private Toast backToast;
     // categories
     LinearLayout ll;
-    int[] categoryImages = {R.drawable.ic_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports};
-    int[] categoryIDs = {R.id.category0,R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6};
+    int[] categoryImages = {R.drawable.ic_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_footwear, R.drawable.ic_category_collectibles};
+    int[] categoryIDs = {R.id.category0,R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6, R.id.category7};
 
     // card recyclers
     public static RecyclerView.Adapter adapter;
@@ -80,7 +81,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private Toolbar toolbar;
     private int noteClickedPosition = -1;
     private TextView newHeader, recommendedHeader, userName, userEmail;
-    private int flag= 0;
+    private int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +112,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         view.setHorizontalScrollBarEnabled(false);
         view.setVerticalScrollBarEnabled(false);
         navigationView = findViewById(R.id.navigationMenuHome);
-        navigationView.setNavigationItemSelectedListener(new navigationListener(Home.this));
+        navigationView.setNavigationItemSelectedListener(new navigationListener(Home.this, Home.this));
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);
@@ -162,13 +163,11 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
                 if(drawer.isDrawerOpen(GravityCompat.END)){
                 notification = (ImageView) findViewById(R.id.notificationButton);
                 notification.setImageResource(R.drawable.ic_notifications_black_24dp);
-                onNotificationBellClick();
                 flag = 2;
                 }
                 else if(drawer.isDrawerOpen(GravityCompat.START)){
                     hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
                     hamburger.setImageResource(R.drawable.ic_menu_open);
-                    onHamburgerClickCallback();
                     flag = 1;
                 }
 
@@ -193,39 +192,14 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         }
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
         drawer.closeDrawer(GravityCompat.END, false);
         drawer.closeDrawer(GravityCompat.START, false);
         navigationView.setCheckedItem(R.id.home);
-    }
-
-
-    // create fake products (could adapt to work with database)
-    public void loadProducts() {
-        List<String> fakeTags = new ArrayList<>();
-        fakeTags.add("CEO");
-        fakeTags.add("Data");
-        Product product1 = new Product("1", "Product 1", 8, R.drawable.test_image, fakeTags);
-        Product product2 = new Product("2", "Product 2", 2, R.drawable.test_image, fakeTags);
-        Product product3 = new Product("3", "Product 3", 10, R.drawable.test_image, fakeTags);
-        Product product4 = new Product("4", "Product 4", 25, R.drawable.test_image, fakeTags);
-        Product product5 = new Product("5", "Product 5", 12, R.drawable.test_image, fakeTags);
-
-        // add to arraylists
-        newProducts = new ArrayList<Product>();
-        newProducts.add(product1);
-        newProducts.add(product2);
-        newProducts.add(product3);
-        newProducts.add(product4);
-        newProducts.add(product5);
-
-        recommendedProducts = new ArrayList<Product>();
-        recommendedProducts.add(product1);
-        recommendedProducts.add(product2);
-        recommendedProducts.add(product3);
-        recommendedProducts.add(product4);
     }
 
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
@@ -277,23 +251,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             ll.addView(imageView);
         }
     }
-    @Override
-    public void onBackPressed() {
-        if (backPressedTime + 2000 > System.currentTimeMillis()) {
-            backToast.cancel();
-            Intent main_activity = new Intent(getApplicationContext(), Home.class);
-            main_activity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            main_activity.putExtra("EXIT", true);
-            startActivity(main_activity);
-            return;
-        } else {
-            backToast = Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT);
-            backToast.show();
-        }
 
-        backPressedTime = System.currentTimeMillis();
-
-    }
     // onclick handler for categories
     // as of now, just creates a Toast
     public void moveToCategory(View view) {
@@ -318,10 +276,12 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             case R.id.category5:
                 category = "Sports";
                 break;
-//            default:
-//                category = "More";
-//                startActivity(new Intent(Home.this, Categories.class));
-//                break;
+            case R.id.category6:
+                category = "Footwear";
+                break;
+            case R.id.category7:
+                category = "Collectibles";
+                break;
         }
         categorySelected(category);
         // instead of toast, go to correct category activity
@@ -355,19 +315,31 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
-        drawer.closeDrawer(GravityCompat.END, false);
-        drawer.openDrawer(GravityCompat.START);
-        userName = (TextView) drawer.findViewById(R.id.userNameNav);
-        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
-        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
-        getUserDetails();
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawer.closeDrawer(GravityCompat.END, false);
+            drawer.openDrawer(GravityCompat.START);
+            userName = (TextView) drawer.findViewById(R.id.userNameNav);
+            userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+            profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+            getUserDetails();
+
+        }
+
     }
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG,"onNotificationBellClick");
-        drawer.closeDrawer(GravityCompat.START, false);
-        drawer.openDrawer(GravityCompat.END);
+        if(drawer.isDrawerOpen(GravityCompat.END)){
+            drawer.closeDrawer(GravityCompat.END);
+        }
+        else{
+            Log.i(TAG,"onNotificationBellClick");
+            drawer.closeDrawer(GravityCompat.START, false);
+            drawer.openDrawer(GravityCompat.END);
+        }
     }
 
     @Override
