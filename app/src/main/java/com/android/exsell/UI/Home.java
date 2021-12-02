@@ -111,7 +111,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         view.setHorizontalScrollBarEnabled(false);
         view.setVerticalScrollBarEnabled(false);
         navigationView = findViewById(R.id.navigationMenuHome);
-        navigationView.setNavigationItemSelectedListener(new navigationListener(getApplicationContext()));
+        navigationView.setNavigationItemSelectedListener(new navigationListener(Home.this));
         wishlist = (ImageView) layoutBottom.findViewById(R.id.wishlistButton);
         wishlist.setOnClickListener(new TopBottomNavigationListener(R.id.wishlistButton, getApplicationContext()));
         addListing = (ImageView) layoutBottom.findViewById(R.id.addItemButton);

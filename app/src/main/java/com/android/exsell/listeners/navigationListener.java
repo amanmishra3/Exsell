@@ -1,11 +1,14 @@
 package com.android.exsell.listeners;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.exsell.R;
@@ -72,17 +75,33 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
 
     public void onSignOut() {
         Log.i(TAG, "onSignOut");
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() != null) {
-            mAuth.signOut();
-        }
-        UserDb.clearData();
-        Notifications.clearData();
-        ItemDb.clearData();
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setTitle("Sign Out");
+        alert.setMessage("Are you sure");
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(context, "Signing Out",Toast.LENGTH_LONG);
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                if (mAuth.getCurrentUser() != null) {
+                    mAuth.signOut();
+                }
+                UserDb.clearData();
+                Notifications.clearData();
+                ItemDb.clearData();
+
+                Intent intent = new Intent(context, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
+            }
+        });
+        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // close dialog
+                dialog.cancel();
+            }
+        });
+        alert.show();
     }
 
     public void myList() {
