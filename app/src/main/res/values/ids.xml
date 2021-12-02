@@ -7,5 +7,7 @@
     <item name="category4" type="id"/>
     <item name="category5" type="id"/>
     <item name="category6" type="id"/>
+    <item name="category7" type="id"/>
+    <item name="category8" type="id"/>
     <item name="testID" type="id"/>
 </resources>

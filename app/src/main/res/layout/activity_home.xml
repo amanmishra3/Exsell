@@ -103,7 +103,7 @@
                     android:layout_marginStart="@dimen/_7sdp"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:fontFamily="@font/montserrat"
-                    android:text="Recommended for You"
+                    android:text="Browse By Category"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14ssp"
                     android:textStyle="bold"

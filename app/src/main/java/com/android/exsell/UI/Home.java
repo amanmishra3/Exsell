@@ -30,6 +30,7 @@ import com.android.exsell.cloudStorage.MyFirebaseStorage;
 import com.android.exsell.db.AppSettingsDb;
 import com.android.exsell.db.ItemDb;
 import com.android.exsell.db.UserDb;
+import com.android.exsell.fragments.FragmentLogin;
 import com.android.exsell.fragments.FragmentSearchBar;
 import com.android.exsell.fragments.FragmentTopBar;
 import com.android.exsell.listeners.TopBottomNavigationListener;
@@ -59,8 +60,8 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private Toast backToast;
     // categories
     LinearLayout ll;
-    int[] categoryImages = {R.drawable.ic_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports};
-    int[] categoryIDs = {R.id.category0,R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6};
+    int[] categoryImages = {R.drawable.ic_all,R.drawable.ic_category_textbooks, R.drawable.ic_category_clothes, R.drawable.ic_category_furniture, R.drawable.ic_category_electronics, R.drawable.ic_category_sports, R.drawable.ic_category_footwear, R.drawable.ic_category_collectibles};
+    int[] categoryIDs = {R.id.category0,R.id.category1, R.id.category2, R.id.category3, R.id.category4, R.id.category5, R.id.category6, R.id.category7};
 
     // card recyclers
     public static RecyclerView.Adapter adapter;
@@ -201,33 +202,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         navigationView.setCheckedItem(R.id.home);
     }
 
-
-    // create fake products (could adapt to work with database)
-    public void loadProducts() {
-        List<String> fakeTags = new ArrayList<>();
-        fakeTags.add("CEO");
-        fakeTags.add("Data");
-        Product product1 = new Product("1", "Product 1", 8, R.drawable.test_image, fakeTags);
-        Product product2 = new Product("2", "Product 2", 2, R.drawable.test_image, fakeTags);
-        Product product3 = new Product("3", "Product 3", 10, R.drawable.test_image, fakeTags);
-        Product product4 = new Product("4", "Product 4", 25, R.drawable.test_image, fakeTags);
-        Product product5 = new Product("5", "Product 5", 12, R.drawable.test_image, fakeTags);
-
-        // add to arraylists
-        newProducts = new ArrayList<Product>();
-        newProducts.add(product1);
-        newProducts.add(product2);
-        newProducts.add(product3);
-        newProducts.add(product4);
-        newProducts.add(product5);
-
-        recommendedProducts = new ArrayList<Product>();
-        recommendedProducts.add(product1);
-        recommendedProducts.add(product2);
-        recommendedProducts.add(product3);
-        recommendedProducts.add(product4);
-    }
-
     public void loadNotificationsRecycler(RecyclerView thisRecycler, List<JSONObject> products, int columns) {
         layoutManager = new GridLayoutManager(this, columns);
         thisRecycler.setHasFixedSize(true); // set has fixed size
@@ -318,10 +292,12 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             case R.id.category5:
                 category = "Sports";
                 break;
-//            default:
-//                category = "More";
-//                startActivity(new Intent(Home.this, Categories.class));
-//                break;
+            case R.id.category6:
+                category = "Footwear";
+                break;
+            case R.id.category7:
+                category = "Collectibles";
+                break;
         }
         categorySelected(category);
         // instead of toast, go to correct category activity
