@@ -118,13 +118,11 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                 if(drawer.isDrawerOpen(GravityCompat.END)){
                     notification = (ImageView) findViewById(R.id.notificationButton);
                     notification.setImageResource(R.drawable.ic_notifications_black_24dp);
-                    onNotificationBellClick();
                     flag = 2;
                 }
                 else if(drawer.isDrawerOpen(GravityCompat.START)){
                     hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
                     hamburger.setImageResource(R.drawable.ic_menu_open);
-                    onHamburgerClickCallback();
                     flag = 1;
                 }
 
@@ -145,6 +143,12 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 
     @Override
@@ -267,20 +271,31 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     @Override
     public void onHamburgerClickCallback() {
-        Log.i(TAG, "onHamburgerClickCallback");
-        drawer.closeDrawer(GravityCompat.END, false);
-        drawer.openDrawer(GravityCompat.START);
-        userName = (TextView) drawer.findViewById(R.id.userNameNav);
-        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
-        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
-        getUserDetails();
+        Log.i(TAG,"onHamburgerClickCallback");
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawer.closeDrawer(GravityCompat.END, false);
+            drawer.openDrawer(GravityCompat.START);
+            userName = (TextView) drawer.findViewById(R.id.userNameNav);
+            userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+            profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+            getUserDetails();
+
+        }
     }
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG, "onNotificationBellClick");
-        drawer.closeDrawer(GravityCompat.START, false);
-        drawer.openDrawer(GravityCompat.END);
+        if(drawer.isDrawerOpen(GravityCompat.END)) {
+            drawer.closeDrawer(GravityCompat.END);
+        }
+        else {
+            Log.i(TAG,"onNotificationBellClick");
+            drawer.closeDrawer(GravityCompat.START, false);
+            drawer.openDrawer(GravityCompat.END);
+        }
     }
 
     public void setNavigationHeader() {

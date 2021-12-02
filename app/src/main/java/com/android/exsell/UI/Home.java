@@ -163,13 +163,11 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
                 if(drawer.isDrawerOpen(GravityCompat.END)){
                 notification = (ImageView) findViewById(R.id.notificationButton);
                 notification.setImageResource(R.drawable.ic_notifications_black_24dp);
-                onNotificationBellClick();
                 flag = 2;
                 }
                 else if(drawer.isDrawerOpen(GravityCompat.START)){
                     hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
                     hamburger.setImageResource(R.drawable.ic_menu_open);
-                    onHamburgerClickCallback();
                     flag = 1;
                 }
 
@@ -193,6 +191,8 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             userDb.setMyUser();
         }
     }
+
+
 
     @Override
     protected void onResume() {
@@ -251,23 +251,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             ll.addView(imageView);
         }
     }
-    @Override
-    public void onBackPressed() {
-        if (backPressedTime + 2000 > System.currentTimeMillis()) {
-            backToast.cancel();
-            Intent main_activity = new Intent(getApplicationContext(), Home.class);
-            main_activity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            main_activity.putExtra("EXIT", true);
-            startActivity(main_activity);
-            return;
-        } else {
-            backToast = Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT);
-            backToast.show();
-        }
 
-        backPressedTime = System.currentTimeMillis();
-
-    }
     // onclick handler for categories
     // as of now, just creates a Toast
     public void moveToCategory(View view) {
@@ -331,19 +315,31 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
-        drawer.closeDrawer(GravityCompat.END, false);
-        drawer.openDrawer(GravityCompat.START);
-        userName = (TextView) drawer.findViewById(R.id.userNameNav);
-        userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
-        profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
-        getUserDetails();
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawer.closeDrawer(GravityCompat.END, false);
+            drawer.openDrawer(GravityCompat.START);
+            userName = (TextView) drawer.findViewById(R.id.userNameNav);
+            userEmail = (TextView) drawer.findViewById(R.id.userEmailNav);
+            profilePic = (ImageView) drawer.findViewById(R.id.profilePicNav);
+            getUserDetails();
+
+        }
+
     }
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG,"onNotificationBellClick");
-        drawer.closeDrawer(GravityCompat.START, false);
-        drawer.openDrawer(GravityCompat.END);
+        if(drawer.isDrawerOpen(GravityCompat.END)){
+            drawer.closeDrawer(GravityCompat.END);
+        }
+        else{
+            Log.i(TAG,"onNotificationBellClick");
+            drawer.closeDrawer(GravityCompat.START, false);
+            drawer.openDrawer(GravityCompat.END);
+        }
     }
 
     @Override

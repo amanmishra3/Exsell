@@ -153,13 +153,11 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
                 if(drawerlist.isDrawerOpen(GravityCompat.END)){
                     notification = (ImageView) findViewById(R.id.notificationButton);
                     notification.setImageResource(R.drawable.ic_notifications_black_24dp);
-                    onNotificationBellClick();
                     flag = 2;
                 }
                 else if(drawerlist.isDrawerOpen(GravityCompat.START)){
                     hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
                     hamburger.setImageResource(R.drawable.ic_menu_open);
-                    onHamburgerClickCallback();
                     flag = 1;
                 }
 
@@ -420,19 +418,30 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     public void onHamburgerClickCallback() {
         Log.i(TAG,"onHamburgerClickCallback");
-        drawerlist.closeDrawer(GravityCompat.END, false);
-        drawerlist.openDrawer(GravityCompat.START);
-        userName = (TextView) drawerlist.findViewById(R.id.userNameNav);
-        userEmail = (TextView) drawerlist.findViewById(R.id.userEmailNav);
-        profilePic = (ImageView) drawerlist.findViewById(R.id.profilePicNav);
-        getUserDetails();
+        if(drawerlist.isDrawerOpen(GravityCompat.START)){
+            drawerlist.closeDrawer(GravityCompat.START);
+        }
+        else{
+            drawerlist.closeDrawer(GravityCompat.END, false);
+            drawerlist.openDrawer(GravityCompat.START);
+            userName = (TextView) drawerlist.findViewById(R.id.userNameNav);
+            userEmail = (TextView) drawerlist.findViewById(R.id.userEmailNav);
+            profilePic = (ImageView) drawerlist.findViewById(R.id.profilePicNav);
+            getUserDetails();
+
+        }
     }
 
     @Override
     public void onNotificationBellClick() {
-        Log.i(TAG,"onNotificationBellClick");
-        drawerlist.closeDrawer(GravityCompat.START, false);
-        drawerlist.openDrawer(GravityCompat.END);
+        if(drawerlist.isDrawerOpen(GravityCompat.END)) {
+            drawerlist.closeDrawer(GravityCompat.END);
+        }
+        else {
+            Log.i(TAG,"onNotificationBellClick");
+            drawerlist.closeDrawer(GravityCompat.START, false);
+            drawerlist.openDrawer(GravityCompat.END);
+        }
     }
 
     public void setNavigationHeader() {
