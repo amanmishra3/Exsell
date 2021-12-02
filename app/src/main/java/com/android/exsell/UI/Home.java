@@ -178,7 +178,11 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
             finish();
 
         }
+        notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
+        notificationRecycler.setNestedScrollingEnabled(true);
+        loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
         FirebaseNotificationService.NotificationReloader(this::reloadCallback);
+
     }
 
     @Override

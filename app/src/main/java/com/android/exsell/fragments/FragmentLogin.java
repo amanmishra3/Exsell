@@ -163,6 +163,7 @@ public class FragmentLogin extends Fragment {
             emailField.setText(null);
             if(user.isEmailVerified()) {
                 Intent intent = new Intent(getActivity(), Home.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 getActivity().finish();
             } else {

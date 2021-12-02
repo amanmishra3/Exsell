@@ -85,11 +85,11 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
                     mAuth.signOut();
                 }
                 UserDb.clearData();
-                Notifications.clearData();
+//                Notifications.clearData();
                 ItemDb.clearData();
 
                 Intent intent = new Intent(context, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 activity.finish();
                 context.startActivity(intent);
             }
