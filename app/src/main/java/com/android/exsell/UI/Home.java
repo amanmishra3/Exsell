@@ -1,6 +1,14 @@
 package com.android.exsell.UI;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,10 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -38,16 +48,23 @@ import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Product;
 import com.android.exsell.services.FirebaseNotificationService;
+//import com.google.android.gms.location.FusedLocationProviderClient;
+//import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.GeoPoint;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamburgerOnClickCallback, FragmentSearchBar.SearchBarOnSearch, FragmentTopBar.NotificationBellClickCallback, FragmentSearchBar.SearchBarBack, FirebaseNotificationService.notifcationReloaded {
     // side navigation
@@ -82,6 +99,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private int noteClickedPosition = -1;
     private TextView newHeader, recommendedHeader, userName, userEmail;
     private int flag = 0;
+    private static final int REQUEST_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +119,16 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameTopBar, new FragmentTopBar());
         fragmentTransaction.commit();
+
+
+        //Get location permissions
+        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Home.this);
+        if(ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(Home.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        } else {
+            Log.i(TAG, "Location Permissions Present");
+        }
 
         // side navigation
         newHeader = (TextView) findViewById(R.id.new_header);
@@ -183,6 +211,16 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
         FirebaseNotificationService.NotificationReloader(this::reloadCallback);
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == REQUEST_LOCATION) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Location Permission Granted");
+            }
+        }
     }
 
     @Override

@@ -140,8 +140,6 @@ public class FragmentLogin extends Fragment {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            Toast.makeText(getActivity(), "Authentication Successful.",
-                                    Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             UserDb.setMyUser();
                             updateUI(user);
@@ -162,6 +160,8 @@ public class FragmentLogin extends Fragment {
         if (user != null) {
             emailField.setText(null);
             if(user.isEmailVerified()) {
+                Toast.makeText(getActivity(), "Authentication Successful.",
+                        Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), Home.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

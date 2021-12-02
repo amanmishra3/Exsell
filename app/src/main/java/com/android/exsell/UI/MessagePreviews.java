@@ -32,6 +32,7 @@ import com.android.exsell.listeners.TopBottomNavigationListener;
 import com.android.exsell.listeners.navigationListener;
 import com.android.exsell.models.Notifications;
 import com.android.exsell.models.Preview;
+import com.android.exsell.models.Product;
 import com.android.exsell.services.FirebaseNotificationService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.Timestamp;
@@ -65,6 +66,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
     MessagePreviewAdapter adapter;
 
     private ArrayList<Preview> previewArrayList;
+    private ArrayList<Preview> searchMessages;
     private RecyclerView recyclerView;
     private ImageView search, wishlist, addListing, message, notification, messageIcon, profilePic, hamburger;
     private TextView userName, userEmail;
@@ -130,16 +132,11 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         };
         drawer.addDrawerListener(mDrawerToggle);
 
-//        if(mAuth.getCurrentUser() != null) {
-//    }
-
-
-
         recyclerView = findViewById(R.id.message_preview_list);
 
         getMessagePreviews();
-
         setAdapter();
+
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
@@ -207,8 +204,6 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                                 preview.setProfilePic(imageUri);
 
                                 // TODO implement profilePic query
-//                        Image profilePic = (Image) doc.get("otherPic");
-//                        preview.setProfilePic(profilePic);
 
                                 preview.setMessage("");
                                 preview.setTimeStamp(Calendar.getInstance());
@@ -247,6 +242,7 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
                                                     if(!sameMessage) {
                                                         previewArrayList.add(preview);
                                                         Collections.sort(previewArrayList);
+                                                        searchMessages = previewArrayList;
                                                         adapter.notifyItemInserted(previewArrayList.size() - 1);
                                                     }
                                                 } else {
@@ -267,6 +263,23 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
         intent.putExtra("name", previewArrayList.get(position).getName());
         intent.putExtra("imageUri", previewArrayList.get(position).getProfilePic());
         startActivity(intent);
+    }
+
+    public List<Preview> searchPreviews(List<Preview> searchMessages, String searchKeyword) {
+        List<Preview> searchResult;
+        if(searchKeyword.trim().isEmpty()) {
+            searchResult = searchMessages;
+        } else {
+            ArrayList<Preview> temp = new ArrayList<>();
+            for(Preview preview : searchMessages) {
+                if(preview.getName().toLowerCase().contains(searchKeyword.toLowerCase())) {
+                    temp.add(preview);
+                }
+            }
+            searchResult = temp;
+            Log.i("Size of temp products: ", String.valueOf(searchResult.size()));
+        }
+        return searchResult;
     }
 
     @Override
@@ -304,8 +317,11 @@ public class MessagePreviews extends AppCompatActivity implements MessagePreview
 
     @Override
     public void onSearch(String search) {
-        Log.i(TAG, "onSearch received " + search);
-        //startActivity(new Intent(getApplicationContext(), Home.class));
+        Log.i(TAG,"onSearch received "+search);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(new MessagePreviewAdapter((ArrayList<Preview>) searchPreviews(searchMessages ,search), this));
     }
 
     @Override

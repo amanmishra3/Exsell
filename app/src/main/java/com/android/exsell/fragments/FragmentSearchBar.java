@@ -19,6 +19,7 @@ public class FragmentSearchBar extends Fragment {
     private SearchBarOnSearch searchBarOnSearch;
     private SearchBarBack searchBarBack;
     private EditText searchText;
+    private String TAG = "FragmentSearchBar";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

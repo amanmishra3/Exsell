@@ -305,8 +305,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
 
     @Override
     public void onSearch(String search) {
-        Log.i(TAG, "onSearch received " + search);
-        //startActivity(new Intent(getApplicationContext(), Home.class));
+        Toast.makeText(getApplicationContext(), "No Searchable Items!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
