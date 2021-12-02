@@ -223,8 +223,10 @@ public class UserDb {
         Log.i(TAG, "Item Id update  "+ notification);
         DocumentReference documentReference = userCollectionReference.document(userId);
         documentReference.update("notification", FieldValue.arrayRemove(notification.toString()));
+        Notifications.removeSingleNotification(notification);
         notification.remove("new");
         Log.i(TAG, "Item Id again  "+ notification);
+        Notifications.addSingleNotification(notification);
         documentReference = userCollectionReference.document(userId);
         documentReference.update("notification", FieldValue.arrayUnion(notification.toString()));
 //        Notifications.updateNotifications();

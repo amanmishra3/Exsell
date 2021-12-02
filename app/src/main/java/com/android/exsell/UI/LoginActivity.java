@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null) {
+        if(mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified()) {
             startActivity(new Intent(this,Home.class));
         }
         loginSwitch = findViewById(R.id.loginSwitch);

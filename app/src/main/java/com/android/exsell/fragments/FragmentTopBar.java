@@ -72,7 +72,8 @@ public class FragmentTopBar extends Fragment implements NotificationEvent {
 
     @Override
     public void newNotification() {
-        this.notificationBell.setImageResource(R.drawable.ic_bell);
+        this.notificationBell.setImageResource(R.drawable.ic_notifications_black_24dp);
+//        this.notificationBell.setColorFilter(getResources().getColor(R.color.bumble));
     }
 
     public interface navbarHamburgerOnClickCallback {

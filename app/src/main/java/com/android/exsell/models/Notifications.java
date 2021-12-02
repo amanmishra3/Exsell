@@ -10,6 +10,8 @@ import org.json.JSONObject;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +60,13 @@ public class Notifications {
             } catch(Exception e) {}
         }
     }
+
+    public static void addSingleNotification(JSONObject notify) {
+        myNotifications.add(0,notify);
+    }
+    public static void removeSingleNotification(JSONObject notify) {
+        myNotifications.remove(notify);
+    }
     public static void updateNotifications(notificationUpdateCallback callback) {
 //        myNotifications = new ArrayList<>();
         UserDb userDb = UserDb.newInstance();
@@ -91,6 +100,7 @@ public class Notifications {
                     if(newNotification) {
 //                        Toast.makeText(context, "New Notification received",Toast.LENGTH_SHORT).show();
                     }
+                    Collections.sort(myNotifications, new Notifications().new MyJSONComparator());
                     callback.onCallback(notificationObj, newNotification);
                 }
             }
@@ -99,5 +109,19 @@ public class Notifications {
 
     public interface notificationUpdateCallback {
         void onCallback(List<JSONObject> notifications, boolean newNotification);
+    }
+    class MyJSONComparator implements Comparator<JSONObject> {
+
+        @Override
+        public int compare(JSONObject n1, JSONObject n2) {
+            try {
+                Date v1 = (Date) (n1.get("time"));
+                Date v3 = (Date) (n2.get("time"));
+                return v1.compareTo(v3);
+            } catch (Exception e) {
+                Log.e("Error comaprator ", Log.getStackTraceString(e));
+            }
+            return 0;
+        }
     }
 }
