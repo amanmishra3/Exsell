@@ -1,5 +1,6 @@
 package com.android.exsell.UI;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -58,10 +59,11 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
     private View parent;
     private UserDb userDb;
     private Map<String, Object> product;
-    private ImageView search, wishlist, addListing, message, productImage, addToWishlist,notification, profilePic;
+    private ImageView search, wishlist, addListing, message, productImage, hamburger, addToWishlist,notification, profilePic;
     private TextView title, description, price, tags, userEmail, userName;
     private Button contact_seller, meet_seller;
     private com.google.firebase.firestore.GeoPoint seller_location;
+    private int flag = 0;
     Double latitude, longitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,41 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         message = (ImageView) findViewById(R.id.chatButton);
         message.setOnClickListener(new TopBottomNavigationListener(R.id.chatButton, getApplicationContext()));
 
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.nav_open, R.string.nav_close) {
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (flag == 1){
+
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_left_navigation_menu_button);
+                    flag = 0;
+                }
+                else if(flag == 2){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications);
+                    flag = 0;
+                }
+            }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Do whatever you want here
+                if(drawer.isDrawerOpen(GravityCompat.END)){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications_black_24dp);
+                    onNotificationBellClick();
+                    flag = 2;
+                }
+                else if(drawer.isDrawerOpen(GravityCompat.START)){
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_menu_open);
+                    onHamburgerClickCallback();
+                    flag = 1;
+                }
+
+            }
+        };
+        drawer.addDrawerListener(mDrawerToggle);
 
         //-->getting from static stuff for now
         if(product.containsKey("imageUri") && product.get("imageUri") != null) {
@@ -173,7 +210,6 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
                 startActivity(intent);
             }
         });
-
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);

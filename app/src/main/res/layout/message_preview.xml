@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_toEndOf="@id/profile_pic_card"
+        android:fontFamily="@font/montserrat"
         android:maxLines="1"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -35,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/contact_name"
         android:layout_alignBottom="@+id/profile_pic_card"
+        android:fontFamily="@font/montserrat"
         android:maxLines="1"
         android:ellipsize="end"
         android:textSize="20sp"
@@ -45,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/contact_name"
+        android:fontFamily="@font/montserrat"
         android:gravity="end"
         android:textSize="20sp" />
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.android.exsell.UI;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -82,7 +83,7 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     private String TAG = "NewListing ";
     private ItemDb itemDb;
     private MyFirebaseStorage myStorage;
-    private ImageView search, wishlist, addListing, message, addImage, notification, addListingIcon, profilePic;
+    private ImageView search, wishlist, addListing, message, addImage, notification, hamburger, addListingIcon, profilePic;
     private Button addItem;
     private TextView title, description, tags, price, userName, userEmail;
     private LinearLayout progressLayout;
@@ -92,6 +93,7 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     private String productId, imageUrl;
     private Dialog dialog;
     private ImageView camera, gallery;
+    private int flag = 0;
     String currentPhotoPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,42 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
 
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerlist, R.string.nav_open, R.string.nav_close) {
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (flag == 1){
+
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_left_navigation_menu_button);
+                    flag = 0;
+                }
+                else if(flag == 2){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications);
+                    flag = 0;
+                }
+            }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Do whatever you want here
+                if(drawerlist.isDrawerOpen(GravityCompat.END)){
+                    notification = (ImageView) findViewById(R.id.notificationButton);
+                    notification.setImageResource(R.drawable.ic_notifications_black_24dp);
+                    onNotificationBellClick();
+                    flag = 2;
+                }
+                else if(drawerlist.isDrawerOpen(GravityCompat.START)){
+                    hamburger = (ImageView) findViewById(R.id.leftNavigationButton);
+                    hamburger.setImageResource(R.drawable.ic_menu_open);
+                    onHamburgerClickCallback();
+                    flag = 1;
+                }
+
+            }
+        };
+        drawerlist.addDrawerListener(mDrawerToggle);
+
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
 
         s = (Spinner) findViewById(R.id.category);

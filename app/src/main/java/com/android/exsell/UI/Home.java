@@ -81,7 +81,7 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
     private Toolbar toolbar;
     private int noteClickedPosition = -1;
     private TextView newHeader, recommendedHeader, userName, userEmail;
-    private int flag= 0;
+    private int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

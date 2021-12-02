@@ -8,7 +8,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="@dimen/_5sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,6 +36,7 @@
                     android:layout_height="wrap_content"
                     android:text="Open Camera"
                     android:textColor="@color/black"
+                    android:fontFamily="@font/montserrat"
                     android:textStyle="bold"/>
             </LinearLayout>
 
@@ -57,6 +59,7 @@
                     android:layout_height="wrap_content"
                     android:text="Open Gallery"
                     android:textColor="@color/black"
+                    android:fontFamily="@font/montserrat"
                     android:textStyle="bold"/>
             </LinearLayout>
 

@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Title"
+            android:fontFamily="@font/montserrat"
             android:textColor="#000"
             android:textStyle="bold" />
 
@@ -44,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Message"
+            android:fontFamily="@font/montserrat"
             android:textSize="15sp" />
 
     </LinearLayout>

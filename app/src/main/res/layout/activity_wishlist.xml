@@ -53,6 +53,7 @@
             android:id="@+id/noitem_text"
             android:textColor="@color/bumble"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
             android:visibility="invisible"/>
 
         <include layout="@layout/layout_bottom_bar" />

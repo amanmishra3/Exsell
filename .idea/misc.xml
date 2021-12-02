@@ -31,6 +31,7 @@
         <entry key="app/src/main/res/layout/activity_wishlist.xml" value="0.11" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1157548125633232" />
         <entry key="app/src/main/res/layout/fragment_search_bar.xml" value="0.10208333333333333" />
+        <entry key="app/src/main/res/layout/fragment_sign_up.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_top_bar.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_bottom_bar.xml" value="0.1" />
@@ -60,6 +61,7 @@
         <entry key="app/src/main/res/layout/progressalert.xml" value="0.165" />
         <entry key="app/src/main/res/layout/registration.xml" value="0.11927083333333334" />
         <entry key="app/src/main/res/layout/search_bar.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/self_message.xml" value="0.14322916666666666" />
         <entry key="app/src/main/res/layout/test_item_tile.xml" value="0.1" />
         <entry key="app/src/main/res/menu/navigation_menu.xml" value="0.25" />
       </map>

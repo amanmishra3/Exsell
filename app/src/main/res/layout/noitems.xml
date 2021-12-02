@@ -15,6 +15,7 @@
         android:textStyle="bold"
         android:padding="10dp"
         android:layout_gravity="center_vertical"
+        android:fontFamily="@font/montserrat"
         android:id="@+id/noitem_text"
         android:layout_toEndOf="@+id/loader"
         android:textColor="@color/bumble"
