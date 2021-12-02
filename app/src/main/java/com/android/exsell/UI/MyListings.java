@@ -164,7 +164,7 @@ public class MyListings extends AppCompatActivity implements FragmentTopBar.navb
     protected void onResume() {
         super.onResume();
         navigationView.setCheckedItem(R.id.edit);
-//        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.closeDrawer(GravityCompat.END, false);
         drawer.closeDrawer(GravityCompat.START, false);
         Product searchParam = new Product();
         if(mAuth.getCurrentUser() != null)

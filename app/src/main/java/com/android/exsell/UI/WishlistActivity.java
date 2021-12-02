@@ -141,7 +141,8 @@ public class WishlistActivity extends AppCompatActivity implements FragmentTopBa
     @Override
     protected void onResume() {
         super.onResume();
-        drawer.closeDrawer(Gravity.LEFT, false);
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.closeDrawer(GravityCompat.START, false);
         List<String> myWishList = (List<String>)UserDb.myUser.get("wishlist");
         if(myWishList == null || myWishList.size() <= 0) {
             noitem.setVisibility(View.VISIBLE);

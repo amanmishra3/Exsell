@@ -93,7 +93,8 @@ public class Categories extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     protected void onResume() {
         super.onResume();
-        drawer.closeDrawer(Gravity.LEFT, false);
+        drawer.closeDrawer(GravityCompat.END, false);
+        drawer.closeDrawer(GravityCompat.START, false);
     }
     public void loadProducts() {
         String[] fakeTags = {"Textbooks", "COEN"};

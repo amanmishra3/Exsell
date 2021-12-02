@@ -75,7 +75,7 @@ public class navigationListener implements NavigationView.OnNavigationItemSelect
         Log.i(TAG, "onSignOut");
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setTitle("Sign Out");
-        alert.setMessage("Are you sure");
+        alert.setMessage("Are you sure you want to Sign Out?");
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {

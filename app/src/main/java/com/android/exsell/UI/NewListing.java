@@ -95,7 +95,7 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     private Dialog dialog;
     private ImageView camera, gallery;
     private int flag = 0;
-    String currentPhotoPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,7 +195,7 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
                         }
                         else{
                             openCamera();
-                            dialog.dismiss();
+//                            dialog.dismiss();
                         }
                     }
                 });
@@ -307,6 +307,7 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         }
         else if(requestCode == 100) {
             if(resultCode == RESULT_OK) {
+                dialog.dismiss();
                 Bitmap captureImage = (Bitmap) data.getExtras().get("data");
                 addImage.setImageBitmap(captureImage);
                 uri = getImageUri(getApplicationContext(), captureImage);
@@ -323,20 +324,6 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
-    }
-
-    public String getRealPathFromURI(Uri uri) {
-        String path = "";
-        if (getContentResolver() != null) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                path = cursor.getString(idx);
-                cursor.close();
-            }
-        }
-        return path;
     }
 
     private void addNewItem(uploadCompleteCallback callback) {
@@ -394,8 +381,8 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
     @Override
     protected void onResume() {
         super.onResume();
-        drawerlist.closeDrawer(Gravity.LEFT, false);
-
+        drawerlist.closeDrawer(GravityCompat.END, false);
+        drawerlist.closeDrawer(GravityCompat.START, false);
     }
 
     @Override
@@ -460,14 +447,14 @@ public class NewListing extends AppCompatActivity implements FragmentTopBar.navb
 
     @Override
     public void onSearch(String search) {
-        Log.i(TAG,"onSearch received "+search);
-        //startActivity(new Intent(getApplicationContext(), Home.class));
+        Toast.makeText(getApplicationContext(), "No Searchable Items!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSearchBack() {
         Log.i("onSearchBack", "searchBack");
     }
+
     public void getUserDetails(){
         userName.setText((String) UserDb.myUser.get("name"));
         userEmail.setText((String) UserDb.myUser.get("email"));
