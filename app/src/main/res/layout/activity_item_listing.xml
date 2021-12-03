@@ -158,33 +158,33 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="5dp"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             app:layout_constraintTop_toBottomOf="@+id/tags">
 
                             <Button
                                 android:id="@+id/contact_seller"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_width="183dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="@dimen/_10sdp"
                                 android:layout_marginHorizontal="5dp"
-                                android:layout_weight="1"
                                 android:backgroundTint="@color/colorThemeYellow"
+                                android:fontFamily="@font/montserrat"
                                 android:onClick="contactSeller"
                                 android:text="Contact Seller"
-                                android:textColor="@color/black"
-                                android:fontFamily="@font/montserrat"
-                                />
+                                android:textColor="@color/black" />
 
-                            <Button
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="5dp"
-                                android:layout_weight="1"
-                                android:backgroundTint="@color/colorThemeYellow"
-                                android:id="@+id/meetSellerBtn"
-                                android:text="See on Map"
-                                android:textColor="@color/black"
-                                android:fontFamily="@font/montserrat"
-                                />
+<!--                            <Button-->
+<!--                                android:layout_width="fill_parent"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginHorizontal="5dp"-->
+<!--                                android:layout_weight="1"-->
+<!--                                android:backgroundTint="@color/colorThemeYellow"-->
+<!--                                android:id="@+id/meetSellerBtn"-->
+<!--                                android:text="See on Map"-->
+<!--                                android:textColor="@color/black"-->
+<!--                                android:fontFamily="@font/montserrat"-->
+<!--                                />-->
 
                         </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>

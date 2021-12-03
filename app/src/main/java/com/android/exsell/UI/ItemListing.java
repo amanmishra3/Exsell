@@ -96,7 +96,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         description = (TextView) parent.findViewById(R.id.description);
         tags = (TextView) parent.findViewById(R.id.tags);
         contact_seller = (Button) parent.findViewById(R.id.contact_seller);
-        meet_seller = (Button) parent.findViewById(R.id.meetSellerBtn);
+        //meet_seller = (Button) parent.findViewById(R.id.meetSellerBtn);
         addToWishlist = (ImageView) parent.findViewById(R.id.add_to_wishlist);
         // <--
 
@@ -198,15 +198,15 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
             }
         });
 
-        meet_seller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ItemListing.this, MapActivity.class);
-                intent.putExtra("seller_latitude", String.valueOf(latitude));
-                intent.putExtra("seller_longitude", String.valueOf(longitude));
-                startActivity(intent);
-            }
-        });
+//        meet_seller.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(ItemListing.this, MapActivity.class);
+//                intent.putExtra("seller_latitude", String.valueOf(latitude));
+//                intent.putExtra("seller_longitude", String.valueOf(longitude));
+//                startActivity(intent);
+//            }
+//        });
         notificationRecycler = (RecyclerView) findViewById(R.id.right_drawer);
         notificationRecycler.setNestedScrollingEnabled(true);
         loadNotificationsRecycler(notificationRecycler, Notifications.getMyNotifications(), 1);
@@ -368,6 +368,7 @@ public class ItemListing extends AppCompatActivity implements FragmentTopBar.nav
         Intent intent = new Intent(this, PrivateMessage.class);
         intent.putExtra("messageId", messageId);
         intent.putExtra("name", otherName);
+        intent.putExtra("imageUri", sellerImage);
         startActivity(intent);
     }
 

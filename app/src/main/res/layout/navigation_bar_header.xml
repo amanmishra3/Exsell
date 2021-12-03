@@ -10,7 +10,7 @@
         android:layout_height="@dimen/_40sdp"
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_16sdp"
-        android:src="@drawable/tanmay"/>
+        android:src="@drawable/addimage"/>
 
     <TextView
         android:id="@+id/userNameNav"

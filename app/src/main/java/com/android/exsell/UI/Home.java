@@ -122,8 +122,6 @@ public class Home extends AppCompatActivity implements FragmentTopBar.navbarHamb
 
 
         //Get location permissions
-        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Home.this);
         if(ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Home.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(Home.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
